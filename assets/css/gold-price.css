@@ -42,7 +42,7 @@
 }
 
 .price-row:hover {
-    background-color: rgba(0, 0, 0, 0.02);
+    background-color: rgba(235, 247, 255, 0.5);
 }
 
 /* Custom colors for headers */
@@ -96,7 +96,24 @@
     50% { opacity: 0.5; }
 }
 
-/* Responsive adjustments */
+/* Price alignment and formatting */
+.price-amount {
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.price-change {
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+/* Ensure consistent spacing */
+.price-details {
+    min-width: 180px;
+    justify-content: flex-end;
+}
+
+/* Mobile responsiveness for long prices */
 @media (max-width: 640px) {
     .gold-price-container {
         margin: 0 1rem;
@@ -107,13 +124,44 @@
     }
     
     .price-amount {
-        font-size: 0.875rem;
+        font-size: 16px;
+    }
+    
+    /* Stack price and change vertically on very small screens */
+    @media (max-width: 400px) {
+        .price-details {
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.25rem;
+        }
+        
+        .price-amount {
+            font-size: 0.8rem;
+        }
+        
+        .price-change {
+            font-size: 0.75rem;
+        }
     }
 }
 
 /* Thai font adjustments */
 [lang="th"] .gold-price-container {
     font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+}
+
+/* Arrow symbols styling for better consistency */
+.price-change .text-xs {
+    font-weight: 900;
+    font-size: 0.75rem;
+    line-height: 1;
+}
+
+/* Ensure arrows are properly visible in both languages */
+[lang="th"] .price-change .text-xs,
+[lang="en"] .price-change .text-xs {
+    font-weight: bold;
+    font-size: 0.75rem;
 }
 
 /* Icon animations */

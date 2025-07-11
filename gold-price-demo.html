@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Price Component Demo</title>
+    <title>Gold Price Component Demo - Real API</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./assets/css/gold-price.css">
     <style>
@@ -11,6 +11,16 @@
         body {
             background-color: #E8F4FD;
             min-height: 100vh;
+        }
+        
+        /* Loading animation */
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -28,58 +38,57 @@
 
         <!-- Gold Price Component Container -->
         <div id="goldPriceContainer" class="gold-price-container">
-            <!-- Component will be rendered here -->
+            <!-- Real-time component will be rendered here -->
         </div>
+    </div>
+
     <!-- Scripts -->
     <script src="./assets/js/i18n.js"></script>
     <script src="./assets/js/gold-price-manager.js"></script>
+    <script src="./assets/js/thai-header-fix.js"></script>
 
     <script>
-        // Demo script for updating prices every 30 seconds
-        setInterval(() => {
-            if (window.goldPriceManager) {
-                // Simulate price updates
-                const randomChange = () => Math.floor(Math.random() * 100) - 50;
-                const basePrice = 53000;
-                
-                const newData = {
-                    visiblePrices: [
-                        {
-                            id: 'ausitis965',
-                            type: 'gold',
-                            buyPrice: basePrice + Math.floor(Math.random() * 1000),
-                            sellPrice: null,
-                            change: randomChange(),
-                            icon: '🥇'
-                        },
-                        {
-                            id: 'ausitis9999',
-                            type: 'gold',
-                            buyPrice: basePrice + Math.floor(Math.random() * 1000),
-                            sellPrice: null,
-                            change: randomChange(),
-                            icon: '🥇'
-                        },
-                        {
-                            id: 'spotGold',
-                            type: 'usd',
-                            buyPrice: 2350 + Math.floor(Math.random() * 100),
-                            sellPrice: null,
-                            change: randomChange(),
-                            icon: '🟠'
-                        }
-                    ],
-                    hiddenPrices: goldPriceManager.mockData.hiddenPrices.map(price => ({
-                        ...price,
-                        buyPrice: basePrice + Math.floor(Math.random() * 1000),
-                        change: randomChange()
-                    }))
-                };
-                
-                goldPriceManager.updatePrices(newData);
-                console.log('Gold prices updated!');
+        // Debug console functionality
+        function addDebugLog(message) {
+            const console = document.getElementById('debugConsole');
+            if (console) {
+                const time = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.textContent = `[${time}] ${message}`;
+                console.appendChild(logEntry);
+                console.scrollTop = console.scrollHeight;
             }
-        }, 3000); // Update every 30 seconds
+        }
+        
+        // Monitor API status
+        setInterval(() => {
+            if (window.goldPriceManager && window.goldPriceManager.realData) {
+                const g965b = window.goldPriceManager.realData.G965B;
+                if (g965b) {
+                    addDebugLog(`Gold 96.5%: ${g965b.offer} THB (${g965b.time})`);
+                }
+            }
+        }, 10000); // Log every 10 seconds
+        
+        // Override console.log to show in debug console
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addDebugLog(args.join(' '));
+        };
+        
+        // Component ready detection
+        document.addEventListener('DOMContentLoaded', function() {
+            addDebugLog('DOM loaded, initializing components...');
+            
+            setTimeout(() => {
+                if (window.goldPriceManager) {
+                    addDebugLog('Gold Price Manager initialized successfully');
+                } else {
+                    addDebugLog('Warning: Gold Price Manager not found');
+                }
+            }, 2000);
+        });
     </script>
 </body>
 </html>
