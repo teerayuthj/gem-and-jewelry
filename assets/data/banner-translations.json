@@ -1,0 +1,50 @@
+{
+  "th": {
+    "slides": [
+      {
+        "title": "ทองคำแท่งคุณภาพสูง",
+        "subtitle": "ลงทุนกับทองคำมาตรฐานสากล 96.5% และ 99.99% พร้อมราคาที่ดีที่สุด",
+        "buttonText": "เริ่มต้นลงทุน"
+      },
+      {
+        "title": "แท่งเงินคุณภาพพรีเมี่ยม",
+        "subtitle": "ราคาแท่งเงินอัปเดตแบบเรียลไทม์ ตลอด 24 ชั่วโมง",
+        "buttonText": "ดูราคาเงิน"
+      },
+      {
+        "title": "โปรโมชั่นพิเศษ",
+        "subtitle": "ส่วนลดสูงสุด 50% สำหรับลูกค้าใหม่ จำนวนจำกัด!",
+        "buttonText": "รับข้อเสนอพิเศษ"
+      },
+      {
+        "title": "ผู้เชี่ยวชาญด้านทองคำ",
+        "subtitle": "ประสบการณ์กว่า 10 ปี ในธุรกิจทองคำและเงิน พร้อมให้คำปรึกษา",
+        "buttonText": "ติดต่อผู้เชี่ยวชาญ"
+      }
+    ]
+  },
+  "en": {
+    "slides": [
+      {
+        "title": "Premium Gold Bars",
+        "subtitle": "Invest in international standard gold 96.5% and 99.99% at the best prices",
+        "buttonText": "Start Investing"
+      },
+      {
+        "title": "Premium Silver Bars",
+        "subtitle": "Real-time silver bar prices updated 24/7",
+        "buttonText": "View Silver Prices"
+      },
+      {
+        "title": "Special Promotion",
+        "subtitle": "Up to 50% discount for new customers - Limited time offer!",
+        "buttonText": "Get Special Offer"
+      },
+      {
+        "title": "Gold Investment Experts",
+        "subtitle": "Over 10 years of experience in gold and silver business with consultation",
+        "buttonText": "Contact Expert"
+      }
+    ]
+  }
+}

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixed Multi-language Banner Slideshow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./assets/css/banner-slideshow.css">
+    <style>
+        /* Additional fixes for text overlap prevention */
+        .banner-slideshow {
+            isolation: isolate;
+        }
+        
+        .banner-content {
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.2) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .banner-title {
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
+        }
+        
+        .banner-subtitle {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        /* Prevent multiple instances */
+        .banner-slideshow:not(:first-of-type) {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Main Banner Slideshow -->
+    <div class="banner-slideshow" id="mainBanner">
+        <!-- Content will be injected by JavaScript -->
+    </div>
+    
+    <!-- Demo Content Below Banner -->
+    <div class="container mx-auto px-4 py-16">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8" id="demoTitle">
+                Fixed Multi-language Banner Slideshow
+            </h2>
+            
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-8">
+                <strong>✅ Fixed Issues:</strong>
+                <ul class="list-disc list-inside text-left mt-2">
+                    <li>Prevented duplicate initialization</li>
+                    <li>Improved text visibility with backdrop blur</li>
+                    <li>Enhanced z-index management</li>
+                    <li>Better memory cleanup</li>
+                    <li>Stronger text shadows</li>
+                </ul>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">🌐 Language Features</h3>
+                    <ul class="text-left space-y-2 text-gray-600" id="languageFeatures">
+                        <li>• Thai/English language support</li>
+                        <li>• Language switcher button (top-right)</li>
+                        <li>• Dynamic content translation</li>
+                        <li>• Persistent language preference</li>
+                        <li>• Smooth transition effects</li>
+                        <li>• Custom event broadcasting</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">✨ Technical Features</h3>
+                    <ul class="text-left space-y-2 text-gray-600" id="technicalFeatures">
+                        <li>• Full-screen responsive design</li>
+                        <li>• Auto-play with progress bar</li>
+                        <li>• Touch/swipe support</li>
+                        <li>• Keyboard navigation</li>
+                        <li>• Glass-morphism UI</li>
+                        <li>• JSON-based translations</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h3 class="text-2xl font-semibold text-gray-700 mb-6" id="controlTitle">Control Panel</h3>
+                <div class="flex flex-wrap justify-center gap-4 mb-6">
+                    <button onclick="window.bannerSlideshow?.play()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg transition-colors">
+                        ▶️ Play
+                    </button>
+                    <button onclick="window.bannerSlideshow?.pause()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg transition-colors">
+                        ⏸️ Pause
+                    </button>
+                    <button onclick="window.bannerSlideshow?.previousSlide()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors">
+                        ⏮️ Previous
+                    </button>
+                    <button onclick="window.bannerSlideshow?.nextSlide()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors">
+                        ⏭️ Next
+                    </button>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-semibold text-gray-700 mb-2" id="howToTitle">How to change language:</h4>
+                    <p class="text-gray-600 text-sm" id="howToText">
+                        Click the language switcher button in the top-right corner of the banner to toggle between Thai and English.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg p-8">
+                <h3 class="text-2xl font-semibold mb-4" id="integrationTitle">Integration Ready</h3>
+                <p class="text-lg mb-4" id="integrationText">
+                    This component can be easily integrated into any website or application.
+                </p>
+                <div class="bg-white bg-opacity-20 rounded-lg p-4 text-left">
+                    <code class="text-sm">
+                        // Initialize the banner slideshow<br>
+                        const banner = new BannerSlideshow({<br>
+                                                // Initialize the banner slideshow<br>
+                        const banner = new BannerSlideshow({<br>
+                        &nbsp;&nbsp;container: document.querySelector('.banner-slideshow'),<br>
+                        &nbsp;&nbsp;autoPlayDuration: 5000<br>
+                        });
+                    </code>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-gray-600">
+                <p class="text-sm" id="footerText">
+                    คอมโพเนนต์ที่แก้ไขปัญหาแล้วสร้างด้วย Vanilla JavaScript, Tailwind CSS และ JSON translations<br>
+                    รองรับการใช้งานบนคอมพิวเตอร์ แท็บเล็ต และมือถือ
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="./assets/js/banner-slideshow.js"></script>
+    <script>
+        // Demo page translations
+        const demoTranslations = {
+            th: {
+                demoTitle: "Banner Slideshow - แก้ปัญหาซ้อนกันและความมืดแล้ว",
+                languageFeatures: [
+                    "• รองรับภาษาไทยและอังกฤษ",
+                    "• ปุ่มเปลี่ยนภาษา (มุมบนขวา)",
+                    "• เปลี่ยนเนื้อหาแบบไดนามิก",
+                    "• จดจำการตั้งค่าภาษา",
+                    "• เอฟเฟกต์การเปลี่ยนแปลงที่นุ่มนวล",
+                    "• การส่งสัญญาณแบบกำหนดเอง"
+                ],
+                technicalFeatures: [
+                    "• ดีไซน์เต็มจอแบบ responsive",
+                    "• เล่นอัตโนมัติพร้อม progress bar",
+                    "• รองรับการสัมผัส/ปัด",
+                    "• การนำทางด้วยคีย์บอร์ด",
+                    "• UI แบบ glass-morphism",
+                    "• การแปลแบบ JSON"
+                ],
+                controlTitle: "แผงควบคุม",
+                howToTitle: "วิธีเปลี่ยนภาษา:",
+                howToText: "คลิกปุ่มเปลี่ยนภาษาที่มุมบนขวาของแบนเนอร์เพื่อสลับระหว่างภาษาไทยและอังกฤษ",
+                integrationTitle: "พร้อมสำหรับการนำไปใช้",
+                integrationText: "คอมโพเนนต์นี้สามารถนำไปใช้งานในเว็บไซต์หรือแอปพลิเคชันใดก็ได้อย่างง่ายดาย",
+                footerText: "คอมโพเนนต์ที่แก้ไขปัญหาแล้วสร้างด้วย Vanilla JavaScript, Tailwind CSS และ JSON translations<br>รองรับการใช้งานบนคอมพิวเตอร์ แท็บเล็ต และมือถือ"
+            },
+            en: {
+                demoTitle: "Banner Slideshow - Fixed Overlapping and Darkness Issues",
+                languageFeatures: [
+                    "• Thai/English language support",
+                    "• Language switcher button (top-right)",
+                    "• Dynamic content translation",
+                    "• Persistent language preference",
+                    "• Smooth transition effects",
+                    "• Custom event broadcasting"
+                ],
+                technicalFeatures: [
+                    "• Full-screen responsive design",
+                    "• Auto-play with progress bar",
+                    "• Touch/swipe support",
+                    "• Keyboard navigation",
+                    "• Glass-morphism UI",
+                    "• JSON-based translations"
+                ],
+                controlTitle: "Control Panel",
+                howToTitle: "How to change language:",
+                howToText: "Click the language switcher button in the top-right corner of the banner to toggle between Thai and English.",
+                integrationTitle: "Integration Ready",
+                integrationText: "This component can be easily integrated into any website or application.",
+                footerText: "Fixed component built with Vanilla JavaScript, Tailwind CSS, and JSON translations<br>Fully responsive and supports desktop, tablet, and mobile devices."
+            }
+        };
+
+        // Prevent multiple initializations
+        let bannerInitialized = false;
+        let initializationPromise = null;
+        
+        // ป้องกันการ initialize ซ้ำ
+        async function initializeBanner() {
+            if (bannerInitialized || initializationPromise) {
+                console.log('Banner already initialized or initializing...');
+                return initializationPromise;
+            }
+            
+            initializationPromise = new Promise(async (resolve) => {
+                try {
+                    // ทำลาย instance เก่าหากมี
+                    if (window.bannerSlideshow) {
+                        console.log('Destroying existing banner instance...');
+                        window.bannerSlideshow.destroy();
+                        window.bannerSlideshow = null;
+                        
+                        // รอให้การทำลายเสร็จสิ้น
+                        await new Promise(r => setTimeout(r, 200));
+                    }
+                    
+                    // ตรวจสอบ container
+                    const container = document.getElementById('mainBanner');
+                    if (!container) {
+                        throw new Error('Banner container not found');
+                    }
+                    
+                    // เพิ่ม marker class
+                    container.classList.add('banner-initialized');
+                    
+                    // สร้าง instance ใหม่
+                    const banner = new BannerSlideshow({
+                        container: container,
+                        autoPlayDuration: 6000
+                    });
+                    
+                    // รอให้ banner โหลดเสร็จ
+                    await new Promise(r => setTimeout(r, 100));
+                    
+                    window.bannerSlideshow = banner;
+                    bannerInitialized = true;
+                    
+                    console.log('Banner slideshow initialized successfully');
+                    
+                    // Setup demo content updates
+                    function updateDemoContent(lang) {
+                        const translations = demoTranslations[lang];
+                        
+                        document.getElementById('demoTitle').textContent = translations.demoTitle;
+                        document.getElementById('controlTitle').textContent = translations.controlTitle;
+                        document.getElementById('howToTitle').textContent = translations.howToTitle;
+                        document.getElementById('howToText').textContent = translations.howToText;
+                        document.getElementById('integrationTitle').textContent = translations.integrationTitle;
+                        document.getElementById('integrationText').textContent = translations.integrationText;
+                        document.getElementById('footerText').innerHTML = translations.footerText;
+                        
+                        const langFeatures = document.getElementById('languageFeatures');
+                        if (langFeatures) {
+                            langFeatures.innerHTML = translations.languageFeatures.map(feature => `<li>${feature}</li>`).join('');
+                        }
+                        
+                        const techFeatures = document.getElementById('technicalFeatures');
+                        if (techFeatures) {
+                            techFeatures.innerHTML = translations.technicalFeatures.map(feature => `<li>${feature}</li>`).join('');
+                        }
+                    }
+                    
+                    // Listen for language changes
+                    document.addEventListener('bannerLanguageChanged', (event) => {
+                        updateDemoContent(event.detail.language);
+                    });
+                    
+                    // Initialize with current language
+                    if (banner.currentLang) {
+                        updateDemoContent(banner.currentLang);
+                    }
+                    
+                    resolve(banner);
+                } catch (error) {
+                    console.error('Failed to initialize banner:', error);
+                    bannerInitialized = false;
+                    initializationPromise = null;
+                    resolve(null);
+                }
+            });
+            
+            return initializationPromise;
+        }
+        
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeBanner);
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (window.bannerSlideshow) {
+                window.bannerSlideshow.destroy();
+            }
+        });
+        
+        // Debug function
+        window.debugBanner = () => {
+            console.log('Banner initialized:', bannerInitialized);
+            console.log('Banner instance:', window.bannerSlideshow);
+            console.log('Container:', document.getElementById('mainBanner'));
+        };
+    </script>
+</body>
+</html>

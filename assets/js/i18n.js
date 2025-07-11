@@ -1,7 +1,7 @@
 // Internationalization (i18n) Manager
 class I18nManager {
     constructor() {
-        this.currentLang = localStorage.getItem('language') || 'th';
+        this.currentLang = localStorage.getItem('language') || 'en';
         this.translations = {};
         this.init();
     }

@@ -3,7 +3,7 @@ class GoldPriceManager {
     constructor() {
         this.isExpanded = false;
         this.translations = {};
-        this.currentLang = localStorage.getItem('language') || 'th';
+        this.currentLang = localStorage.getItem('language') || 'en';
         this.realData = null;
         this.yesterdayData = null;
         this.silverData = null;

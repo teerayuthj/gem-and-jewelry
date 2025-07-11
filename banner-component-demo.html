@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner Slideshow Component - Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./assets/css/banner-slideshow.css">
+</head>
+<body class="bg-gray-100">
+    <!-- Main Banner Slideshow -->
+    <div class="banner-slideshow" id="mainBanner">
+        <!-- Content will be injected by JavaScript -->
+    </div>
+    
+    <!-- Demo Content Below Banner -->
+    <div class="container mx-auto px-4 py-16">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8">
+                Modern Banner Slideshow Component
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">✨ Features</h3>
+                    <ul class="text-left space-y-2 text-gray-600">
+                        <li>• เต็มจอ responsive design</li>
+                        <li>• Auto-play กับ progress bar</li>
+                        <li>• Touch/swipe support</li>
+                        <li>• Keyboard navigation</li>
+                        <li>• Smooth transitions</li>
+                        <li>• Customizable content</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">🎮 Controls</h3>
+                    <ul class="text-left space-y-2 text-gray-600">
+                        <li>• Click navigation arrows</li>
+                        <li>• Click indicator dots</li>
+                        <li>• Swipe left/right on mobile</li>
+                        <li>• Use arrow keys</li>
+                        <li>• Hover to pause</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h3 class="text-2xl font-semibold text-gray-700 mb-6">Control Panel</h3>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button onclick="window.bannerSlideshow.play()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg transition-colors">
+                        ▶️ Play
+                    </button>
+                    <button onclick="window.bannerSlideshow.pause()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg transition-colors">
+                        ⏸️ Pause
+                    </button>
+                    <button onclick="window.bannerSlideshow.previousSlide()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors">
+                        ⏮️ Previous
+                    </button>
+                    <button onclick="window.bannerSlideshow.nextSlide()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors">
+                        ⏭️ Next
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-gray-600">
+                <p class="text-sm">
+                    Component สร้างด้วย Vanilla JavaScript และ Tailwind CSS<br>
+                    รองรับการใช้งานบน desktop, tablet และ mobile
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="./assets/js/banner-slideshow.js"></script>
+    <script>
+        // Custom initialization with specific options
+        document.addEventListener('DOMContentLoaded', () => {
+            const customBanner = new BannerSlideshow({
+                container: document.getElementById('mainBanner'),
+                autoPlayDuration: 6000, // 6 seconds
+                slides: [
+                    {
+                        image: './public/banner-1.jpg',
+                        title: 'ทองคำแท่งคุณภาพสูง',
+                        subtitle: 'ลงทุนกับทองคำมาตรฐานสากล 96.5% และ 99.99% พร้อมราคาที่ดีที่สุด',
+                        buttonText: 'เริ่มต้นลงทุน',
+                        buttonClass: 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black'
+                    },
+                    {
+                        image: './public/banner-2.jpg',
+                        title: 'แท่งเงินคุณภาพพรีเมี่ยม',
+                        subtitle: 'ราคาแท่งเงินอัปเดตแบบเรียลไทม์ ตลอด 24 ชั่วโมง',
+                        buttonText: 'ดูราคาเงิน',
+                        buttonClass: 'bg-gradient-to-r from-gray-400 to-gray-600 text-white'
+                    },
+                    {
+                        image: './public/offer.png',
+                        title: 'โปรโมชั่นพิเศษ',
+                        subtitle: 'ส่วนลดสูงสุด 50% สำหรับลูกค้าใหม่ จำนวนจำกัด!',
+                        buttonText: 'รับข้อเสนอพิเศษ',
+                        buttonClass: 'bg-gradient-to-r from-red-500 to-red-700 text-white'
+                    },
+                    {
+                        image: './public/banner-1.jpg',
+                        title: 'ผู้เชี่ยวชาญด้านทองคำ',
+                        subtitle: 'ประสบการณ์กว่า 10 ปี ในธุรกิจทองคำและเงิน พร้อมให้คำปรึกษา',
+                        buttonText: 'ติดต่อผู้เชี่ยวชาญ',
+                        buttonClass: 'bg-gradient-to-r from-blue-500 to-blue-700 text-white'
+                    }
+                ]
+            });
+            
+            // Make it globally available
+            window.bannerSlideshow = customBanner;
+            
+            // Add button click handlers
+            customBanner.handleButtonClick = function(buttonText) {
+                console.log(`Button clicked: ${buttonText}`);
+                
+                // Show notification
+                const notification = document.createElement('div');
+                notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300';
+                notification.textContent = `คลิก: ${buttonText}`;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 2000);
+            };
+        });
+    </script>
+</body>
+</html>

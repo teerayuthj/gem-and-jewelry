@@ -1,0 +1,512 @@
+/* Modern Banner Slideshow Component */
+.banner-slideshow {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* Prevent content overlap และกำหนด z-index อย่างชัดเจน */
+    z-index: 1;
+    isolation: isolate;
+}
+
+/* ป้องกันการมี slideshow หลายตัว */
+.banner-slideshow + .banner-slideshow {
+    display: none !important;
+}
+
+/* ป้องกัน duplicate elements */
+.banner-slideshow:not(:first-child) {
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Slide animations */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutLeft {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Slide container - ปรับปรุงการแสดงผล */
+.banner-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s ease-in-out;
+    /* กำหนด z-index ให้ชัดเจน */
+    z-index: 1;
+}
+
+.banner-slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+}
+
+.banner-slide img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 1;
+}
+
+/* Gradient overlay - ลดความมืด */
+.banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.3) 100%);
+    z-index: 2;
+}
+
+/* Content container - ปรับปรุงความโปร่งใสของข้อความ */
+.banner-content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    color: white;
+    padding: 2rem;
+    max-width: 800px;
+    animation: fadeIn 1s ease-out 0.5s both;
+    /* ปรับ background ให้โปร่งใสและลดความมืด */
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 20px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.banner-title {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.banner-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.banner-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #C2B061 0%, #AD8C2D 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    border: none;
+    cursor: pointer;
+    animation: scaleIn 0.8s ease-out 1s both;
+}
+
+.banner-button:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+/* Navigation buttons */
+.nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 1rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.nav-button.prev {
+    left: 2rem;
+}
+
+.nav-button.next {
+    right: 2rem;
+}
+
+/* Indicators */
+.slide-indicators {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1rem;
+    z-index: 10;
+}
+
+.indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.indicator.active {
+    background: #C2B061;
+    transform: scale(1.3);
+}
+
+.indicator:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+/* Language Switcher */
+.lang-switcher {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(15px);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 15;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.lang-switcher:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.lang-switcher svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Progress bar */
+.progress-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #C2B061 0%, #AD8C2D 100%);
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+/* Responsive design - ปรับปรุงสำหรับ mobile */
+@media (max-width: 768px) {
+    .banner-slideshow {
+        height: 60vh;
+        min-height: 400px;
+    }
+    
+    .banner-title {
+        font-size: 1.8rem;
+        line-height: 1.3;
+        margin-bottom: 0.75rem;
+    }
+    
+    .banner-subtitle {
+        font-size: 1rem;
+        line-height: 1.4;
+        margin-bottom: 1.5rem;
+        padding: 0 1rem;
+    }
+    
+    .banner-content {
+        padding: 1.5rem 1rem;
+        max-width: 90%;
+        margin: 0 auto;
+    }
+    
+    .banner-button {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+        border-radius: 30px;
+    }
+    
+    .nav-button {
+        padding: 0.6rem;
+        width: 48px;
+        height: 48px;
+    }
+    
+    .nav-button.prev {
+        left: 0.5rem;
+    }
+    
+    .nav-button.next {
+        right: 0.5rem;
+    }
+    
+    .lang-switcher {
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+    }
+    
+    .slide-indicators {
+        bottom: 1rem;
+        gap: 0.75rem;
+    }
+    
+    .indicator {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .banner-slideshow {
+        height: 50vh;
+        min-height: 350px;
+    }
+    
+    .banner-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .banner-subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 1.25rem;
+        padding: 0 0.5rem;
+    }
+    
+    .banner-content {
+        padding: 1rem 0.75rem;
+        max-width: 95%;
+    }
+    
+    .banner-button {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.85rem;
+        border-radius: 25px;
+    }
+    
+    .nav-button {
+        padding: 0.5rem;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .nav-button.prev {
+        left: 0.25rem;
+    }
+    
+    .nav-button.next {
+        right: 0.25rem;
+    }
+    
+    .lang-switcher {
+        top: 0.5rem;
+        right: 0.5rem;
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+    }
+    
+    .lang-switcher svg {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .slide-indicators {
+        bottom: 0.75rem;
+        gap: 0.5rem;
+    }
+    
+    .indicator {
+        width: 8px;
+        height: 8px;
+    }
+    
+    .indicator.active {
+        transform: scale(1.2);
+    }
+}
+
+/* ปรับปรุงการแสดงผลสำหรับ landscape mode บน mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .banner-slideshow {
+        height: 100vh;
+    }
+    
+    .banner-content {
+        padding: 1rem;
+        max-width: 80%;
+    }
+    
+    .banner-title {
+        font-size: 1.6rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .banner-subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .banner-button {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) {
+    .nav-button {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-50%) scale(1.05);
+    }
+    
+    .nav-button:active {
+        background: rgba(255, 255, 255, 0.5);
+        transform: translateY(-50%) scale(0.95);
+    }
+    
+    .lang-switcher {
+        background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .lang-switcher:active {
+        background: rgba(255, 255, 255, 0.4);
+        transform: translateY(-1px) scale(0.98);
+    }
+    
+    .banner-button:active {
+        transform: translateY(1px) scale(0.98);
+    }
+    
+    .indicator {
+        width: 12px;
+        height: 12px;
+    }
+    
+    .indicator:active {
+        transform: scale(0.9);
+    }
+}
+
+/* Improve text readability on mobile */
+@media (max-width: 768px) {
+    .banner-title {
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.9), 1px 1px 4px rgba(0,0,0,0.8) !important;
+    }
+    
+    .banner-subtitle {
+        text-shadow: 1px 1px 6px rgba(0,0,0,0.8), 0px 0px 3px rgba(0,0,0,0.6) !important;
+    }
+    
+    .banner-content {
+        background: rgba(0, 0, 0, 0.35) !important;
+        backdrop-filter: blur(20px) !important;
+    }
+}
