@@ -58,7 +58,7 @@ class I18nManager {
                         expired: "😞 โปรโมชั่นสิ้นสุดแล้ว"
                     },
                     language: {
-                        current: "ภาษาไทย",
+                        current: "ไทย",
                         switch: "English"
                     }
                 },
@@ -97,7 +97,7 @@ class I18nManager {
                     },
                     language: {
                         current: "English",
-                        switch: "ภาษาไทย"
+                        switch: "ไทย"
                     }
                 }
             };
@@ -192,10 +192,46 @@ class I18nManager {
                 this.switchLanguage();
             });
         }
+        
+        // Listen for banner language changes
+        document.addEventListener('bannerLanguageChanged', (event) => {
+            console.log('I18n: Received banner language change:', event.detail.language);
+            if (event.detail.language !== this.currentLang) {
+                this.currentLang = event.detail.language;
+                localStorage.setItem('language', this.currentLang);
+                // Update immediately
+                setTimeout(() => {
+                    this.updateLanguage();
+                }, 50);
+            }
+        });
+        
+        // Listen for unified language changes
+        document.addEventListener('unifiedLanguageChanged', (event) => {
+            console.log('I18n: Received unified language change:', event.detail.language);
+            if (event.detail.language !== this.currentLang) {
+                this.currentLang = event.detail.language;
+                localStorage.setItem('language', this.currentLang);
+                this.updateLanguage();
+            }
+        });
     }
     
     getCurrentLanguage() {
         return this.currentLang;
+    }
+    
+    // Method to set language programmatically
+    setLanguage(language) {
+        console.log('I18n: setLanguage called with:', language);
+        this.currentLang = language;
+        localStorage.setItem('language', this.currentLang);
+        this.updateLanguage();
+    }
+    
+    // Method to update translations (for unified system)
+    updateTranslations() {
+        this.updateLanguage();
     }
 }
 
@@ -205,6 +241,13 @@ let i18n;
 // Initialize i18n when DOM is loaded
 document.addEventListener('DOMContentLoaded', async function() {
     i18n = new I18nManager();
+    window.i18nManager = i18n; // Global reference
+    
+    // Notify other components that i18n is ready
+    window.i18nReady = true;
+    document.dispatchEvent(new CustomEvent('i18nReady', {
+        detail: { i18n: i18n }
+    }));
 });
 
 // Listen for language changes to update dynamic content

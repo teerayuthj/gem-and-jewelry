@@ -30,9 +30,9 @@
         <div class="text-center mb-6">
             <button 
                 id="langSwitcher" 
-                class="bg-white text-gray-700 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+                class="bg-gray-700 text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg hover:bg-gray-600 transition-all disabled:opacity-50"
             >
-                English
+                Thai
             </button>
         </div>
 
@@ -77,9 +77,56 @@
             addDebugLog(args.join(' '));
         };
         
+        // Simple Language Switcher
+        let isLanguageSwitching = false;
+        
+        function toggleLanguage() {
+            if (isLanguageSwitching) {
+                console.log('Language switching in progress, ignoring click');
+                return;
+            }
+            
+            isLanguageSwitching = true;
+            const langSwitcher = document.getElementById('langSwitcher');
+            
+            // Disable button during switch
+            langSwitcher.disabled = true;
+            
+            const currentLang = localStorage.getItem('language') || 'en';
+            const newLang = currentLang === 'th' ? 'en' : 'th';
+            
+            // Update storage
+            localStorage.setItem('language', newLang);
+            
+            // Update button text (show opposite language name)
+            langSwitcher.textContent = newLang === 'th' ? 'English' : 'Thai';
+            
+            // Notify components
+            document.dispatchEvent(new CustomEvent('bannerLanguageChanged', {
+                detail: { language: newLang }
+            }));
+            
+            // Re-enable button after delay
+            setTimeout(() => {
+                langSwitcher.disabled = false;
+                isLanguageSwitching = false;
+                console.log('Language switched to:', newLang);
+            }, 1000);
+        }
+        
         // Component ready detection
         document.addEventListener('DOMContentLoaded', function() {
             addDebugLog('DOM loaded, initializing components...');
+            
+            // Setup language switcher
+            const langSwitcher = document.getElementById('langSwitcher');
+            if (langSwitcher) {
+                langSwitcher.addEventListener('click', toggleLanguage);
+                
+                // Initialize button text (show opposite language name)
+                const currentLang = localStorage.getItem('language') || 'en';
+                langSwitcher.textContent = currentLang === 'th' ? 'English' : 'Thai';
+            }
             
             setTimeout(() => {
                 if (window.goldPriceManager) {

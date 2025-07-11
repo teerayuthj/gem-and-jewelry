@@ -75,63 +75,6 @@
     <div class="banner-slideshow" id="mainBanner">
         <!-- Content will be injected by JavaScript -->
     </div>
-    
-    <!-- Demo Content Below Banner -->
-    <div class="container mx-auto px-4 py-16">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl font-bold text-gray-800 mb-8" id="demoTitle">
-                Banner Slideshow - แก้ปัญหาซ้อนกันและความมืดสมบูรณ์
-            </h2>
-            
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-8">
-                <strong>✅ ปัญหาที่แก้ไขแล้ว:</strong>
-                <ul class="list-disc list-inside text-left mt-2">
-                    <li>❌ แก้ปัญหา Banner ซ้อนกันสมบูรณ์</li>
-                    <li>🌟 ลดความมืดของ overlay</li>
-                    <li>📝 เพิ่มความชัดเจนของข้อความ</li>
-                    <li>🚫 ป้องกัน duplicate initialization</li>
-                    <li>🧹 ปรับปรุงการทำความสะอาด memory</li>
-                    <li>🎨 ปรับปรุง backdrop blur</li>
-                    <li>💪 เพิ่มความแข็งแกร่งของ text shadow</li>
-                </ul>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
-                <h3 class="text-2xl font-semibold text-gray-700 mb-6" id="controlTitle">แผงควบคุม</h3>
-                <div class="flex flex-wrap justify-center gap-4 mb-6">
-                    <button onclick="if(window.bannerSlideshow) window.bannerSlideshow.play()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg transition-colors">
-                        ▶️ เล่น
-                    </button>
-                    <button onclick="if(window.bannerSlideshow) window.bannerSlideshow.pause()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg transition-colors">
-                        ⏸️ หยุด
-                    </button>
-                    <button onclick="if(window.bannerSlideshow) window.bannerSlideshow.previousSlide()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors">
-                        ⏮️ ก่อนหน้า
-                    </button>
-                    <button onclick="if(window.bannerSlideshow) window.bannerSlideshow.nextSlide()" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors">
-                        ⏭️ ถัดไป
-                    </button>
-                    <button onclick="window.restartBanner && window.restartBanner()" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg transition-colors">
-                        🔄 รีสตาร์ท
-                    </button>
-                </div>
-                
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <h4 class="font-semibold text-gray-700 mb-2" id="howToTitle">วิธีเปลี่ยนภาษา:</h4>
-                    <p class="text-gray-600 text-sm" id="howToText">
-                        คลิกปุ่มเปลี่ยนภาษาที่มุมบนขวาของแบนเนอร์เพื่อสลับระหว่างภาษาไทยและอังกฤษ
-                    </p>
-                </div>
-            </div>
-            
-            <div class="mt-12 text-gray-600">
-                <p class="text-sm" id="footerText">
-                    คอมโพเนนต์ที่แก้ไขปัญหาสมบูรณ์แล้วสร้างด้วย Vanilla JavaScript, Tailwind CSS และ JSON translations<br>
-                    รองรับการใช้งานบนคอมพิวเตอร์ แท็บเล็ต และมือถือ
-                </p>
-            </div>
-        </div>
-    </div>
 
     <script src="./assets/js/banner-slideshow.js"></script>
     <script>

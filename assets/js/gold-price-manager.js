@@ -27,6 +27,29 @@ class GoldPriceManager {
             this.currentLang = event.detail.language;
             this.updateLanguageContent();
         });
+        
+        // Listen for banner language changes
+        document.addEventListener('bannerLanguageChanged', (event) => {
+            console.log('Gold Price: Received banner language change:', event.detail.language);
+            if (event.detail.language !== this.currentLang) {
+                this.currentLang = event.detail.language;
+                localStorage.setItem('language', this.currentLang);
+                // Update immediately, don't wait
+                setTimeout(() => {
+                    this.updateLanguageContent();
+                }, 50);
+            }
+        });
+        
+        // Listen for unified language changes
+        document.addEventListener('unifiedLanguageChanged', (event) => {
+            console.log('Gold Price: Received unified language change:', event.detail.language);
+            if (event.detail.language !== this.currentLang) {
+                this.currentLang = event.detail.language;
+                localStorage.setItem('language', this.currentLang);
+                this.updateLanguageContent();
+            }
+        });
     }
 
     showLoadingState() {
@@ -524,7 +547,7 @@ class GoldPriceManager {
                             </h2>
                             <div class="flex gap-4 text-[12px]">
                                 <span data-gold-i18n="goldPrices.priceSell">${this.getText('goldPrices.priceSell')}</span>
-                                <span data-gold-i18n="goldPrices.priceChange">${this.getText('goldPrices.priceChange')}</span>
+                                <span data-gold-i18n="goldPrices.priceChange" class="price-change-label">${this.getText('goldPrices.priceChange')}</span>
                             </div>
                         </div>
                     </div>
@@ -572,11 +595,19 @@ class GoldPriceManager {
                 this.isExpanded = !this.isExpanded;
                 
                 if (this.isExpanded) {
-                    // First, measure the content height
+                    // Smooth show animation
+                    hiddenPrices.style.display = 'block';
+                    hiddenPrices.style.opacity = '0';
+                    hiddenPrices.style.transform = 'translateY(-10px)';
                     hiddenPrices.style.maxHeight = 'none';
-                    hiddenPrices.style.position = 'absolute';
-                    hiddenPrices.style.visibility = 'hidden';
-                    hiddenPrices.style.opacity = '1';
+                    hiddenPrices.style.position = 'static';
+                    hiddenPrices.style.visibility = 'visible';
+                    
+                    setTimeout(() => {
+                        hiddenPrices.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
+                        hiddenPrices.style.opacity = '1';
+                        hiddenPrices.style.transform = 'translateY(0)';
+                    }, 10);
                     
                     const contentHeight = hiddenPrices.scrollHeight;
                     
@@ -597,9 +628,16 @@ class GoldPriceManager {
                     toggleBtn.style.color = '#C2B061';
                     toggleBtn.style.borderBottom = '1px solid #C2B061';
                 } else {
-                    // Collapse content
-                    hiddenPrices.style.maxHeight = '0';
+                    // Smooth hide animation
+                    hiddenPrices.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out, max-height 0.3s ease-in-out';
                     hiddenPrices.style.opacity = '0';
+                    hiddenPrices.style.transform = 'translateY(-10px)';
+                    hiddenPrices.style.maxHeight = '0';
+                    
+                    setTimeout(() => {
+                        hiddenPrices.style.display = 'none';
+                        hiddenPrices.style.transition = '';
+                    }, 300);
                     
                     // Update button text and style
                     toggleBtn.textContent = this.getText('goldPrices.showMore');
@@ -688,6 +726,14 @@ class GoldPriceManager {
         }
     }
 
+    // Method to set language programmatically
+    setLanguage(language) {
+        console.log('Gold Price: setLanguage called with:', language);
+        this.currentLang = language;
+        localStorage.setItem('language', this.currentLang);
+        this.updateLanguageContent();
+    }
+    
     // Clean up when component is destroyed
     destroy() {
         this.stopAutoUpdate();

@@ -2,6 +2,9 @@
 class CountdownTimer {
     constructor(config) {
         this.config = config;
+        this.isInitialized = false;
+        this.intervalId = null;
+        this.urgencyWarningShown = false;
         this.elements = {
             startDate: document.getElementById('startDate'),
             endDate: document.getElementById('endDate'),
@@ -30,8 +33,40 @@ class CountdownTimer {
     
     init() {
         this.setupDates();
-        this.updateCountdown();
-        this.startCountdown();
+        // Wait for i18n to load before starting countdown
+        this.waitForI18nAndStart();
+    }
+    
+    waitForI18nAndStart() {
+        if (this.isInitialized) {
+            console.log('Countdown: Already initialized, skipping');
+            return;
+        }
+        
+        if (window.i18nReady && typeof i18n !== 'undefined' && i18n.translations && Object.keys(i18n.translations).length > 0) {
+            console.log('Countdown: I18n loaded, starting countdown');
+            this.isInitialized = true;
+            this.updateCountdown();
+            this.startCountdown();
+        } else {
+            // Listen for i18n ready event
+            document.addEventListener('i18nReady', () => {
+                if (!this.isInitialized) {
+                    console.log('Countdown: Received i18nReady event');
+                    this.isInitialized = true;
+                    this.updateCountdown();
+                    this.startCountdown();
+                }
+            }, { once: true });
+            
+            // Fallback timeout method
+            setTimeout(() => {
+                if (!this.isInitialized) {
+                    // Silent fallback, no console.log
+                    this.waitForI18nAndStart();
+                }
+            }, 500);
+        }
     }
     
     parseDate(dateString) {
@@ -40,10 +75,19 @@ class CountdownTimer {
     }
     
     setupDates() {
-        this.elements.startDate.textContent = this.config.startDate;
-        this.elements.endDate.textContent = this.config.endDate;
-        this.elements.expiryDate.textContent = this.config.endDate;
-        this.elements.discountCode.value = this.config.discountCode;
+        // Safely update elements if they exist
+        if (this.elements.startDate) {
+            this.elements.startDate.textContent = this.config.startDate;
+        }
+        if (this.elements.endDate) {
+            this.elements.endDate.textContent = this.config.endDate;
+        }
+        if (this.elements.expiryDate) {
+            this.elements.expiryDate.textContent = this.config.endDate;
+        }
+        if (this.elements.discountCode) {
+            this.elements.discountCode.value = this.config.discountCode;
+        }
     }
     
     updateCountdown() {
@@ -60,19 +104,25 @@ class CountdownTimer {
             diff = startDate - now;
             this.updateCountdownLabel('countdown.labelBeforeStart');
             this.updateActionButton('buttons.getReady');
-            this.elements.actionBtn.classList.add('btn-disabled');
+            if (this.elements.actionBtn) {
+                this.elements.actionBtn.classList.add('btn-disabled');
+            }
         } else if (now >= startDate && now <= endDateWithTime) {
             // During promotion
             diff = endDateWithTime - now;
             this.updateCountdownLabel('countdown.label');
             this.updateActionButton('buttons.getOffer');
-            this.elements.actionBtn.classList.remove('btn-disabled');
+            if (this.elements.actionBtn) {
+                this.elements.actionBtn.classList.remove('btn-disabled');
+            }
         } else {
             // After promotion ends
             diff = 0;
             this.updateCountdownLabel('countdown.labelExpired');
             this.updateActionButton('buttons.expired');
-            this.elements.actionBtn.classList.add('btn-disabled');
+            if (this.elements.actionBtn) {
+                this.elements.actionBtn.classList.add('btn-disabled');
+            }
         }
         
         if (diff <= 0) {
@@ -89,21 +139,30 @@ class CountdownTimer {
     }
     
     setCountdownValues(days, hours, minutes, seconds) {
-        this.elements.days.style.setProperty('--value', days);
-        this.elements.days.textContent = days;
-        this.elements.days.setAttribute('aria-label', days);
+        // Safely update countdown elements if they exist
+        if (this.elements.days) {
+            this.elements.days.style.setProperty('--value', days);
+            this.elements.days.textContent = days;
+            this.elements.days.setAttribute('aria-label', days);
+        }
         
-        this.elements.hours.style.setProperty('--value', hours);
-        this.elements.hours.textContent = hours;
-        this.elements.hours.setAttribute('aria-label', hours);
+        if (this.elements.hours) {
+            this.elements.hours.style.setProperty('--value', hours);
+            this.elements.hours.textContent = hours;
+            this.elements.hours.setAttribute('aria-label', hours);
+        }
         
-        this.elements.minutes.style.setProperty('--value', minutes);
-        this.elements.minutes.textContent = minutes;
-        this.elements.minutes.setAttribute('aria-label', minutes);
+        if (this.elements.minutes) {
+            this.elements.minutes.style.setProperty('--value', minutes);
+            this.elements.minutes.textContent = minutes;
+            this.elements.minutes.setAttribute('aria-label', minutes);
+        }
         
-        this.elements.seconds.style.setProperty('--value', seconds);
-        this.elements.seconds.textContent = seconds;
-        this.elements.seconds.setAttribute('aria-label', seconds);
+        if (this.elements.seconds) {
+            this.elements.seconds.style.setProperty('--value', seconds);
+            this.elements.seconds.textContent = seconds;
+            this.elements.seconds.setAttribute('aria-label', seconds);
+        }
         
         // Apply urgency styling based on time remaining
         this.applyUrgencyStyling(days, hours, minutes, seconds);
@@ -116,7 +175,7 @@ class CountdownTimer {
             this.elements.hoursContainer, 
             this.elements.minutesContainer,
             this.elements.secondsContainer
-        ];
+        ].filter(container => container !== null); // Filter out null elements
         
         // Remove existing urgency classes
         const urgencyClasses = ['countdown-critical', 'countdown-urgent', 'countdown-warning', 'countdown-normal'];
@@ -141,6 +200,16 @@ class CountdownTimer {
     }
     
     showUrgencyMessage(messageKey, bgClass) {
+        // Check if urgency elements exist before using them
+        if (!this.elements.urgencyText || !this.elements.urgencyMessage) {
+            // Only warn once, not every second
+            if (!this.urgencyWarningShown) {
+                console.warn('Urgency message elements not found, skipping urgency message display');
+                this.urgencyWarningShown = true;
+            }
+            return;
+        }
+        
         const message = (typeof i18n !== 'undefined') ? i18n.getText(messageKey) : messageKey;
         this.elements.urgencyText.textContent = message;
         this.elements.urgencyMessage.className = `mt-4 p-3 rounded-lg font-bold text-center ${bgClass}`;
@@ -148,29 +217,66 @@ class CountdownTimer {
     }
     
     hideUrgencyMessage() {
-        this.elements.urgencyMessage.classList.add('hidden');
+        // Check if urgency message element exists before using it
+        if (this.elements.urgencyMessage) {
+            this.elements.urgencyMessage.classList.add('hidden');
+        }
     }
     
     updateCountdownLabel(key) {
-        const label = (typeof i18n !== 'undefined') ? i18n.getText(key) : key;
-        this.elements.countdownLabel.textContent = label;
+        if (this.elements.countdownLabel) {
+            let label = key;
+            if (typeof i18n !== 'undefined' && i18n.translations) {
+                label = i18n.getText(key);
+            } else {
+                // Fallback text while i18n is loading
+                const fallbacks = {
+                    'countdown.label': '⏳ เหลือเวลาอีก:',
+                    'countdown.labelBeforeStart': '⏳ เหลือเวลาอีกก่อนเริ่มโปรโมชั่น:',
+                    'countdown.labelExpired': '❌ โปรโมชั่นหมดอายุแล้ว'
+                };
+                label = fallbacks[key] || key;
+            }
+            this.elements.countdownLabel.textContent = label;
+        }
     }
     
     updateActionButton(key) {
-        const text = (typeof i18n !== 'undefined') ? i18n.getText(key) : key;
-        this.elements.actionBtn.textContent = text;
+        if (this.elements.actionBtn) {
+            let text = key;
+            if (typeof i18n !== 'undefined' && i18n.translations) {
+                text = i18n.getText(key);
+            } else {
+                // Fallback text while i18n is loading
+                const fallbacks = {
+                    'buttons.getOffer': '🛒 รับข้อเสนอพิเศษตอนนี้',
+                    'buttons.getReady': '⏰ เตรียมพร้อมรับส่วนลด',
+                    'buttons.expired': '😞 โปรโมชั่นสิ้นสุดแล้ว'
+                };
+                text = fallbacks[key] || key;
+            }
+            this.elements.actionBtn.textContent = text;
+        }
     }
     
     updateLanguage() {
-        // Called when language changes - update dynamic content
-        this.updateCountdown();
+        // Called when language changes - update dynamic content only if already initialized
+        if (this.isInitialized) {
+            this.updateCountdown();
+        }
     }
     
     startCountdown() {
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
+        
         this.updateCountdown();
-        setInterval(() => {
+        this.intervalId = setInterval(() => {
             this.updateCountdown();
         }, 1000);
+        
+        console.log('Countdown: Started successfully');
     }
 }
 

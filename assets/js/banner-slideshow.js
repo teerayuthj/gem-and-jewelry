@@ -2,8 +2,10 @@
 class BannerSlideshow {
     constructor(options = {}) {
         this.container = options.container || document.querySelector('.banner-slideshow');
-        this.currentLang = localStorage.getItem('bannerLanguage') || 'en';
+        // Use unified language key, fallback to banner-specific key, then default to 'en'
+        this.currentLang = localStorage.getItem('language') || localStorage.getItem('bannerLanguage') || 'en';
         this.translations = {};
+        this.isLanguageSwitching = false;
         this.slideImages = [
             './public/banner-1.jpg',
             './public/1-2.jpg',
@@ -35,6 +37,7 @@ class BannerSlideshow {
         this.touchEndHandler = this.handleTouchEnd.bind(this);
         
         this.init();
+        this.setupLanguageSync();
     }
     
     async init() {
@@ -158,10 +161,7 @@ class BannerSlideshow {
             
             <!-- Language Switcher Button -->
             <button class="lang-switcher" id="langSwitcher">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 0 1 6.412 9m6.088 9h7.75a1.23 1.23 0 0 0 1.23-1.23v-2.54A1.23 1.23 0 0 0 20.25 13h-7.75a1.23 1.23 0 0 0-1.23 1.23v2.54c0 .679.551 1.23 1.23 1.23z"/>
-                </svg>
-                <span>${this.currentLang === 'th' ? 'EN' : 'TH'}</span>
+                <span>${this.currentLang === 'th' ? 'English' : 'ไทย'}</span>
             </button>
             
             <button class="nav-button prev" id="prevBtn">
@@ -187,11 +187,33 @@ class BannerSlideshow {
     }
     
     bindEvents() {
-        // Language switcher
+        // Language switcher with improved debouncing
         const langSwitcher = this.container.querySelector('#langSwitcher');
         if (langSwitcher) {
-            langSwitcher.addEventListener('click', () => {
-                this.switchLanguage();
+            // Remove any existing event listeners
+            langSwitcher.replaceWith(langSwitcher.cloneNode(true));
+            const newLangSwitcher = this.container.querySelector('#langSwitcher');
+            
+            let clickTimeout = null;
+            newLangSwitcher.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (this.isLanguageSwitching) {
+                    console.log('Banner: Language switching in progress, ignoring click');
+                    return;
+                }
+                
+                // Clear any pending clicks
+                if (clickTimeout) {
+                    clearTimeout(clickTimeout);
+                }
+                
+                // Add small delay to prevent rapid clicks
+                clickTimeout = setTimeout(() => {
+                    this.switchLanguage();
+                    clickTimeout = null;
+                }, 50);
             });
         }
         
@@ -369,20 +391,75 @@ class BannerSlideshow {
     }
     
     switchLanguage() {
+        if (this.isLanguageSwitching) {
+            console.log('Banner: Already switching language, ignoring');
+            return;
+        }
+        
+        this.isLanguageSwitching = true;
+        console.log('Banner: Starting language switch...');
+        
+        // Toggle language
         this.currentLang = this.currentLang === 'th' ? 'en' : 'th';
+        
+        // Update both banner and unified localStorage keys
         localStorage.setItem('bannerLanguage', this.currentLang);
+        localStorage.setItem('language', this.currentLang);
         
         // Update the document language attribute
         document.documentElement.lang = this.currentLang;
         
-        // Re-render with new language
-        this.render();
-        this.bindEvents();
-        
-        // Trigger custom event for other components
-        document.dispatchEvent(new CustomEvent('bannerLanguageChanged', {
-            detail: { language: this.currentLang }
-        }));
+        // Use setTimeout to ensure DOM updates are batched
+        setTimeout(() => {
+            // Re-render with new language
+            this.render();
+            this.bindEvents();
+            
+            // Add visual feedback to page
+            const sections = document.querySelectorAll('.language-transition');
+            sections.forEach(section => {
+                section.classList.add('language-changing');
+                setTimeout(() => {
+                    section.classList.remove('language-changing');
+                }, 400);
+            });
+            
+            // Only trigger ONE event to avoid infinite loops
+            console.log('Banner: Switching language to', this.currentLang);
+            document.dispatchEvent(new CustomEvent('bannerLanguageChanged', {
+                detail: { language: this.currentLang }
+            }));
+            
+            // Reset flag after a short delay
+            setTimeout(() => {
+                this.isLanguageSwitching = false;
+                console.log('Banner: Language switch completed');
+            }, 800);
+        }, 100);
+    }
+    
+    updateLanguageButtonText() {
+        const langSwitcher = this.container.querySelector('#langSwitcher');
+        if (langSwitcher) {
+            // Update span text inside button (what will be switched to)
+            const spanElement = langSwitcher.querySelector('span');
+            if (spanElement) {
+                spanElement.textContent = this.currentLang === 'th' ? 'English' : 'ไทย';
+            }
+            
+            // Add visual feedback with dark background
+            langSwitcher.style.backgroundColor = '#374151';
+            langSwitcher.style.color = 'white';
+            langSwitcher.style.transform = 'scale(1.05)';
+            
+            setTimeout(() => {
+                langSwitcher.style.backgroundColor = '';
+                langSwitcher.style.color = '';
+                langSwitcher.style.transform = '';
+            }, 300);
+            
+            console.log('Banner: Updated language button to', newText);
+        }
     }
     
     handleButtonClick(buttonText) {
@@ -456,6 +533,21 @@ class BannerSlideshow {
         this.realData = null;
         
         console.log('Banner slideshow destroyed completely');
+    }
+    
+    setupLanguageSync() {
+        // Listen for language changes from unified system only
+        document.addEventListener('unifiedLanguageChanged', (event) => {
+            console.log('Banner: Received unified language change event:', event.detail.language);
+            if (event.detail.language !== this.currentLang) {
+                this.currentLang = event.detail.language;
+                localStorage.setItem('bannerLanguage', this.currentLang);
+                this.render();
+                this.bindEvents();
+            }
+        });
+        
+        // Don't listen to own banner events to avoid loops
     }
 }
 

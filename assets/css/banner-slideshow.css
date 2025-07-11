@@ -252,10 +252,10 @@
 /* Language Switcher */
 .lang-switcher {
     position: absolute;
-    top: 2rem;
+    top: 3.5rem;
     right: 2rem;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(31, 41, 55, 0.9);
+    border: 1px solid rgba(75, 85, 99, 0.5);
     backdrop-filter: blur(15px);
     color: white;
     padding: 0.75rem 1rem;
@@ -265,22 +265,18 @@
     z-index: 15;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
     font-weight: 600;
     font-size: 0.9rem;
-    text-transform: uppercase;
+    min-width: 80px;
 }
 
 .lang-switcher:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(55, 65, 81, 0.95);
     transform: translateY(-2px) scale(1.05);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
-.lang-switcher svg {
-    width: 18px;
-    height: 18px;
-}
 
 /* Progress bar */
 .progress-container {
@@ -347,7 +343,7 @@
     }
     
     .lang-switcher {
-        top: 1rem;
+        top: 2.5rem;
         right: 1rem;
         padding: 0.5rem 0.75rem;
         font-size: 0.8rem;
@@ -407,16 +403,12 @@
     }
     
     .lang-switcher {
-        top: 0.5rem;
+        top: 2rem;
         right: 0.5rem;
         padding: 0.4rem 0.6rem;
         font-size: 0.75rem;
     }
     
-    .lang-switcher svg {
-        width: 16px;
-        height: 16px;
-    }
     
     .slide-indicators {
         bottom: 0.75rem;
