@@ -35,6 +35,42 @@
     "language": {
       "current": "ไทย",
       "switch": "English"
+    },
+    "calculator": {
+      "title": "คำนวณราคาทองคำและแท่งเงิน",
+      "metalTypes": {
+        "gold": "🥇 ทองคำ",
+        "silver": "🥈 แท่งเงิน"
+      },
+      "goldTypes": {
+        "label": "ประเภททองคำ",
+        "96.5_osiris": "96.5% ออสสิริส",
+        "99.99_osiris": "99.99% ออสสิริส",
+        "99.99_osiris_kg": "99.99% ออสสิริส(กิโลกรัม)",
+        "96.5_assoc": "96.5% สมาคม"
+      },
+      "units": {
+        "label": "หน่วย",
+        "baht": "บาททอง",
+        "kg": "กิโลกรัม",
+        "gram": "กรัม"
+      },
+      "weight": {
+        "label": "น้ำหนัก",
+        "placeholder": "0.00"
+      },
+      "prices": {
+        "sellPerBaht": "ราคาซื้อ (ต่อบาททอง)",
+        "buyPerBaht": "ราคาขาย (ต่อบาททอง)",
+        "sellPerKg": "ราคาซื้อ (ต่อกิโลกรัม)",
+        "buyPerKg": "ราคาขาย (ต่อกิโลกรัม)"
+      },
+      "total": {
+        "label": "มูลค่ารวม (ราคาขาย)",
+        "currency": "บาท"
+      },
+      "lastUpdated": "อัพเดทล่าสุด:",
+      "note": "💡 <strong>หมายเหตุ:</strong> ราคาที่แสดงเป็นราคาอ้างอิงตามข้อมูลตลาด อัพเดทแบบเรียลไทม์ อิงตามทองคำโลกและเงื่อนไขการซื้อขาย"
     }
   },
   "en": {
@@ -73,6 +109,42 @@
     "language": {
       "current": "English",
       "switch": "ไทย"
+    },
+    "calculator": {
+      "title": "Gold & Silver Calculator",
+      "metalTypes": {
+        "gold": "🥇 Gold",
+        "silver": "🥈 Silver"
+      },
+      "goldTypes": {
+        "label": "Gold Type",
+        "96.5_osiris": "96.5% Ausiris",
+        "99.99_osiris": "99.99% Ausiris",
+        "99.99_osiris_kg": "99.99% Ausiris (Kilogram)",
+        "96.5_assoc": "96.5% Association"
+      },
+      "units": {
+        "label": "Unit",
+        "baht": "Baht Gold",
+        "kg": "Kilogram",
+        "gram": "Gram"
+      },
+      "weight": {
+        "label": "Weight",
+        "placeholder": "0.00"
+      },
+      "prices": {
+        "sellPerBaht": "Sell (per Baht Gold)",
+        "buyPerBaht": "Buy (per Baht Gold)",
+        "sellPerKg": "Sell (per Kilogram)",
+        "buyPerKg": "Buy (per Kilogram)"
+      },
+      "total": {
+        "label": "Total Value (Sell Price)",
+        "currency": "THB"
+      },
+      "lastUpdated": "Last Updated:",
+      "note": "💡 <strong>Note:</strong> Prices shown are reference prices based on market data. Real-time updates based on global gold prices and trading conditions."
     }
   }
 }

@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="./assets/css/gold-price.css">
     <link rel="stylesheet" href="./assets/css/main.css">
     <link rel="stylesheet" href="./assets/css/countdown.css">
+    <!-- Calculator -->
+    <link rel="stylesheet" href="./assets/css/calculator.css">
     
     <style>
         /* Global Styles */
@@ -141,7 +143,15 @@
             </div>
         </div>
     </section>
-    
+
+    <!-- Section 2.5: Gold Calculator Component -->
+    <div id="calculator-app"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        new GemApp.GoldSilverCalculator('calculator-app');
+    });
+    </script>
     <!-- Section 3: Special Offer Section -->
     <section id="specialOfferSection" class="section-spacing language-transition">
         <div class="hero">
@@ -259,6 +269,10 @@
     <script src="./assets/js/discount-manager.js"></script>
     <script src="./assets/js/countdown.js"></script>
     <script src="./assets/js/copy-function.js"></script>
+
+    <!-- Calculator -->
+    <script src="./assets/js/common.js"></script>
+    <script src="./assets/js/calculator.js"></script>
 
     <script>
         // Unified Language Management
