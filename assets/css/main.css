@@ -1,0 +1,376 @@
+/* Main CSS for Countdown App */
+body {
+    font-family: 'Prompt', sans-serif;
+}
+
+/* Desktop adjustments */
+@media (min-width: 1024px) {
+    .card-body {
+        padding: 1.5rem !important;
+    }
+    
+    .hero-content {
+        padding: 1rem !important;
+    }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .hero {
+        padding: 0 !important;
+    }
+    
+    /* Remove red dashed border around cards */
+    .card {
+        border: none !important;
+        outline: none !important;
+    }
+    
+    .card-body {
+        border: none !important;
+        outline: none !important;
+    }
+    
+    /* Remove any debug borders but preserve input borders */
+    *:not(input):not(.input) {
+        outline: none !important;
+    }
+    
+    *:focus:not(input):not(.input) {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* Ensure no red borders appear but preserve input styling */
+    .card,
+    .card *:not(input):not(.input),
+    .card-body,
+    .card-body *:not(input):not(.input) {
+        border: none !important;
+        outline: none !important;
+    }
+    
+    /* Mobile copy button improvements */
+    .join {
+        flex-direction: row;
+        gap: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .join-item {
+        border-radius: 0 !important;
+    }
+    
+    .join-item:first-child {
+        border-radius: 0.5rem 0 0 0.5rem !important;
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .join-item:last-child {
+        border-radius: 0 0.5rem 0.5rem 0 !important;
+        flex-shrink: 0;
+        min-width: 80px;
+    }
+    
+    .btn.join-item {
+        min-height: 2.8rem;
+        font-size: 0.8rem;
+        padding: 0.5rem 0.7rem;
+        white-space: nowrap;
+    }
+    
+    .input.join-item {
+        min-height: 2.8rem;
+        font-size: 1.2rem;
+        font-weight: bold;
+        padding: 0.6rem 0.8rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* Mobile discount code input styling */
+    #discountCode {
+        border: 2px solid #14b8a6 !important;
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.05em !important;
+        padding: 0.7rem 0.5rem !important;
+    }
+    
+    /* Mobile text size adjustments */
+    .card-title {
+        font-size: 1.5rem !important;
+    }
+    
+    .text-4xl {
+        font-size: 1.8rem !important;
+    }
+    
+    .text-5xl {
+        font-size: 2rem !important;
+    }
+    
+    .text-lg {
+        font-size: 0.9rem !important;
+    }
+    
+    .text-xl {
+        font-size: 1rem !important;
+    }
+    
+    .text-2xl {
+        font-size: 1.2rem !important;
+    }
+    
+    /* Countdown numbers smaller on mobile */
+    .countdown.font-mono {
+        font-size: 2.5rem !important;
+    }
+    
+    .countdown-item .text-sm {
+        font-size: 0.7rem !important;
+    }
+    
+    /* Mobile padding adjustments */
+    .card-body {
+        padding: 0.5rem !important;
+    }
+    
+    .hero-content {
+        padding: 0.25rem !important;
+    }
+    
+    .max-w-4xl {
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .stats {
+        padding: 0.25rem !important;
+    }
+    
+    .stat-value {
+        font-size: 0.9rem !important;
+    }
+    
+    /* Urgency message mobile adjustments */
+    #urgencyMessage {
+        padding: 0.25rem !important;
+        margin-top: 0.5rem !important;
+    }
+    
+    #urgencyMessage .text-2xl {
+        font-size: 1.2rem !important;
+    }
+    
+    #urgencyText {
+        font-size: 0.8rem !important;
+    }
+}
+
+/* Button styling improvements */
+.btn-improved {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    min-height: 3rem;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-improved:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.btn-improved:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Discount code input styling */
+#discountCode {
+    border: 2px solid #14b8a6 !important;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #0f172a;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+#discountCode::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(20, 184, 166, 0.1), transparent);
+    animation: code-shimmer 3s infinite;
+    z-index: 1;
+}
+
+#discountCode:focus {
+    border-color: #0d9488 !important;
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2) !important, 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
+    transform: scale(1.02);
+}
+
+@keyframes code-shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Copy button specific styling */
+.copy-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    min-height: 2.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.copy-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.copy-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.copy-btn.copied {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    color: white;
+}
+
+.copy-btn.copied::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: success-shine 0.6s ease-in-out;
+}
+
+@keyframes success-shine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Main action button */
+.main-action-btn {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    min-height: 3.5rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    border: none;
+}
+
+.main-action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+}
+
+.main-action-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive button adjustments */
+@media (max-width: 768px) {
+    .btn-improved {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+        min-height: 2.8rem;
+    }
+    
+    .main-action-btn {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        min-height: 3.2rem;
+    }
+    
+    .copy-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        min-height: 2.3rem;
+        gap: 0.3rem;
+    }
+    
+    .copy-btn svg {
+        width: 1rem;
+        height: 1rem;
+    }
+}
+
+/* Language switcher */
+.language-switcher {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+}
+
+.language-switcher .btn {
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.language-switcher .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+    .language-switcher {
+        position: relative;
+        top: 0;
+        right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    /* Force remove all possible red borders */
+    .card.bg-primary,
+    .card.bg-base-100,
+    div[class*="card"] {
+        border: none !important;
+        outline: none !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+    }
+    
+    /* Remove any webkit or browser default borders */
+    * {
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+    }
+}

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer with daisyUI</title>
+    
+    <!-- Tailwind CSS + daisyUI CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="./assets/css/main.css">
+    <link rel="stylesheet" href="./assets/css/countdown.css">
+</head>
+<body>
+    <!-- Language Switcher -->
+    <div class="language-switcher">
+        <button id="langSwitcher" class="btn btn-outline btn-sm">
+            English
+        </button>
+    </div>
+
+    <!-- Special Offer Section -->
+    <div class="hero min-h-screen">
+        <div class="hero-content text-center w-full">
+            <div class="w-full max-w-sm md:max-w-md lg:max-w-lg mx-auto">
+                <!-- Offer Header -->
+                <div class="card bg-primary text-primary-content shadow-2xl">
+                    <div class="card-body">
+                        <h1 class="card-title text-2xl md:text-4xl lg:text-5xl font-bold justify-center mb-2" data-i18n="offer.header">
+                            🎉 ข้อเสนอพิเศษวันนี้เท่านั้น! 🎉
+                        </h1>
+                        <p class="text-base md:text-lg lg:text-xl mb-3" data-i18n="offer.description">
+                            สั่งซื้อภายในวันนี้ รับส่วนลด 100 บาท
+                        </p>
+                        
+                        <!-- Discount Code Section -->
+                        <div class="card bg-base-100 text-base-content shadow-lg mb-4">
+                            <div class="card-body">
+                                <h3 class="card-title text-lg md:text-xl lg:text-2xl justify-center text-accent" data-i18n="offer.codeTitle">
+                                    🏷️ คัดลอกโค้ดส่วนลด
+                                </h3>
+                                
+                                <div class="join w-full max-w-md mx-auto mt-3">
+                                    <input 
+                                        id="discountCode" 
+                                        type="text" 
+                                        value="AUS100TH" 
+                                        readonly 
+                                        class="input input-bordered input-accent join-item flex-1 text-center text-base md:text-lg font-bold"
+                                        data-i18n-value="offer.discountCode"
+                                    />
+                                    <button 
+                                        id="copyBtn"
+                                        onclick="copyDiscountCode()" 
+                                        class="btn btn-accent join-item copy-btn">
+                                        <svg id="copyIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                        </svg>
+                                        <svg id="checkIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span id="btnText" data-i18n="offer.copyButton">คัดลอก</span>
+                                    </button>
+                                </div>
+                                
+                                <p class="text-warning font-semibold mt-2">
+                                    <span data-i18n="offer.codeExpiry">⏰ โค้ดหมดอายุ:</span> <span id="expiryDate">28/07/2025</span>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Promotion Period -->
+                        <div class="stats stats-vertical lg:stats-horizontal shadow mb-4">
+                            <div class="stat">
+                                <div class="stat-title" data-i18n="offer.promotionPeriod">ระยะเวลาโปรโมชั่น</div>
+                                <div class="stat-value text-lg">
+                                    <span id="startDate">30/06/2025</span> - <span id="endDate">28/07/2025</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Countdown Timer -->
+                        <div class="mb-4">
+                            <h3 class="text-lg md:text-xl lg:text-2xl font-bold mb-2" id="countdownLabel" data-i18n="countdown.label">
+                                ⏳ เหลือเวลาอีก:
+                            </h3>
+                            
+                            <!-- Enhanced Countdown with Urgency Effects -->
+                            <div class="countdown-container">
+                                <div class="grid grid-flow-col gap-3 md:gap-4 lg:gap-5 text-center auto-cols-max justify-center">
+                                    <div id="days-container" class="countdown-item flex flex-col p-3 md:p-3 lg:p-4 rounded-box text-white font-bold shadow-lg">
+                                        <span class="countdown font-mono text-4xl md:text-4xl lg:text-5xl">
+                                            <span id="countdown-days" style="--value:15;" aria-live="polite">15</span>
+                                        </span>
+                                        <span class="text-sm md:text-sm mt-1 font-semibold" data-i18n="countdown.days">วัน</span>
+                                    </div>
+                                    <div id="hours-container" class="countdown-item flex flex-col p-3 md:p-3 lg:p-4 rounded-box text-white font-bold shadow-lg">
+                                        <span class="countdown font-mono text-4xl md:text-4xl lg:text-5xl">
+                                            <span id="countdown-hours" style="--value:10;" aria-live="polite">10</span>
+                                        </span>
+                                        <span class="text-sm md:text-sm mt-1 font-semibold" data-i18n="countdown.hours">ชั่วโมง</span>
+                                    </div>
+                                    <div id="minutes-container" class="countdown-item flex flex-col p-3 md:p-3 lg:p-4 rounded-box text-white font-bold shadow-lg">
+                                        <span class="countdown font-mono text-4xl md:text-4xl lg:text-5xl">
+                                            <span id="countdown-minutes" style="--value:24;" aria-live="polite">24</span>
+                                        </span>
+                                        <span class="text-sm md:text-sm mt-1 font-semibold" data-i18n="countdown.minutes">นาที</span>
+                                    </div>
+                                    <div id="seconds-container" class="countdown-item flex flex-col p-3 md:p-3 lg:p-4 rounded-box text-white font-bold shadow-lg">
+                                        <span class="countdown font-mono text-4xl md:text-4xl lg:text-5xl">
+                                            <span id="countdown-seconds" style="--value:59;" aria-live="polite">59</span>
+                                        </span>
+                                        <span class="text-sm md:text-sm mt-1 font-semibold" data-i18n="countdown.seconds">วินาที</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Urgency Message -->
+                            <div id="urgencyMessage" class="mt-4 p-3 rounded-lg font-bold text-center hidden">
+                                <div class="flex items-center justify-center gap-2">
+                                    <span class="text-2xl">🔥</span>
+                                    <span id="urgencyText">รีบด่วน! เหลือเวลาไม่มาก</span>
+                                    <span class="text-2xl">🔥</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Button -->
+                        <button id="mainActionBtn" class="btn btn-accent main-action-btn text-white" data-i18n="buttons.getOffer">
+                            🛒 รับข้อเสนอพิเศษตอนนี้
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="./assets/js/i18n.js"></script>
+    <script src="./assets/js/discount-manager.js"></script>
+    <script src="./assets/js/countdown.js"></script>
+    <script src="./assets/js/copy-function.js"></script>
+</body>
+</html>
