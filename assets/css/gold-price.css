@@ -1,0 +1,149 @@
+/* Gold Price Component Styles */
+.gold-price-container {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* Light blue background matching the image */
+.gold-bg-light-blue {
+    background-color: #E8F4FD;
+}
+
+/* Custom animations for price changes */
+@keyframes priceUpdate {
+    0% { background-color: rgba(34, 197, 94, 0.1); }
+    100% { background-color: transparent; }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* Price row hover effects - removed shadow */
+.price-row {
+    transition: all 0.2s ease-in-out;
+}
+
+.price-row:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Custom colors for headers */
+.gold-header-gradient {
+    background-color: #AD8C2D;
+}
+
+.gold-time-header {
+    background-color: #C2B061;
+}
+
+/* Gradient for standalone date header */
+.gold-date-gradient {
+    background: linear-gradient(135deg, #C2B061 0%, #AD8C2D 100%);
+}
+
+/* Price change indicators */
+.price-positive {
+    color: #059669;
+    background-color: rgba(5, 150, 105, 0.1);
+}
+
+.price-negative {
+    color: #dc2626;
+    background-color: rgba(220, 38, 38, 0.1);
+}
+
+/* Button states - updated for underlined style */
+.gold-btn {
+    transition: opacity 0.2s ease-in-out;
+    color: #C2B061;
+    border-bottom: 1px solid #C2B061;
+    background: transparent;
+}
+
+.gold-btn:hover {
+    opacity: 0.8;
+}
+
+.gold-btn:active {
+    opacity: 0.6;
+}
+
+/* Loading animation for price updates */
+.price-loading {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .gold-price-container {
+        margin: 0 1rem;
+    }
+    
+    .price-row {
+        padding: 0.75rem;
+    }
+    
+    .price-amount {
+        font-size: 0.875rem;
+    }
+}
+
+/* Thai font adjustments */
+[lang="th"] .gold-price-container {
+    font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
+}
+
+/* Icon animations */
+.price-icon {
+    transition: transform 0.2s ease-in-out;
+}
+
+.price-row:hover .price-icon {
+    transform: scale(1.1);
+}
+
+/* Smooth transitions for language switching */
+.lang-transition {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Custom scrollbar for mobile */
+.gold-price-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.gold-price-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.gold-price-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 2px;
+}
+
+.gold-price-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}

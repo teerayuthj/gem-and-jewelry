@@ -220,4 +220,10 @@ document.addEventListener('languageChanged', function(event) {
     if (btnText && !document.getElementById('copyBtn').disabled) {
         btnText.textContent = i18n.getText('offer.copyButton');
     }
+    
+    // Update gold price component if it exists
+    if (window.goldPriceManager) {
+        goldPriceManager.currentLang = event.detail.language;
+        goldPriceManager.updateLanguageContent();
+    }
 });

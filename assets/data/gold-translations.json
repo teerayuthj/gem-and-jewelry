@@ -1,0 +1,56 @@
+{
+  "th": {
+    "goldPrices": {
+      "title": "ทองคำแท่ง",
+      "updateTime": "อัปเดตครั้งล่าสุด",
+      "showMore": "แสดงเพิ่มเติม",
+      "showLess": "แสดงน้อยลง",
+      "priceBuy": "ราคาซื้อ",
+      "priceSell": "ราคาขาย",
+      "priceChange": "ราคาเปลี่ยนแปลง",
+      "goldTypes": {
+        "ausitis965": "ออสสิริส 96.5%",
+        "ausitis9999": "ออสสิริส 99.99%",
+        "spotGold": "Spot Gold (USD/oz)",
+        "silverUsdOz": "แท่งเงิน (USD/oz)",
+        "goldKg": "ออสสิริส 99.99% (KG)",
+        "goldChit": "สมาคมทองคำ 96.5%",
+        "infinite": "แท่งเงิน (บาท/กก.)"
+      },
+      "unit": "บาท"
+    },
+    "instructions": {
+      "showFullGold": "แสดงราคาทองเพิ่มเติมใต้ปุ่ม \"แสดงเพิ่มเติม\"",
+      "hideRedText": "ข้อความสีแดงเป็นคำแนะนำให้ Claude สามารถดูและเขียนต่อตามได้ แต่ไม่ต้องเอาไปแสดง",
+      "mockDataRequired": "mock data ไปทั้งหมดตามภาพ",
+      "showThreePrices": "แสดง 3 ราคา และ hide ไว้ 4 ราคา หลังจากกดแสดงมันก็จะเห็นทั้งหมด"
+    }
+  },
+  "en": {
+    "goldPrices": {
+      "title": "Gold Bar",
+      "updateTime": "Last updated",
+      "showMore": "Show more",
+      "showLess": "Show less",
+      "priceBuy": "Buy Price",
+      "priceSell": "Sell",
+      "priceChange": "Change",
+      "goldTypes": {
+        "ausitis965": "Ausiris 96.5%",
+        "ausitis9999": "Ausiris 99.99%",
+        "spotGold": "Spot Gold (USD/oz)",
+        "silverUsdOz": "Silver (USD/oz)",
+        "goldKg": "Ausiris 99.99% (kg)",
+        "goldChit": "GTA 96.5%",
+        "infinite": "Silver (THB/kg)"
+      },
+      "unit": "THB"
+    },
+    "instructions": {
+      "showFullGold": "Show additional gold prices under \"Show more\" button",
+      "hideRedText": "Red text is a guide for Claude to see and continue writing, but don't display it",
+      "mockDataRequired": "mock data everything according to the image",
+      "showThreePrices": "Show 3 prices and hide 4 prices, after clicking show they will see all"
+    }
+  }
+}
