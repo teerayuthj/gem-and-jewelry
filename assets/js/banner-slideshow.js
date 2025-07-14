@@ -7,7 +7,7 @@ class BannerSlideshow {
         this.translations = {};
         this.isLanguageSwitching = false;
         this.slideImages = [
-            './public/banner-1.jpg',
+            './public/Banner-01.jpg',
             './public/1-2.jpg',
             './public/offer.png',
             './public/ausiris-next-2025.png'

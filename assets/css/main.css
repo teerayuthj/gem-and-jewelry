@@ -218,11 +218,30 @@ body {
     z-index: 1;
 }
 
-#discountCode:focus {
+#discountCode:focus,
+#discountCode:focus-visible {
     border-color: #0d9488 !important;
-    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2) !important, 0 4px 12px rgba(0, 0, 0, 0.15);
-    background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%) !important;
     transform: scale(1.02);
+    outline: none !important;
+}
+
+#discountCode:focus-within {
+    border-color: #0d9488 !important;
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Override any DaisyUI input focus styles */
+.input:focus,
+.input-bordered:focus,
+.input-accent:focus {
+    outline: none !important;
+}
+
+/* Fix for WebKit browsers */
+#discountCode::-webkit-focus-ring-color {
+    outline-color: transparent !important;
 }
 
 @keyframes code-shimmer {
@@ -281,6 +300,7 @@ body {
 .main-action-btn {
     padding: 1rem 2rem;
     font-size: 1.1rem;
+    color: #ffffff;
     min-height: 3.5rem;
     border-radius: 1rem;
     font-weight: 600;
@@ -364,7 +384,6 @@ body {
     div[class*="card"] {
         border: none !important;
         outline: none !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
     }
     
     /* Remove any webkit or browser default borders */

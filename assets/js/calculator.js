@@ -211,15 +211,22 @@ class GoldSilverCalculator {
                 </div>
 
                 <div class="input-section">
+                    <!-- แถวที่ 1: ประเภททองคำ (เต็มความกว้าง) -->
+                    <div class="input-group" id="goldTypeSelector">
+                        <label for="goldTypeSelect" class="input-label">${this.getTranslatedText('calculator.goldTypes.label')}</label>
+                        <select id="goldTypeSelect" class="calc-select">
+                            <option value="96.5_osiris">${this.getGoldTypeText('96.5_osiris')}</option>
+                            <option value="99.99_osiris">${this.getGoldTypeText('99.99_osiris')}</option>
+                            <option value="99.99_osiris_kg">${this.getGoldTypeText('99.99_osiris_kg')}</option>
+                            <option value="96.5_assoc">${this.getGoldTypeText('96.5_assoc')}</option>
+                        </select>
+                    </div>
+                    
+                    <!-- แถวที่ 2: น้ำหนัก (ซ้าย) + หน่วย (ขวา) -->
                     <div class="input-row">
-                        <div class="input-group" id="goldTypeSelector">
-                            <label for="goldTypeSelect" class="input-label">${this.getTranslatedText('calculator.goldTypes.label')}</label>
-                            <select id="goldTypeSelect" class="calc-select">
-                                <option value="96.5_osiris">${this.getGoldTypeText('96.5_osiris')}</option>
-                                <option value="99.99_osiris">${this.getGoldTypeText('99.99_osiris')}</option>
-                                <option value="99.99_osiris_kg">${this.getGoldTypeText('99.99_osiris_kg')}</option>
-                                <option value="96.5_assoc">${this.getGoldTypeText('96.5_assoc')}</option>
-                            </select>
+                        <div class="input-group">
+                            <label for="amount" class="input-label">${this.getTranslatedText('calculator.weight.label')}</label>
+                            <input type="number" id="amount" class="calc-input" placeholder="${this.getTranslatedText('calculator.weight.placeholder')}" step="0.01" min="0">
                         </div>
                         <div class="input-group">
                             <label for="unitSelector" class="input-label">${this.getTranslatedText('calculator.units.label')}</label>
@@ -229,10 +236,6 @@ class GoldSilverCalculator {
                                 <option value="gram">${this.getUnitText('gram')}</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="input-group">
-                        <label for="amount" class="input-label">${this.getTranslatedText('calculator.weight.label')}</label>
-                        <input type="number" id="amount" class="calc-input" placeholder="${this.getTranslatedText('calculator.weight.placeholder')}" step="0.01" min="0">
                     </div>
                 </div>
 
@@ -249,9 +252,11 @@ class GoldSilverCalculator {
                     </div>
 
                     <div class="total-section">
-                        <div class="total-label">${this.getTranslatedText('calculator.total.label')}</div>
-                        <div class="total-price" id="totalPrice">0</div>
-                        <div class="currency">${this.getTranslatedText('calculator.total.currency')}</div>
+                        <div class="total-price" id="totalPriceCard">
+                            <div class="total-label-inside">${this.getTranslatedText('calculator.total.label')}</div>
+                            <div class="total-value" id="totalPrice">0</div>
+                            <div class="currency-inside">${this.getTranslatedText('calculator.total.currency')}</div>
+                        </div>
                     </div>
                 </div>
 
@@ -564,14 +569,14 @@ class GoldSilverCalculator {
         }
         
         // Update total section
-        const totalLabel = this.container.querySelector('.total-label');
-        if (totalLabel) {
-            totalLabel.textContent = this.getTranslatedText('calculator.total.label');
+        const totalLabelInside = this.container.querySelector('.total-label-inside');
+        if (totalLabelInside) {
+            totalLabelInside.textContent = this.getTranslatedText('calculator.total.label');
         }
         
-        const currency = this.container.querySelector('.currency');
-        if (currency) {
-            currency.textContent = this.getTranslatedText('calculator.total.currency');
+        const currencyInside = this.container.querySelector('.currency-inside');
+        if (currencyInside) {
+            currencyInside.textContent = this.getTranslatedText('calculator.total.currency');
         }
         
         // Update last updated text

@@ -217,11 +217,11 @@ body {
 }
 
 .price-item.sell {
-    background: #045B96;
+    background: linear-gradient(to bottom, #045B96, #002E65);
 }
 
 .price-item.buy {
-    background: #FEC02B;
+    background: linear-gradient(to bottom, #FEC02B, #EE3542);
 }
 
 .price-label {
@@ -264,16 +264,38 @@ body {
 }
 
 .total-price {
-    font-size: 48px;
-    font-weight: 800;
-    margin: 15px 0;
-    color: white;
-    background: #00D431;
+    background: linear-gradient(to bottom, #00D431, #007F01);
     padding: 20px 30px;
     border-radius: 15px;
     box-shadow: 0 6px 20px rgba(0, 212, 49, 0.4);
     display: inline-block;
     min-width: 200px;
+    text-align: center;
+    margin: 15px 0;
+}
+
+.total-label-inside {
+    font-size: 16px;
+    color: white;
+    margin-bottom: 10px;
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+.total-value {
+    font-size: 48px;
+    font-weight: 800;
+    color: white;
+    line-height: 1.1;
+    margin: 10px 0;
+}
+
+.currency-inside {
+    font-size: 18px;
+    color: white;
+    font-weight: 600;
+    margin-top: 8px;
+    opacity: 0.9;
 }
 
 .currency {
@@ -286,7 +308,7 @@ body {
 .last-updated {
     margin-top: 16px;
     font-size: 12px;
-    color: #007F01;
+    color: #045B96;
     text-align: center;
     font-weight: 600;
 }
@@ -352,9 +374,12 @@ body {
     }
     
     .total-price {
-        font-size: 42px;
         padding: 16px 25px;
         min-width: 180px;
+    }
+    
+    .total-value {
+        font-size: 42px;
     }
     
     .calc-input {
@@ -410,7 +435,7 @@ body {
     }
     
     .price-label {
-        font-size: 12px;
+        font-size: 10px;
         margin-bottom: 6px;
     }
     
@@ -424,9 +449,22 @@ body {
     }
     
     .total-price {
-        font-size: 38px;
         padding: 14px 20px;
         min-width: 160px;
+    }
+    
+    .total-value {
+        font-size: 38px;
+    }
+    
+    .total-label-inside {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    
+    .currency-inside {
+        font-size: 16px;
+        margin-top: 6px;
     }
     
     .currency {

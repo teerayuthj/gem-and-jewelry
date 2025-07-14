@@ -12,6 +12,9 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- CSS Files -->
     <link rel="stylesheet" href="./assets/css/banner-slideshow.css">
     <link rel="stylesheet" href="./assets/css/gold-price.css">
@@ -64,7 +67,7 @@
         
         /* Section Spacing */
         .section-spacing {
-            padding: 2rem 0;
+            padding: 1.5rem 0;
         }
         
         /* Unified Language Button */
@@ -111,6 +114,44 @@
             transform: scale(0.98);
         }
         
+        /* Secondary Banner Styles */
+        .secondary-banner-slideshow {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 0;
+        }
+        
+        .secondary-banner-content {
+            background: rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(2px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: calc(100% - 4rem);
+            max-width: 800px;
+        }
+        
+        .secondary-banner-title {
+            text-shadow: 3px 3px 10px rgba(0,0,0,0.9) !important;
+            font-weight: 900 !important;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .secondary-banner-subtitle {
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.8) !important;
+            font-weight: 700 !important;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+        }
+        
+        
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .unified-lang-btn {
@@ -119,6 +160,35 @@
                 padding: 8px 16px;
                 font-size: 0.9rem;
             }
+            
+            .secondary-banner-slideshow {
+                height: 300px !important;
+            }
+            
+            .secondary-banner-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .secondary-banner-title {
+                font-size: 2rem;
+            }
+            
+            .secondary-banner-subtitle {
+                font-size: 1rem;
+            }
+            
+        }
+        
+        /* Gold Button Hover Effect */
+        .btn[style*="FFD700"]:hover {
+            transform: translateY(-3px) scale(1.05) !important;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5) !important;
+            background: linear-gradient(135deg, #FFA500, #FF8C00) !important;
+        }
+        
+        .btn[style*="FFD700"]:active {
+            transform: translateY(-1px) scale(1.02) !important;
         }
     </style>
 </head>
@@ -136,7 +206,29 @@
     </section>
     
     <!-- Section 2: Gold Price Component -->
-    <section id="goldPriceSection" class="section-spacing language-transition">
+    <section id="goldPriceSection" class="section-spacing language-transition" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding-top: 2rem;">
+        <!-- Quick Discount Code Button -->
+        <div class="text-center pb-6">
+            <button class="btn btn-lg" style="background: linear-gradient(135deg, #FFD700, #FFA500); border: none; color: #333; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); transition: all 0.3s ease; border-radius: 50px; padding: 12px 24px;">
+                <span class="text-lg font-bold" data-lang="th">
+                    🎫 เก็บโค้ดส่วนลดคลิกที่นี่
+                </span>
+                <span class="text-lg font-bold hidden" data-lang="en">
+                    🎫 Get Discount Code Here
+                </span>
+            </button>
+        </div>
+        
+        <!-- Real-time Price Header -->
+        <div class="text-center pb-4">
+            <h2 class="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-2" data-lang="th">
+                ราคาทองคำและแท่งเงิน Real Time ออสสิริส
+            </h2>
+            <h2 class="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-2 hidden" data-lang="en">
+                Real-time Gold and Silver Prices by Ausiris
+            </h2>
+        </div>
+        
         <div class="container mx-auto">
             <div id="goldPriceContainer" class="gold-price-container">
                 <!-- Gold price component will be rendered here -->
@@ -144,28 +236,31 @@
         </div>
     </section>
 
-    <!-- Section 2.5: Gold Calculator Component -->
+    <!-- Section 3: Gold Calculator Component -->
     <div id="calculator-app"></div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        new GemApp.GoldSilverCalculator('calculator-app');
-    });
-    </script>
-    <!-- Section 3: Special Offer Section -->
-    <section id="specialOfferSection" class="section-spacing language-transition">
+    <!-- Section 5: Secondary Banner Slideshow -->
+    <section id="secondaryBannerSection" class="">
+        <div class="secondary-banner-slideshow" id="secondaryBanner" style="width: 100vw; margin-left: calc(50% - 50vw); height: 400px; position: relative; overflow: hidden;">
+            <!-- Content will be injected by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Section 4: Special Offer Section -->
+    <section id="specialOfferSection" class="section-spacing language-transition" style="background-image: url('public/section-bg-simple.svg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
         <div class="hero">
             <div class="hero-content text-center w-full">
                 <div class="w-full max-w-sm md:max-w-md lg:max-w-lg mx-auto">
                     <!-- Offer Header -->
-                    <div class="card bg-primary text-primary-content shadow-2xl">
+                    <div class="card text-primary-content">
                         <div class="card-body">
                             <h1 class="card-title text-2xl md:text-4xl lg:text-5xl font-bold justify-center mb-2" data-i18n="offer.header">
                                 🎉 ข้อเสนอพิเศษวันนี้เท่านั้น! 🎉
                             </h1>
-                            <p class="text-base md:text-lg lg:text-xl mb-3" data-i18n="offer.description">
-                                สั่งซื้อภายในวันนี้ รับส่วนลด 100 บาท
-                            </p>
+                            <!-- Offer Image -->
+                            <div class="offer-image-container mb-3">
+                                <img src="public/offer-02.png" alt="Order today and get 100 THB discount" style="width: 100%; max-width: 350px; height: auto; border-radius: 0.5rem; margin: 0 auto; display: block;">
+                            </div>
                             
                             <!-- Discount Code Section -->
                             <div class="card bg-base-100 text-base-content shadow-lg mb-4">
@@ -178,7 +273,7 @@
                                         <input 
                                             id="discountCode" 
                                             type="text" 
-                                            value="AUS100TH" 
+                                            value="AUS50TH" 
                                             readonly 
                                             class="input input-bordered input-accent join-item flex-1 text-center text-base md:text-lg font-bold"
                                             data-i18n-value="offer.discountCode"
@@ -261,6 +356,77 @@
         </div>
     </section>
 
+
+
+    <!-- Section 6 Map & Contact -->
+<section class="map-section language-transition" style="padding: 4rem 1rem; background: #f8f9fa;">
+    <div class="map-container" style="max-width: 1200px; margin: 0 auto;">
+        <h2 style="text-align: center; margin-bottom: 5rem; color: #2c3e50; font-size: 3rem; font-weight: 600; font-family: 'Prompt', sans-serif;" 
+            data-i18n="contact.title">
+            เยี่ยมชมเรา
+        </h2>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; justify-content: center;">
+            <!-- Map Container -->
+            <div style="flex: 1; min-width: 300px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <div style="position: relative; padding-bottom: 60%;">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1937.9195656620043!2d100.5345192!3d13.7281875!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29f2b54d9be83%3A0x569f8e5d59bad888!2sAusiris%20Company%20Limited!5e0!3m2!1sen!2sth!4v1749353588121!5m2!1sen!2sth" 
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+            
+            <!-- Contact Information -->
+            <div style="flex: 1; min-width: 300px; padding: 1.5rem; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                <h3 style="color: #2c3e50; margin-bottom: 1.5rem; font-size: 2.5rem; font-weight: 600;" 
+                    data-i18n="contact.companyName">
+                    Ausiris Company Limited
+                    <div style="font-size: 1.2rem; color: #7f8c8d; font-weight: 500; margin-top: 0.25rem;" 
+                         data-i18n="contact.companyNameEn">
+                    AUSIRIS Co., Ltd (flagship store)
+                    </div>
+                </h3>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                        <i class="fas fa-map-marker-alt" style="color: #e74c3c; font-size: 1.2rem; margin-right: 0.8rem; margin-top: 0.2rem;"></i>
+                        <div>
+                            <p style="margin: 0; color: #34495e; line-height: 1.6; font-size: 1.5rem;">
+                                <span data-i18n="contact.address.line1">อาคารสีลม คอมเพล็กซ์ ชั้น 4</span><br>
+                                <span data-i18n="contact.address.line2">เลขที่ 191 Si Lom Rd, Si Lom,</span><br>
+                                <span data-i18n="contact.address.line3">Bang Rak, Bangkok 10500</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <i class="fas fa-phone" style="color: #2ecc71; font-size: 1.2rem; margin-right: 0.8rem;"></i>
+                        <a href="tel:+6621234567" style="color: #3498db; text-decoration: none; transition: color 0.3s ease; font-size: 1.5rem;" 
+                           data-i18n="contact.phone">
+                            02-613-4711-3 
+                        </a>
+                    </div>
+                </div>
+                
+                <a href="https://page.line.me/lgy9487c?openQrModal=true" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   style="display: inline-flex; align-items: center; background: #00c300; color: white; padding: 0.8rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; font-size: 1.7rem; margin-top: 1rem;">
+                    <i class="fab fa-line" style="font-size: 1.5rem; margin-right: 0.5rem;"></i>
+                    <span data-i18n="contact.lineButton">ติดต่อผ่าน LINE</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- <script
+ src='https://cdn.jotfor.ms/agent/embedjs/0197199a3b4178d4bb63a5c27b1ec73702ca/embed.js?skipWelcome=1&maximizable=1'>
+</script> -->
+
     <!-- Scripts -->
     <script src="./assets/js/banner-slideshow.js"></script>
     <script src="./assets/js/i18n.js"></script>
@@ -269,177 +435,49 @@
     <script src="./assets/js/discount-manager.js"></script>
     <script src="./assets/js/countdown.js"></script>
     <script src="./assets/js/copy-function.js"></script>
+    <script src="./assets/js/contact-manager.js"></script>
+    <script src="./assets/js/unified-language-manager.js"></script>
+    <script src="./assets/js/copy-discount-functions.js"></script>
 
     <!-- Calculator -->
     <script src="./assets/js/common.js"></script>
     <script src="./assets/js/calculator.js"></script>
 
     <script>
-        // Unified Language Management
-        class UnifiedLanguageManager {
-            constructor() {
-                this.currentLang = localStorage.getItem('language') || 'en';
-                this.components = {
-                    banner: null,
-                    goldPrice: null,
-                    specialOffer: null
-                };
-                this.init();
-            }
-            
-            init() {
-                this.updateLanguageButton();
-                this.setupLanguageToggle();
-                this.initializeComponents();
-            }
-            
-            updateLanguageButton() {
-                // Update unified button if exists (currently disabled)
-                const button = document.getElementById('unifiedLangSwitcher');
-                if (button) {
-                    button.textContent = this.currentLang === 'th' ? 'ไทย' : 'English';
-                }
-                
-                // Update banner language button text if exists
-                const bannerBtn = document.querySelector('#langSwitcher');
-                if (bannerBtn) {
-                    bannerBtn.textContent = this.currentLang === 'th' ? 'English' : 'Thai';
-                }
-            }
-            
-            setupLanguageToggle() {
-                // Unified button is disabled, language control is handled by banner
-                const button = document.getElementById('unifiedLangSwitcher');
-                if (button) {
-                    button.addEventListener('click', () => {
-                        this.toggleLanguage();
-                    });
-                }
-            }
-            
-            toggleLanguage() {
-                this.currentLang = this.currentLang === 'th' ? 'en' : 'th';
-                localStorage.setItem('language', this.currentLang);
-                this.updateLanguageButton();
-                this.broadcastLanguageChange();
-            }
-            
-            broadcastLanguageChange() {
-                console.log('Unified: Broadcasting language change to', this.currentLang);
-                
-                // Send unified language change event (components will handle this)
-                document.dispatchEvent(new CustomEvent('unifiedLanguageChanged', {
-                    detail: { language: this.currentLang }
-                }));
-            }
-            
-            updateSpecialOfferTranslations() {
-                // This will be handled by the existing i18n system
-                if (window.i18nManager) {
-                    window.i18nManager.updateTranslations();
-                }
-            }
-            
-            async initializeComponents() {
-                try {
-                    // Initialize Banner Component
-                    await this.initializeBanner();
-                    
-                    // Initialize other components
-                    this.initializeGoldPrice();
-                    this.initializeSpecialOffer();
-                    
-                    console.log('All components initialized successfully');
-                } catch (error) {
-                    console.error('Error initializing components:', error);
-                }
-            }
-            
-            async initializeBanner() {
-                return new Promise((resolve) => {
-                    const initBanner = () => {
-                        const container = document.getElementById('mainBanner');
-                        if (container && window.BannerSlideshow) {
-                            try {
-                                container.innerHTML = '';
-                                container.className = 'banner-slideshow banner-initialized';
-                                
-                                const banner = new BannerSlideshow({
-                                    container: container,
-                                    autoPlayDuration: 6000
-                                });
-                                
-                                this.components.banner = banner;
-                                window.bannerSlideshow = banner;
-                                
-                                console.log('Banner slideshow initialized');
-                                resolve(banner);
-                            } catch (error) {
-                                console.error('Banner initialization failed:', error);
-                                resolve(null);
-                            }
-                        } else {
-                            setTimeout(initBanner, 100);
-                        }
-                    };
-                    
-                    initBanner();
-                });
-            }
-            
-            initializeGoldPrice() {
-                // Gold Price Manager should initialize automatically
-                if (window.goldPriceManager) {
-                    this.components.goldPrice = window.goldPriceManager;
-                    console.log('Gold Price Manager ready');
-                }
-            }
-            
-            initializeSpecialOffer() {
-                // Special offer components should initialize automatically
-                if (window.i18nManager) {
-                    this.components.specialOffer = window.i18nManager;
-                    console.log('Special Offer Manager ready');
-                }
-            }
-        }
-        
-        // Initialize when DOM is ready
-        document.addEventListener('DOMContentLoaded', () => {
-            window.unifiedLanguageManager = new UnifiedLanguageManager();
+        // Calculator initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            new GemApp.GoldSilverCalculator('calculator-app');
         });
         
-        // Debug function
-        window.debugUnified = () => {
-            console.log('Unified Language Manager:', window.unifiedLanguageManager);
-            console.log('Current Language:', window.unifiedLanguageManager?.currentLang);
-            console.log('Components:', window.unifiedLanguageManager?.components);
-        };
-        
-        // Copy discount code function
-        function copyDiscountCode() {
-            const codeInput = document.getElementById('discountCode');
-            const copyBtn = document.getElementById('copyBtn');
-            const copyIcon = document.getElementById('copyIcon');
-            const checkIcon = document.getElementById('checkIcon');
-            const btnText = document.getElementById('btnText');
-            
-            if (codeInput) {
-                codeInput.select();
-                document.execCommand('copy');
+        // Quick fix for secondary banner images  
+        document.addEventListener('DOMContentLoaded', function() {
+            const secondaryContainer = document.getElementById('secondaryBanner');
+            if (secondaryContainer) {
+                const images = [
+                    'public/Rich Menu_01.jpg',
+                    'public/banner-2.jpg', 
+                    'public/Banner-01.jpg',
+                    'public/get-well-soon.jpg'
+                ];
                 
-                // Visual feedback
-                copyIcon.classList.add('hidden');
-                checkIcon.classList.remove('hidden');
-                btnText.textContent = window.unifiedLanguageManager?.currentLang === 'th' ? 'คัดลอกแล้ว!' : 'Copied!';
+                let currentIndex = 0;
                 
-                setTimeout(() => {
-                    copyIcon.classList.remove('hidden');
-                    checkIcon.classList.add('hidden');
-                    btnText.textContent = window.unifiedLanguageManager?.currentLang === 'th' ? 'คัดลอก' : 'Copy';
-                }, 2000);
+                const updateBanner = () => {
+                    const currentImage = images[currentIndex];
+                    console.log('Loading image:', currentImage);
+                    secondaryContainer.style.backgroundImage = `url('${currentImage}')`;
+                    secondaryContainer.style.backgroundSize = 'contain';
+                    secondaryContainer.style.backgroundPosition = 'center center';
+                    secondaryContainer.style.backgroundRepeat = 'no-repeat';
+                    secondaryContainer.style.width = '100%';
+                    secondaryContainer.style.height = '300px';
+                    currentIndex = (currentIndex + 1) % images.length;
+                };
+                
+                updateBanner();
+                setInterval(updateBanner, 4000);
             }
-        }
+        });
     </script>
 </body>
 </html>

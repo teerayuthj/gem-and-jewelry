@@ -60,6 +60,18 @@ class I18nManager {
                     language: {
                         current: "ไทย",
                         switch: "English"
+                    },
+                    contact: {
+                        title: "เยี่ยมชมเรา",
+                        companyName: "Ausiris Company Limited",
+                        companyNameEn: "AUSIRIS Co., Ltd (flagship store)",
+                        address: {
+                            line1: "อาคารสีลม คอมเพล็กซ์ ชั้น 4",
+                            line2: "เลขที่ 191 Si Lom Rd, Si Lom,",
+                            line3: "Bang Rak, Bangkok 10500"
+                        },
+                        phone: "02-613-4711-3",
+                        lineButton: "ติดต่อผ่าน LINE"
                     }
                 },
                 en: {
@@ -98,6 +110,18 @@ class I18nManager {
                     language: {
                         current: "English",
                         switch: "ไทย"
+                    },
+                    contact: {
+                        title: "Visit Us",
+                        companyName: "Ausiris Company Limited",
+                        companyNameEn: "AUSIRIS Co., Ltd (flagship store)",
+                        address: {
+                            line1: "Silom Complex Building, 4th Floor",
+                            line2: "191 Si Lom Rd, Si Lom,",
+                            line3: "Bang Rak, Bangkok 10500"
+                        },
+                        phone: "02-613-4711-3",
+                        lineButton: "Contact via LINE"
                     }
                 }
             };
@@ -162,6 +186,16 @@ class I18nManager {
         if (metaTitle) {
             metaTitle.textContent = this.getText('title');
         }
+        
+        // Handle language-specific elements
+        document.querySelectorAll('[data-lang]').forEach(element => {
+            const lang = element.getAttribute('data-lang');
+            if (lang === this.currentLang) {
+                element.classList.remove('hidden');
+            } else {
+                element.classList.add('hidden');
+            }
+        });
         
         // Update language switcher button
         this.updateLanguageButton();
@@ -268,5 +302,10 @@ document.addEventListener('languageChanged', function(event) {
     if (window.goldPriceManager) {
         goldPriceManager.currentLang = event.detail.language;
         goldPriceManager.updateLanguageContent();
+    }
+    
+    // Update contact manager if it exists
+    if (window.contactManager) {
+        contactManager.setLanguage(event.detail.language);
     }
 });

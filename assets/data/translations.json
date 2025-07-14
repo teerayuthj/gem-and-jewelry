@@ -71,6 +71,18 @@
       },
       "lastUpdated": "อัพเดทล่าสุด:",
       "note": "💡 <strong>หมายเหตุ:</strong> ราคาที่แสดงเป็นราคาอ้างอิงตามข้อมูลตลาด อัพเดทแบบเรียลไทม์ อิงตามทองคำโลกและเงื่อนไขการซื้อขาย"
+    },
+    "contact": {
+      "title": "เยี่ยมชมเรา",
+      "companyName": "Ausiris Company Limited",
+      "companyNameEn": "AUSIRIS Co., Ltd (flagship store)",
+      "address": {
+        "line1": "อาคารสีลม คอมเพล็กซ์ ชั้น 4",
+        "line2": "เลขที่ 191 Si Lom Rd, Si Lom,",
+        "line3": "Bang Rak, Bangkok 10500"
+      },
+      "phone": "02-613-4711-3",
+      "lineButton": "ติดต่อผ่าน LINE"
     }
   },
   "en": {
@@ -145,6 +157,18 @@
       },
       "lastUpdated": "Last Updated:",
       "note": "💡 <strong>Note:</strong> Prices shown are reference prices based on market data. Real-time updates based on global gold prices and trading conditions."
+    },
+    "contact": {
+      "title": "Visit Us",
+      "companyName": "Ausiris Company Limited",
+      "companyNameEn": "AUSIRIS Co., Ltd (flagship store)",
+      "address": {
+        "line1": "Silom Complex Building, 4th Floor",
+        "line2": "191 Si Lom Rd, Si Lom,",
+        "line3": "Bang Rak, Bangkok 10500"
+      },
+      "phone": "02-613-4711-3",
+      "lineButton": "Contact via LINE"
     }
   }
 }

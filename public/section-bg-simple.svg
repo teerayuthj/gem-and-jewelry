@@ -1,0 +1,18 @@
+<svg width="1200" height="600" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Bottom half - Light blue background -->
+  <rect x="0" y="0" width="1200" height="600" fill="#EBF7FF"/>
+  
+  <!-- Single large circle positioned to create curved bottom -->
+  <defs>
+    <clipPath id="topSection">
+      <rect x="0" y="0" width="1200" height="350"/>
+    </clipPath>
+  </defs>
+  
+  <!-- One circle centered, positioned above to create much more curve -->
+  <circle cx="600" 
+          cy="-50" 
+          r="350" 
+          fill="#045b96"
+          clip-path="url(#topSection)"/>
+</svg>

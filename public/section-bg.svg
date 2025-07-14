@@ -1,0 +1,41 @@
+<svg width="1200" height="600" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Bottom half - Light blue background -->
+  <rect x="0" y="0" width="1200" height="600" fill="#EBF7FF"/>
+  
+  <!-- Top half - Dark blue with curved bottom edge like a circle -->
+  <path d="M 0,0 
+           L 1200,0 
+           L 1200,200 
+           Q 600,400 0,200 
+           Z" 
+           fill="#045b96"/>
+  
+  <!-- Alternative curved design - more circular -->
+  <!-- You can replace the above path with this one for a more pronounced curve -->
+  <!--
+  <path d="M 0,0 
+           L 1200,0 
+           L 1200,150 
+           Q 900,350 600,300
+           Q 300,350 0,150 
+           Z" 
+           fill="#045b96"/>
+  -->
+  
+  <!-- Optional: Add subtle gradient for depth -->
+  <defs>
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#045b96;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0369a1;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Curved section with gradient -->
+  <path d="M 0,0 
+           L 1200,0 
+           L 1200,200 
+           Q 600,400 0,200 
+           Z" 
+           fill="url(#blueGradient)" 
+           opacity="0.9"/>
+</svg>
