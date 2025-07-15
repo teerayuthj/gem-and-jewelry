@@ -1,0 +1,49 @@
+{
+  "name": "gold-gem-component",
+  "version": "1.0.0",
+  "description": "A comprehensive gold trading and price display component with multi-language support",
+  "main": "dist/gold-gem-component.js",
+  "scripts": {
+    "build": "node build.js",
+    "build:version": "node build.js --version",
+    "dev": "npm run build && open dist/demo.html",
+    "watch": "nodemon -e css,js,json,html --ignore dist/ --exec 'npm run build'",
+    "release": "npm run build && git add dist/ && git commit -m 'Build: Update component bundle' && git push",
+    "tag": "npm version patch && git push origin master --tags"
+  },
+  "files": [
+    "dist/",
+    "assets/",
+    "build.js",
+    "README.md"
+  ],
+  "keywords": [
+    "gold",
+    "trading",
+    "component",
+    "javascript",
+    "css",
+    "responsive",
+    "multi-language",
+    "thai",
+    "english",
+    "cdn",
+    "jsdelivr"
+  ],
+  "author": "Teerayuth T",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/teerayuthj/gem-and-jewelry.git"
+  },
+  "bugs": {
+    "url": "https://github.com/teerayuthj/gem-and-jewelry/issues"
+  },
+  "homepage": "https://github.com/teerayuthj/gem-and-jewelry#readme",
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

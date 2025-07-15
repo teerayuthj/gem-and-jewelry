@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Gem Component - Demo</title>
+    
+    <!-- Required: Tailwind CSS + DaisyUI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet">
+    
+    <!-- Required: Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Required: Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Gold Gem Component CSS -->
+    <link rel="stylesheet" href="./gold-gem-component.min.css">
+    
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #E8F4FD;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .demo-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-controls {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .demo-controls button {
+            margin: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-controls .btn-primary {
+            background: linear-gradient(135deg, #3B82F6, #1E40AF);
+            color: white;
+        }
+        
+        .demo-controls .btn-secondary {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+        }
+        
+        .demo-controls .btn-accent {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: white;
+        }
+        
+        .demo-controls button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .demo-info {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin: 1rem;
+            border-left: 4px solid #3B82F6;
+        }
+        
+        .demo-footer {
+            background: #1F2937;
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .demo-controls button {
+                display: block;
+                width: 100%;
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Demo Header -->
+    <div class="demo-header">
+        <h1 style="font-size: 2.5rem; margin-bottom: 1rem; font-weight: 700;">
+            🥇 Gold Gem Component Demo
+        </h1>
+        <p style="font-size: 1.2rem; opacity: 0.9; max-width: 600px; margin: 0 auto;">
+            A comprehensive gold trading component with real-time prices, calculator, and special offers
+        </p>
+    </div>
+    
+    <!-- Demo Controls -->
+    <div class="demo-controls">
+        <h3 style="margin-bottom: 1rem; color: #374151;">Demo Controls</h3>
+        <button class="btn-primary" onclick="switchLanguage()">
+            🌐 Switch Language
+        </button>
+        <button class="btn-secondary" onclick="toggleSection('banner')">
+            🎠 Toggle Banner
+        </button>
+        <button class="btn-accent" onclick="scrollToOffer()">
+            🎯 Scroll to Offer
+        </button>
+        <button class="btn-primary" onclick="reinitialize()">
+            🔄 Reinitialize
+        </button>
+    </div>
+    
+    <!-- Demo Info -->
+    <div class="demo-info">
+        <h4 style="margin-bottom: 0.5rem; color: #1F2937;">💡 Demo Features:</h4>
+        <ul style="margin: 0; padding-left: 1.5rem; color: #374151;">
+            <li><strong>Multi-language Support:</strong> Switch between Thai and English</li>
+            <li><strong>Responsive Design:</strong> Works on desktop, tablet, and mobile</li>
+            <li><strong>Interactive Elements:</strong> Banner slideshow, calculator, countdown timer</li>
+            <li><strong>Real-time Updates:</strong> Live price display and countdown</li>
+            <li><strong>CDN Ready:</strong> Easy integration with jsDelivr</li>
+        </ul>
+    </div>
+    
+    <!-- Main Component Container -->
+    <div id="gold-gem-container"></div>
+    
+    <!-- Demo Footer -->
+    <div class="demo-footer">
+        <h3 style="margin-bottom: 1rem;">Ready to Use This Component?</h3>
+        <p style="margin-bottom: 1.5rem; opacity: 0.8;">
+            Just add 2 lines to your HTML and you're ready to go!
+        </p>
+        <div style="background: rgba(0, 0, 0, 0.3); border-radius: 0.5rem; padding: 1rem; text-align: left; max-width: 600px; margin: 0 auto; font-family: monospace; font-size: 0.9rem;">
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/username/repo@v1.0.0/dist/gold-gem-component.min.css"&gt;<br>
+&lt;script src="https://cdn.jsdelivr.net/gh/username/repo@v1.0.0/dist/gold-gem-component.min.js"&gt;&lt;/script&gt;
+        </div>
+        <p style="margin-top: 1.5rem; opacity: 0.6;">
+            Made with ❤️ for the gold trading community
+        </p>
+    </div>
+    
+    <!-- Gold Gem Component JavaScript -->
+    <script src="./gold-gem-component.min.js"></script>
+    
+    <!-- Demo JavaScript -->
+    <script>
+        // Initialize the component
+        let goldComponent;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeComponent();
+        });
+        
+        function initializeComponent() {
+            goldComponent = new GoldGemComponent('#gold-gem-container', {
+                cdnBase: '.',  // Use local files for demo
+                enableBanner: true,
+                enableGoldPrice: true,
+                enableCalculator: true,
+                enableSpecialOffer: true,
+                enableContact: true,
+                autoLoadStyles: false  // We already loaded styles
+            });
+            
+            console.log('Gold Gem Component initialized:', goldComponent);
+        }
+        
+        function switchLanguage() {
+            if (goldComponent) {
+                goldComponent.switchLanguage();
+                console.log('Language switched to:', goldComponent.currentLanguage);
+            }
+        }
+        
+        function toggleSection(section) {
+            // This is just a demo function
+            console.log('Toggle section:', section);
+            alert('This would toggle the ' + section + ' section in a real implementation');
+        }
+        
+        function scrollToOffer() {
+            const offerSection = document.getElementById('specialOfferSection');
+            if (offerSection) {
+                offerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+        
+        function reinitialize() {
+            if (goldComponent) {
+                goldComponent.destroy();
+            }
+            
+            // Wait a bit then reinitialize
+            setTimeout(() => {
+                initializeComponent();
+                console.log('Component reinitialized');
+            }, 500);
+        }
+        
+        // Demo enhancement: Show component info in console
+        console.log('%c🥇 Gold Gem Component Demo', 'font-size: 20px; color: #F59E0B; font-weight: bold;');
+        console.log('Try these demo functions:');
+        console.log('• switchLanguage() - Toggle between Thai/English');
+        console.log('• scrollToOffer() - Scroll to special offer section');
+        console.log('• reinitialize() - Reinitialize the component');
+        console.log('• goldComponent - Access the component instance');
+    </script>
+</body>
+</html>
