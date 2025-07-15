@@ -416,7 +416,7 @@ class GoldPriceManager {
 
     formatPrice(price, type = 'gold', id = '') {
         if (type === 'usd') {
-            return `${price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            return `${Math.round(price).toLocaleString()}`;
         }
         
         // Special formatting for KG to make it shorter
@@ -430,7 +430,7 @@ class GoldPriceManager {
 
     formatPriceWithUnit(price, type = 'gold', id = '') {
         if (type === 'usd') {
-            const formatted = price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            const formatted = Math.round(price).toLocaleString();
             return {
                 number: formatted,
                 unit: 'USD'

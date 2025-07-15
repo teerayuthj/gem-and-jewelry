@@ -126,7 +126,7 @@ body {
     
     /* Countdown numbers smaller on mobile */
     .countdown.font-mono {
-        font-size: 2.5rem !important;
+        font-size: 2.75rem !important;
     }
     
     .countdown-item .text-sm {

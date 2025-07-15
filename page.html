@@ -209,7 +209,7 @@
     <section id="goldPriceSection" class="section-spacing language-transition" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding-top: 2rem;">
         <!-- Quick Discount Code Button -->
         <div class="text-center pb-6">
-            <button class="btn btn-lg" style="background: linear-gradient(135deg, #FFD700, #FFA500); border: none; color: #333; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); transition: all 0.3s ease; border-radius: 50px; padding: 12px 24px;">
+            <button onclick="scrollToSpecialOffer()" class="btn btn-lg" style="background: linear-gradient(135deg, #FFD700, #FFA500); border: none; color: #333; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); transition: all 0.3s ease; border-radius: 50px; padding: 12px 24px;">
                 <span class="text-lg font-bold" data-lang="th">
                     🎫 เก็บโค้ดส่วนลดคลิกที่นี่
                 </span>
@@ -254,7 +254,7 @@
                     <!-- Offer Header -->
                     <div class="card text-primary-content">
                         <div class="card-body">
-                            <h1 class="card-title text-2xl md:text-4xl lg:text-5xl font-bold justify-center mb-2" data-i18n="offer.header">
+                            <h1 class="card-title text-2xl text-gray-100 md:text-4xl lg:text-5xl font-bold justify-center mb-2" data-i18n="offer.header">
                                 🎉 ข้อเสนอพิเศษวันนี้เท่านั้น! 🎉
                             </h1>
                             <!-- Offer Image -->
@@ -263,7 +263,7 @@
                             </div>
                             
                             <!-- Discount Code Section -->
-                            <div class="card bg-base-100 text-base-content shadow-lg mb-4">
+                            <div class="card bg-gradient-to-br from-yellow-50 to-amber-100 text-gray-800 shadow-lg mb-4">
                                 <div class="card-body">
                                     <h3 class="card-title text-lg md:text-xl lg:text-2xl justify-center text-accent" data-i18n="offer.codeTitle">
                                         🏷️ คัดลอกโค้ดส่วนลด
@@ -273,7 +273,7 @@
                                         <input 
                                             id="discountCode" 
                                             type="text" 
-                                            value="AUS50TH" 
+                                            value="AUS50THB" 
                                             readonly 
                                             class="input input-bordered input-accent join-item flex-1 text-center text-base md:text-lg font-bold"
                                             data-i18n-value="offer.discountCode"
@@ -299,9 +299,9 @@
                             </div>
                             
                             <!-- Promotion Period -->
-                            <div class="stats stats-vertical lg:stats-horizontal shadow mb-4">
+                            <div class="stats bg-gradient-to-br from-yellow-50 to-amber-100 text-gray-800 stats-vertical lg:stats-horizontal shadow-lg mb-4">
                                 <div class="stat">
-                                    <div class="stat-title" data-i18n="offer.promotionPeriod">ระยะเวลาโปรโมชั่น</div>
+                                    <div class="stat-title text-gray-500" data-i18n="offer.promotionPeriod">ระยะเวลาโปรโมชั่น</div>
                                     <div class="stat-value text-lg">
                                         <span id="startDate">30/06/2025</span> - <span id="endDate">28/07/2025</span>
                                     </div>
@@ -310,7 +310,7 @@
                             
                             <!-- Countdown Timer -->
                             <div class="mb-4">
-                                <h3 class="text-lg md:text-xl lg:text-2xl font-bold mb-2" id="countdownLabel" data-i18n="countdown.label">
+                                <h3 class="text-lg text-gray-800 md:text-xl lg:text-2xl font-bold mb-2" id="countdownLabel" data-i18n="countdown.label">
                                     ⏳ เหลือเวลาอีก:
                                 </h3>
                                 
@@ -346,9 +346,9 @@
                             </div>
                             
                             <!-- Action Button -->
-                            <button id="mainActionBtn" class="btn btn-accent main-action-btn text-white" data-i18n="buttons.getOffer">
-                                🛒 รับข้อเสนอพิเศษตอนนี้
-                            </button>
+                            <a href="https://express.ausiris.co.th/" target="_blank" rel="noopener noreferrer" id="mainActionBtn" class="btn btn-accent main-action-btn text-white" data-i18n="buttons.useDiscount" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
+                                🛒 ใช้ส่วนลดตอนนี้เลย
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -444,6 +444,17 @@
     <script src="./assets/js/calculator.js"></script>
 
     <script>
+        // Scroll to Special Offer Section function
+        function scrollToSpecialOffer() {
+            const specialOfferSection = document.getElementById('specialOfferSection');
+            if (specialOfferSection) {
+                specialOfferSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
         // Calculator initialization
         document.addEventListener('DOMContentLoaded', function() {
             new GemApp.GoldSilverCalculator('calculator-app');
