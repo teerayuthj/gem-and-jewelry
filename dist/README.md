@@ -2,9 +2,9 @@
 
 A comprehensive, responsive gold trading and price display component with multi-language support (Thai/English). Perfect for gold trading websites, financial platforms, and investment portals.
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/yourusername/gold-gem-component)
+[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/teerayuthj/gem-and-jewelry)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![CDN](https://img.shields.io/badge/CDN-jsDelivr-orange.svg)](https://www.jsdelivr.com/package/gh/yourusername/gold-gem-component)
+[![CDN](https://img.shields.io/badge/CDN-jsDelivr-orange.svg)](https://www.jsdelivr.com/package/gh/teerayuthj/gem-and-jewelry)
 
 ## ✨ Features
 
@@ -37,14 +37,14 @@ Add these lines to your HTML:
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Gold Gem Component CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yourusername/gold-gem-component@v1.0.0/dist/gold-gem-component.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.1.0/dist/gold-gem-component.min.css">
 </head>
 <body>
     <!-- Component Container -->
     <div id="gold-gem-container"></div>
     
     <!-- Gold Gem Component JavaScript -->
-    <script src="https://cdn.jsdelivr.net/gh/yourusername/gold-gem-component@v1.0.0/dist/gold-gem-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.1.0/dist/gold-gem-component.min.js"></script>
     
     <!-- Initialize Component -->
     <script>
@@ -60,8 +60,8 @@ For even simpler usage, just use the container ID `gold-gem-container` and the c
 
 ```html
 <div id="gold-gem-container"></div>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/yourusername/gold-gem-component@v1.0.0/dist/gold-gem-component.min.css">
-<script src="https://cdn.jsdelivr.net/gh/yourusername/gold-gem-component@v1.0.0/dist/gold-gem-component.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.1.0/dist/gold-gem-component.min.css">
+<script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.1.0/dist/gold-gem-component.min.js"></script>
 ```
 
 ## ⚙️ Configuration Options
@@ -69,7 +69,7 @@ For even simpler usage, just use the container ID `gold-gem-container` and the c
 ```javascript
 new GoldGemComponent('#gold-gem-container', {
     // CDN base URL (change to your own if hosting elsewhere)
-    cdnBase: 'https://cdn.jsdelivr.net/gh/yourusername/gold-gem-component@v1.0.0',
+    cdnBase: 'https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.1.0',
     
     // Enable/disable specific sections
     enableBanner: true,          // Banner slideshow
@@ -258,9 +258,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support
 
-- 📧 **Email**: support@yourdomain.com
-- 💬 **Issues**: [GitHub Issues](https://github.com/yourusername/gold-gem-component/issues)
-- 📖 **Documentation**: [Full Documentation](https://github.com/yourusername/gold-gem-component/wiki)
+- 📧 **Email**: teerayutht@gmail.com
+- 💬 **Issues**: [GitHub Issues](https://github.com/teerayuthj/gem-and-jewelry/issues)
+- 📖 **Documentation**: [Full Documentation](https://github.com/teerayuthj/gem-and-jewelry/wiki)
 
 ## 🎉 Examples
 

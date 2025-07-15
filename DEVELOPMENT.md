@@ -243,8 +243,8 @@ git push origin --tags
 ### 5. Update CDN URLs
 After pushing tags, update URLs in documentation:
 ```
-https://cdn.jsdelivr.net/gh/yourusername/gold-gem-component@v1.1.0/dist/gold-gem-component.min.css
-https://cdn.jsdelivr.net/gh/yourusername/gold-gem-component@v1.1.0/dist/gold-gem-component.min.js
+https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.1.0/dist/gold-gem-component.min.css
+https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.1.0/dist/gold-gem-component.min.js
 ```
 
 ## 🚨 Important Notes

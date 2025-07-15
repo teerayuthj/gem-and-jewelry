@@ -30,16 +30,16 @@
     "cdn",
     "jsdelivr"
   ],
-  "author": "Your Name",
+  "author": "Teerayuth T",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/gold-gem-component.git"
+    "url": "https://github.com/teerayuthj/gem-and-jewelry.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/gold-gem-component/issues"
+    "url": "https://github.com/teerayuthj/gem-and-jewelry/issues"
   },
-  "homepage": "https://github.com/yourusername/gold-gem-component#readme",
+  "homepage": "https://github.com/teerayuthj/gem-and-jewelry#readme",
   "devDependencies": {
     "nodemon": "^3.0.0"
   },
