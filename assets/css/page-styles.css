@@ -1,0 +1,164 @@
+/* Global Styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background-color: #E8F4FD;
+    min-height: 100vh;
+}
+
+/* Banner Section Fixes */
+.banner-slideshow {
+    position: relative !important;
+    isolation: isolate;
+    z-index: 1;
+}
+
+.banner-slideshow:nth-child(n+2) {
+    display: none !important;
+}
+
+.banner-content {
+    background: rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(2px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3) !important;
+}
+
+.banner-title {
+    text-shadow: 3px 3px 10px rgba(0,0,0,0.9) !important;
+    font-weight: 900 !important;
+}
+
+.banner-subtitle {
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.8) !important;
+    font-weight: 700 !important;
+}
+
+.banner-overlay {
+    background: linear-gradient(135deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.15) 100%) !important;
+}
+
+/* Section Spacing */
+.section-spacing {
+    padding: 1.5rem 0;
+}
+
+/* Unified Language Button */
+.unified-lang-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: white;
+    border: 2px solid #3B82F6;
+    color: #3B82F6;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.unified-lang-btn:hover {
+    background: #3B82F6;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Loading animation */
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Language transition effects */
+.language-transition {
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.language-changing {
+    opacity: 0.7;
+    transform: scale(0.98);
+}
+
+/* Secondary Banner Styles */
+.secondary-banner-slideshow {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 0;
+}
+
+.secondary-banner-content {
+    background: rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(2px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3) !important;
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 4rem);
+    max-width: 800px;
+}
+
+.secondary-banner-title {
+    text-shadow: 3px 3px 10px rgba(0,0,0,0.9) !important;
+    font-weight: 900 !important;
+    color: white;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.secondary-banner-subtitle {
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.8) !important;
+    font-weight: 700 !important;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.2rem;
+}
+
+/* Gold Button Hover Effect */
+.btn[style*="FFD700"]:hover {
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5) !important;
+    background: linear-gradient(135deg, #FFA500, #FF8C00) !important;
+}
+
+.btn[style*="FFD700"]:active {
+    transform: translateY(-1px) scale(1.02) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .unified-lang-btn {
+        top: 15px;
+        right: 15px;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .secondary-banner-slideshow {
+        height: 300px !important;
+    }
+    
+    .secondary-banner-content {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .secondary-banner-title {
+        font-size: 2rem;
+    }
+    
+    .secondary-banner-subtitle {
+        font-size: 1rem;
+    }
+}

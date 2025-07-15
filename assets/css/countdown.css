@@ -6,6 +6,42 @@
     animation: pulse-urgency 2s infinite;
 }
 
+/* Default countdown item styling */
+.countdown-item {
+    background: linear-gradient(135deg, #ff4757, #ff3742) !important;
+    color: white !important;
+    box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);
+}
+
+/* Ensure countdown text is visible */
+.countdown-item .countdown {
+    color: white !important;
+}
+
+.countdown-item span {
+    color: white !important;
+}
+
+/* Force countdown numbers to be visible */
+#countdown-days,
+#countdown-hours,
+#countdown-minutes,
+#countdown-seconds {
+    color: white !important;
+    font-weight: bold !important;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3) !important;
+}
+
+/* Fix daisyUI countdown component */
+.countdown-item .countdown span {
+    color: white !important;
+}
+
+/* Override any daisyUI styles */
+.countdown-item .countdown span::before {
+    color: white !important;
+}
+
 @keyframes pulse-urgency {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.02); }

@@ -20,184 +20,12 @@
     <link rel="stylesheet" href="./assets/css/gold-price.css">
     <link rel="stylesheet" href="./assets/css/main.css">
     <link rel="stylesheet" href="./assets/css/countdown.css">
+    <link rel="stylesheet" href="./assets/css/page-styles.css">
     <!-- Calculator -->
     <link rel="stylesheet" href="./assets/css/calculator.css">
     
-    <style>
-        /* Global Styles */
-        body, html {
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            background-color: #E8F4FD;
-            min-height: 100vh;
-        }
-        
-        /* Banner Section Fixes */
-        .banner-slideshow {
-            position: relative !important;
-            isolation: isolate;
-            z-index: 1;
-        }
-        
-        .banner-slideshow:nth-child(n+2) {
-            display: none !important;
-        }
-        
-        .banner-content {
-            background: rgba(0, 0, 0, 0.3) !important;
-            backdrop-filter: blur(2px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.25) !important;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3) !important;
-        }
-        
-        .banner-title {
-            text-shadow: 3px 3px 10px rgba(0,0,0,0.9) !important;
-            font-weight: 900 !important;
-        }
-        
-        .banner-subtitle {
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.8) !important;
-            font-weight: 700 !important;
-        }
-        
-        .banner-overlay {
-            background: linear-gradient(135deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.15) 100%) !important;
-        }
-        
-        /* Section Spacing */
-        .section-spacing {
-            padding: 1.5rem 0;
-        }
-        
-        /* Unified Language Button */
-        .unified-lang-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            background: white;
-            border: 2px solid #3B82F6;
-            color: #3B82F6;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .unified-lang-btn:hover {
-            background: #3B82F6;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-        }
-        
-        /* Loading animation */
-        .animate-spin {
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Language transition effects */
-        .language-transition {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-        }
-        
-        .language-changing {
-            opacity: 0.7;
-            transform: scale(0.98);
-        }
-        
-        /* Secondary Banner Styles */
-        .secondary-banner-slideshow {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 0;
-        }
-        
-        .secondary-banner-content {
-            background: rgba(0, 0, 0, 0.3) !important;
-            backdrop-filter: blur(2px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.25) !important;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3) !important;
-            border-radius: 12px;
-            padding: 2rem;
-            margin: 2rem;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: calc(100% - 4rem);
-            max-width: 800px;
-        }
-        
-        .secondary-banner-title {
-            text-shadow: 3px 3px 10px rgba(0,0,0,0.9) !important;
-            font-weight: 900 !important;
-            color: white;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .secondary-banner-subtitle {
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.8) !important;
-            font-weight: 700 !important;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1.2rem;
-        }
-        
-        
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .unified-lang-btn {
-                top: 15px;
-                right: 15px;
-                padding: 8px 16px;
-                font-size: 0.9rem;
-            }
-            
-            .secondary-banner-slideshow {
-                height: 300px !important;
-            }
-            
-            .secondary-banner-content {
-                padding: 1.5rem;
-                margin: 1rem;
-            }
-            
-            .secondary-banner-title {
-                font-size: 2rem;
-            }
-            
-            .secondary-banner-subtitle {
-                font-size: 1rem;
-            }
-            
-        }
-        
-        /* Gold Button Hover Effect */
-        .btn[style*="FFD700"]:hover {
-            transform: translateY(-3px) scale(1.05) !important;
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5) !important;
-            background: linear-gradient(135deg, #FFA500, #FF8C00) !important;
-        }
-        
-        .btn[style*="FFD700"]:active {
-            transform: translateY(-1px) scale(1.02) !important;
-        }
-    </style>
 </head>
-<body>
-    <!-- Unified Language Switcher - Hidden, will be controlled by banner -->
-    <!-- <button id="unifiedLangSwitcher" class="unified-lang-btn">
-        English
-    </button> -->
-    
+<body>    
     <!-- Section 1: Banner Slideshow -->
     <section id="bannerSection" class="">
         <div class="banner-slideshow" id="mainBanner">
@@ -207,225 +35,31 @@
     
     <!-- Section 2: Gold Price Component -->
     <section id="goldPriceSection" class="section-spacing language-transition" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding-top: 2rem;">
-        <!-- Quick Discount Code Button -->
-        <div class="text-center pb-6">
-            <button onclick="scrollToSpecialOffer()" class="btn btn-lg" style="background: linear-gradient(135deg, #FFD700, #FFA500); border: none; color: #333; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); transition: all 0.3s ease; border-radius: 50px; padding: 12px 24px;">
-                <span class="text-lg font-bold" data-lang="th">
-                    🎫 เก็บโค้ดส่วนลดคลิกที่นี่
-                </span>
-                <span class="text-lg font-bold hidden" data-lang="en">
-                    🎫 Get Discount Code Here
-                </span>
-            </button>
-        </div>
-        
-        <!-- Real-time Price Header -->
-        <div class="text-center pb-4">
-            <h2 class="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-2" data-lang="th">
-                ราคาทองคำและแท่งเงิน Real Time ออสสิริส
-            </h2>
-            <h2 class="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-2 hidden" data-lang="en">
-                Real-time Gold and Silver Prices by Ausiris
-            </h2>
-        </div>
-        
-        <div class="container mx-auto">
-            <div id="goldPriceContainer" class="gold-price-container">
-                <!-- Gold price component will be rendered here -->
-            </div>
-        </div>
+        <!-- Content will be rendered by GoldPriceSection component -->
     </section>
 
     <!-- Section 3: Gold Calculator Component -->
     <div id="calculator-app"></div>
 
-    <!-- Section 5: Secondary Banner Slideshow -->
+    <!-- Section 4: Secondary Banner Slideshow -->
     <section id="secondaryBannerSection" class="">
         <div class="secondary-banner-slideshow" id="secondaryBanner" style="width: 100vw; margin-left: calc(50% - 50vw); height: 400px; position: relative; overflow: hidden;">
             <!-- Content will be injected by JavaScript -->
         </div>
     </section>
 
-    <!-- Section 4: Special Offer Section -->
+    <!-- Section 5: Special Offer Section -->
     <section id="specialOfferSection" class="section-spacing language-transition" style="background-image: url('public/section-bg-simple.svg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-        <div class="hero">
-            <div class="hero-content text-center w-full">
-                <div class="w-full max-w-sm md:max-w-md lg:max-w-lg mx-auto">
-                    <!-- Offer Header -->
-                    <div class="card text-primary-content">
-                        <div class="card-body">
-                            <h1 class="card-title text-2xl text-gray-100 md:text-4xl lg:text-5xl font-bold justify-center mb-2" data-i18n="offer.header">
-                                🎉 ข้อเสนอพิเศษวันนี้เท่านั้น! 🎉
-                            </h1>
-                            <!-- Offer Image -->
-                            <div class="offer-image-container mb-3">
-                                <img src="public/offer-02.png" alt="Order today and get 100 THB discount" style="width: 100%; max-width: 350px; height: auto; border-radius: 0.5rem; margin: 0 auto; display: block;">
-                            </div>
-                            
-                            <!-- Discount Code Section -->
-                            <div class="card bg-gradient-to-br from-yellow-50 to-amber-100 text-gray-800 shadow-lg mb-4">
-                                <div class="card-body">
-                                    <h3 class="card-title text-lg md:text-xl lg:text-2xl justify-center text-accent" data-i18n="offer.codeTitle">
-                                        🏷️ คัดลอกโค้ดส่วนลด
-                                    </h3>
-                                    
-                                    <div class="join w-full max-w-md mx-auto mt-3">
-                                        <input 
-                                            id="discountCode" 
-                                            type="text" 
-                                            value="AUS50THB" 
-                                            readonly 
-                                            class="input input-bordered input-accent join-item flex-1 text-center text-base md:text-lg font-bold"
-                                            data-i18n-value="offer.discountCode"
-                                        />
-                                        <button 
-                                            id="copyBtn"
-                                            onclick="copyDiscountCode()" 
-                                            class="btn btn-accent join-item copy-btn">
-                                            <svg id="copyIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                            <svg id="checkIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                            <span id="btnText" data-i18n="offer.copyButton">คัดลอก</span>
-                                        </button>
-                                    </div>
-                                    
-                                    <p class="text-warning font-semibold mt-2">
-                                        <span data-i18n="offer.codeExpiry">⏰ โค้ดหมดอายุ:</span> <span id="expiryDate">28/07/2025</span>
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <!-- Promotion Period -->
-                            <div class="stats bg-gradient-to-br from-yellow-50 to-amber-100 text-gray-800 stats-vertical lg:stats-horizontal shadow-lg mb-4">
-                                <div class="stat">
-                                    <div class="stat-title text-gray-500" data-i18n="offer.promotionPeriod">ระยะเวลาโปรโมชั่น</div>
-                                    <div class="stat-value text-lg">
-                                        <span id="startDate">30/06/2025</span> - <span id="endDate">28/07/2025</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Countdown Timer -->
-                            <div class="mb-4">
-                                <h3 class="text-lg text-gray-800 md:text-xl lg:text-2xl font-bold mb-2" id="countdownLabel" data-i18n="countdown.label">
-                                    ⏳ เหลือเวลาอีก:
-                                </h3>
-                                
-                                <!-- Enhanced Countdown with Urgency Effects -->
-                                <div class="countdown-container">
-                                    <div class="grid grid-flow-col gap-3 md:gap-4 lg:gap-5 text-center auto-cols-max justify-center">
-                                        <div id="days-container" class="countdown-item flex flex-col p-3 md:p-3 lg:p-4 rounded-box text-white font-bold shadow-lg">
-                                            <span class="countdown font-mono text-4xl md:text-4xl lg:text-5xl">
-                                                <span id="countdown-days" style="--value:15;" aria-live="polite">15</span>
-                                            </span>
-                                            <span class="text-sm md:text-sm mt-1 font-semibold" data-i18n="countdown.days">วัน</span>
-                                        </div>
-                                        <div id="hours-container" class="countdown-item flex flex-col p-3 md:p-3 lg:p-4 rounded-box text-white font-bold shadow-lg">
-                                            <span class="countdown font-mono text-4xl md:text-4xl lg:text-5xl">
-                                                <span id="countdown-hours" style="--value:10;" aria-live="polite">10</span>
-                                            </span>
-                                            <span class="text-sm md:text-sm mt-1 font-semibold" data-i18n="countdown.hours">ชั่วโมง</span>
-                                        </div>
-                                        <div id="minutes-container" class="countdown-item flex flex-col p-3 md:p-3 lg:p-4 rounded-box text-white font-bold shadow-lg">
-                                            <span class="countdown font-mono text-4xl md:text-4xl lg:text-5xl">
-                                                <span id="countdown-minutes" style="--value:24;" aria-live="polite">24</span>
-                                            </span>
-                                            <span class="text-sm md:text-sm mt-1 font-semibold" data-i18n="countdown.minutes">นาที</span>
-                                        </div>
-                                        <div id="seconds-container" class="countdown-item flex flex-col p-3 md:p-3 lg:p-4 rounded-box text-white font-bold shadow-lg">
-                                            <span class="countdown font-mono text-4xl md:text-4xl lg:text-5xl">
-                                                <span id="countdown-seconds" style="--value:59;" aria-live="polite">59</span>
-                                            </span>
-                                            <span class="text-sm md:text-sm mt-1 font-semibold" data-i18n="countdown.seconds">วินาที</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Action Button -->
-                            <a href="https://express.ausiris.co.th/" target="_blank" rel="noopener noreferrer" id="mainActionBtn" class="btn btn-accent main-action-btn text-white" data-i18n="buttons.useDiscount" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none;">
-                                🛒 ใช้ส่วนลดตอนนี้เลย
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Content will be rendered by SpecialOfferSection component -->
     </section>
 
-
-
     <!-- Section 6 Map & Contact -->
-<section class="map-section language-transition" style="padding: 4rem 1rem; background: #f8f9fa;">
-    <div class="map-container" style="max-width: 1200px; margin: 0 auto;">
-        <h2 style="text-align: center; margin-bottom: 5rem; color: #2c3e50; font-size: 3rem; font-weight: 600; font-family: 'Prompt', sans-serif;" 
-            data-i18n="contact.title">
-            เยี่ยมชมเรา
-        </h2>
-        
-        <div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; justify-content: center;">
-            <!-- Map Container -->
-            <div style="flex: 1; min-width: 300px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                <div style="position: relative; padding-bottom: 60%;">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1937.9195656620043!2d100.5345192!3d13.7281875!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29f2b54d9be83%3A0x569f8e5d59bad888!2sAusiris%20Company%20Limited!5e0!3m2!1sen!2sth!4v1749353588121!5m2!1sen!2sth" 
-                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" 
-                        allowfullscreen="" 
-                        loading="lazy" 
-                        referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
-                </div>
-            </div>
-            
-            <!-- Contact Information -->
-            <div style="flex: 1; min-width: 300px; padding: 1.5rem; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-                <h3 style="color: #2c3e50; margin-bottom: 1.5rem; font-size: 2.5rem; font-weight: 600;" 
-                    data-i18n="contact.companyName">
-                    Ausiris Company Limited
-                    <div style="font-size: 1.2rem; color: #7f8c8d; font-weight: 500; margin-top: 0.25rem;" 
-                         data-i18n="contact.companyNameEn">
-                    AUSIRIS Co., Ltd (flagship store)
-                    </div>
-                </h3>
-                
-                <div style="margin-bottom: 1.5rem;">
-                    <div style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
-                        <i class="fas fa-map-marker-alt" style="color: #e74c3c; font-size: 1.2rem; margin-right: 0.8rem; margin-top: 0.2rem;"></i>
-                        <div>
-                            <p style="margin: 0; color: #34495e; line-height: 1.6; font-size: 1.5rem;">
-                                <span data-i18n="contact.address.line1">อาคารสีลม คอมเพล็กซ์ ชั้น 4</span><br>
-                                <span data-i18n="contact.address.line2">เลขที่ 191 Si Lom Rd, Si Lom,</span><br>
-                                <span data-i18n="contact.address.line3">Bang Rak, Bangkok 10500</span>
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-                        <i class="fas fa-phone" style="color: #2ecc71; font-size: 1.2rem; margin-right: 0.8rem;"></i>
-                        <a href="tel:+6621234567" style="color: #3498db; text-decoration: none; transition: color 0.3s ease; font-size: 1.5rem;" 
-                           data-i18n="contact.phone">
-                            02-613-4711-3 
-                        </a>
-                    </div>
-                </div>
-                
-                <a href="https://page.line.me/lgy9487c?openQrModal=true" 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   style="display: inline-flex; align-items: center; background: #00c300; color: white; padding: 0.8rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; font-size: 1.7rem; margin-top: 1rem;">
-                    <i class="fab fa-line" style="font-size: 1.5rem; margin-right: 0.5rem;"></i>
-                    <span data-i18n="contact.lineButton">ติดต่อผ่าน LINE</span>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- <script
- src='https://cdn.jotfor.ms/agent/embedjs/0197199a3b4178d4bb63a5c27b1ec73702ca/embed.js?skipWelcome=1&maximizable=1'>
-</script> -->
+    <section id="mapContactSection" class="map-section language-transition" style="padding: 4rem 1rem; background: #f8f9fa;">
+        <!-- Content will be rendered by MapContactSection component -->
+    </section>
+    <!-- <script
+    src='https://cdn.jotfor.ms/agent/embedjs/0197199a3b4178d4bb63a5c27b1ec73702ca/embed.js?skipWelcome=1&maximizable=1'>
+    </script> -->
 
     <!-- Scripts -->
     <script src="./assets/js/banner-slideshow.js"></script>
@@ -438,6 +72,13 @@
     <script src="./assets/js/contact-manager.js"></script>
     <script src="./assets/js/unified-language-manager.js"></script>
     <script src="./assets/js/copy-discount-functions.js"></script>
+    
+    <!-- Components -->
+    <script src="./assets/js/components/DiscountCodeCard.js"></script>
+    <script src="./assets/js/components/GoldPriceSection.js"></script>
+    <script src="./assets/js/components/SecondaryBannerSlideshow.js"></script>
+    <script src="./assets/js/components/SpecialOfferSection.js"></script>
+    <script src="./assets/js/components/MapContactSection.js"></script>
 
     <!-- Calculator -->
     <script src="./assets/js/common.js"></script>
@@ -458,36 +99,6 @@
         // Calculator initialization
         document.addEventListener('DOMContentLoaded', function() {
             new GemApp.GoldSilverCalculator('calculator-app');
-        });
-        
-        // Quick fix for secondary banner images  
-        document.addEventListener('DOMContentLoaded', function() {
-            const secondaryContainer = document.getElementById('secondaryBanner');
-            if (secondaryContainer) {
-                const images = [
-                    'public/Rich Menu_01.jpg',
-                    'public/banner-2.jpg', 
-                    'public/Banner-01.jpg',
-                    'public/get-well-soon.jpg'
-                ];
-                
-                let currentIndex = 0;
-                
-                const updateBanner = () => {
-                    const currentImage = images[currentIndex];
-                    console.log('Loading image:', currentImage);
-                    secondaryContainer.style.backgroundImage = `url('${currentImage}')`;
-                    secondaryContainer.style.backgroundSize = 'contain';
-                    secondaryContainer.style.backgroundPosition = 'center center';
-                    secondaryContainer.style.backgroundRepeat = 'no-repeat';
-                    secondaryContainer.style.width = '100%';
-                    secondaryContainer.style.height = '300px';
-                    currentIndex = (currentIndex + 1) % images.length;
-                };
-                
-                updateBanner();
-                setInterval(updateBanner, 4000);
-            }
         });
     </script>
 </body>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified Page - Components via GitHub</title>
+    
+    <!-- Tailwind CSS + daisyUI CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS Files from GitHub -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/css/banner-slideshow.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/css/gold-price.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/css/main.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/css/countdown.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/css/page-styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/css/calculator.css">
+    
+</head>
+<body>    
+    <!-- Section 1: Banner Slideshow -->
+    <section id="bannerSection" class="">
+        <div class="banner-slideshow" id="mainBanner">
+            <!-- Content will be injected by JavaScript -->
+        </div>
+    </section>
+    
+    <!-- Section 2: Gold Price Component -->
+    <section id="goldPriceSection" class="section-spacing language-transition" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding-top: 2rem;">
+        <!-- Content will be rendered by GoldPriceSection component -->
+    </section>
+
+    <!-- Section 3: Gold Calculator Component -->
+    <div id="calculator-app"></div>
+
+    <!-- Section 4: Secondary Banner Slideshow -->
+    <section id="secondaryBannerSection" class="">
+        <div class="secondary-banner-slideshow" id="secondaryBanner" style="width: 100vw; margin-left: calc(50% - 50vw); height: 400px; position: relative; overflow: hidden;">
+            <!-- Content will be injected by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Section 5: Special Offer Section -->
+    <section id="specialOfferSection" class="section-spacing language-transition" style="background-image: url('https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/public/section-bg-simple.svg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+        <!-- Content will be rendered by SpecialOfferSection component -->
+    </section>
+
+    <!-- Section 6 Map & Contact -->
+    <section id="mapContactSection" class="map-section language-transition" style="padding: 4rem 1rem; background: #f8f9fa;">
+        <!-- Content will be rendered by MapContactSection component -->
+    </section>
+
+    <!-- GitHub Asset Helper (must load first) -->
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/components/GitHubAssetHelper.js"></script>
+    
+    <!-- Scripts from GitHub -->
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/banner-slideshow.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/i18n.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/gold-price-manager.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/thai-header-fix.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/discount-manager.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/countdown.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/copy-function.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/contact-manager.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/unified-language-manager.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/copy-discount-functions.js"></script>
+    
+    <!-- Components from GitHub -->
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/components/DiscountCodeCard.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/components/GoldPriceSection.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/components/SecondaryBannerSlideshow.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/components/SpecialOfferSection.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/components/MapContactSection.js"></script>
+
+    <!-- Calculator from GitHub -->
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/common.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0/assets/js/calculator.js"></script>
+
+    <script>
+        // Global configuration for GitHub assets
+        window.GITHUB_ASSETS_BASE = 'https://cdn.jsdelivr.net/gh/teerayutht/new-gem-2025@v1.0.0';
+        
+        // Scroll to Special Offer Section function
+        function scrollToSpecialOffer() {
+            const specialOfferSection = document.getElementById('specialOfferSection');
+            if (specialOfferSection) {
+                specialOfferSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+        // Calculator initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            new GemApp.GoldSilverCalculator('calculator-app');
+        });
+    </script>
+</body>
+</html>

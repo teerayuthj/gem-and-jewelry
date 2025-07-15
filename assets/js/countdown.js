@@ -39,12 +39,10 @@ class CountdownTimer {
     
     waitForI18nAndStart() {
         if (this.isInitialized) {
-            console.log('Countdown: Already initialized, skipping');
             return;
         }
         
         if (window.i18nReady && typeof i18n !== 'undefined' && i18n.translations && Object.keys(i18n.translations).length > 0) {
-            console.log('Countdown: I18n loaded, starting countdown');
             this.isInitialized = true;
             this.updateCountdown();
             this.startCountdown();
@@ -52,7 +50,6 @@ class CountdownTimer {
             // Listen for i18n ready event
             document.addEventListener('i18nReady', () => {
                 if (!this.isInitialized) {
-                    console.log('Countdown: Received i18nReady event');
                     this.isInitialized = true;
                     this.updateCountdown();
                     this.startCountdown();
@@ -76,21 +73,25 @@ class CountdownTimer {
     
     setupDates() {
         // Safely update elements if they exist
-        if (this.elements.startDate) {
+        if (this.config && this.elements.startDate) {
             this.elements.startDate.textContent = this.config.startDate;
         }
-        if (this.elements.endDate) {
+        if (this.config && this.elements.endDate) {
             this.elements.endDate.textContent = this.config.endDate;
         }
-        if (this.elements.expiryDate) {
+        if (this.config && this.elements.expiryDate) {
             this.elements.expiryDate.textContent = this.config.endDate;
         }
-        if (this.elements.discountCode) {
+        if (this.config && this.elements.discountCode) {
             this.elements.discountCode.value = this.config.discountCode;
         }
     }
     
     updateCountdown() {
+        if (!this.config) {
+            return;
+        }
+        
         const startDate = this.parseDate(this.config.startDate);
         const endDate = this.parseDate(this.config.endDate);
         const endDateWithTime = new Date(endDate);
@@ -275,18 +276,20 @@ class CountdownTimer {
         this.intervalId = setInterval(() => {
             this.updateCountdown();
         }, 1000);
-        
-        console.log('Countdown: Started successfully');
     }
 }
 
 // Initialize countdown when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    const promotionConfig = {
-        startDate: "30/06/2025",
-        endDate: "28/07/2025",
-        discountCode: "AUS100THB"
-    };
-    
-    new CountdownTimer(promotionConfig);
-});
+// Disabled: SpecialOfferSection จะเรียกใช้เอง
+// document.addEventListener('DOMContentLoaded', function() {
+//     const promotionConfig = {
+//         startDate: "30/06/2025",
+//         endDate: "28/07/2025",
+//         discountCode: "AUS100THB"
+//     };
+//     
+//     // รอให้ SpecialOfferSection render เสร็จก่อน
+//     setTimeout(() => {
+//         new CountdownTimer(promotionConfig);
+//     }, 500);
+// });
