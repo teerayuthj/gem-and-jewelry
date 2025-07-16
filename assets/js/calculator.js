@@ -80,6 +80,7 @@ class GoldSilverCalculator {
         const translations = {
             th: {
                 calculator: {
+                    title: "คำนวณราคาทองคำและแท่งเงิน",
                     metalTypes: {
                         gold: "🥇 ทองคำ",
                         silver: "🥈 แท่งเงิน"
@@ -117,6 +118,7 @@ class GoldSilverCalculator {
             },
             en: {
                 calculator: {
+                    title: "Gold & Silver Price Calculator",
                     metalTypes: {
                         gold: "🥇 Gold",
                         silver: "🥈 Silver"

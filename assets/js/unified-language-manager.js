@@ -80,37 +80,12 @@ class UnifiedLanguageManager {
     
     async initializeBanner() {
         return new Promise((resolve) => {
-            const initBanner = () => {
-                const container = document.getElementById('mainBanner');
-                if (container && window.BannerSlideshow) {
-                    try {
-                        container.innerHTML = '';
-                        container.className = 'banner-slideshow banner-initialized';
-                        
-                        const banner = new BannerSlideshow({
-                            container: container,
-                            autoPlayDuration: 6000
-                        });
-                        
-                        this.components.banner = banner;
-                        window.bannerSlideshow = banner;
-                        
-                        console.log('Main banner slideshow initialized');
-                        
-                        // Initialize secondary banner
-                        this.initializeSecondaryBanner();
-                        
-                        resolve(banner);
-                    } catch (error) {
-                        console.error('Banner initialization failed:', error);
-                        resolve(null);
-                    }
-                } else {
-                    setTimeout(initBanner, 100);
-                }
-            };
+            console.log('UnifiedLanguageManager: Skipping banner initialization - handled by banner-slideshow.js');
             
-            initBanner();
+            // Just initialize secondary banner
+            this.initializeSecondaryBanner();
+            
+            resolve(null);
         });
     }
     

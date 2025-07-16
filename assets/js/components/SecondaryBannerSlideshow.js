@@ -30,9 +30,8 @@ class SecondaryBannerSlideshow {
         if (!container) return;
 
         const currentImage = this.images[this.currentIndex];
-        const imagePath = window.GitHubAssets ? window.GitHubAssets.getImagePath(currentImage) : currentImage;
         
-        container.style.backgroundImage = `url('${imagePath}')`;
+        container.style.backgroundImage = `url('${currentImage}')`;
         container.style.backgroundSize = 'contain';
         container.style.backgroundPosition = 'center center';
         container.style.backgroundRepeat = 'no-repeat';
@@ -67,5 +66,9 @@ class SecondaryBannerSlideshow {
 
 // Auto-initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    new SecondaryBannerSlideshow();
+    // ตรวจสอบว่า secondary banner container มีอยู่หรือไม่
+    const secondaryContainer = document.getElementById('secondaryBanner');
+    if (secondaryContainer) {
+        new SecondaryBannerSlideshow();
+    }
 });

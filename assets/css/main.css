@@ -3,6 +3,18 @@ body {
     font-family: 'Prompt', sans-serif;
 }
 
+/* Override DaisyUI footer styles */
+.footer {
+    display: block !important;
+    width: auto !important;
+    grid-auto-flow: unset !important;
+    place-items: unset !important;
+    column-gap: unset !important;
+    row-gap: unset !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+}
+
 .text-sm {
     font-size: 1rem !important;
     line-height: 2rem !important;
@@ -136,6 +148,7 @@ img, video {
     
     .text-2xl {
         font-size: 1.8rem !important;
+        padding-top: 20px;
     }
     
     /* Countdown numbers smaller on mobile */

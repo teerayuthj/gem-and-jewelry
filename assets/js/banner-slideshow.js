@@ -1,13 +1,30 @@
 // Modern Banner Slideshow Component with Multi-language Support
 class BannerSlideshow {
     constructor(options = {}) {
+        // Singleton pattern - prevent multiple instances
+        if (BannerSlideshow.instance) {
+            console.log('Banner slideshow instance already exists, returning existing instance');
+            return BannerSlideshow.instance;
+        }
+        
+        // ลบ duplicate containers ก่อนสร้าง
+        const allBanners = document.querySelectorAll('.banner-slideshow');
+        if (allBanners.length > 1) {
+            console.log('Removing duplicate banner containers before initialization');
+            allBanners.forEach((banner, index) => {
+                if (index > 0) {
+                    banner.remove();
+                }
+            });
+        }
+        
         this.container = options.container || document.querySelector('.banner-slideshow');
         // Use unified language key, fallback to banner-specific key, then default to 'en'
         this.currentLang = localStorage.getItem('language') || localStorage.getItem('bannerLanguage') || 'en';
         this.translations = {};
         this.isLanguageSwitching = false;
         this.slideImages = [
-            'https://raw.githubusercontent.com/teerayuthj/gem-and-jewelry/main/public/Banner-01.jpg',
+            './public/website-01.jpg',
             'https://raw.githubusercontent.com/teerayuthj/gem-and-jewelry/main/public/1-2.jpg',
             'https://raw.githubusercontent.com/teerayuthj/gem-and-jewelry/main/public/offer.png',
             'https://raw.githubusercontent.com/teerayuthj/gem-and-jewelry/main/public/ausiris-next-2025.png'
@@ -38,6 +55,9 @@ class BannerSlideshow {
         
         this.init();
         this.setupLanguageSync();
+        
+        // Store as singleton instance
+        BannerSlideshow.instance = this;
     }
     
     async init() {
@@ -69,6 +89,17 @@ class BannerSlideshow {
             
             // รีเซ็ต CSS classes
             this.container.className = 'banner-slideshow';
+        }
+        
+        // ลบ duplicate containers บน mobile
+        const allBanners = document.querySelectorAll('.banner-slideshow');
+        if (allBanners.length > 1) {
+            console.log('Found multiple banner containers, removing duplicates');
+            allBanners.forEach((banner, index) => {
+                if (index > 0) {
+                    banner.remove();
+                }
+            });
         }
     }
     
@@ -527,6 +558,9 @@ class BannerSlideshow {
             window.bannerSlideshow = null;
         }
         
+        // Clear singleton instance
+        BannerSlideshow.instance = null;
+        
         // Clear all properties
         this.container = null;
         this.translations = null;
@@ -551,11 +585,14 @@ class BannerSlideshow {
     }
 }
 
-// Auto-initialize if container exists (only if not already initialized)
+// Auto-initialize banner slideshow
 document.addEventListener('DOMContentLoaded', () => {
     const bannerContainer = document.querySelector('.banner-slideshow');
-    if (bannerContainer && !window.bannerSlideshow) {
+    if (bannerContainer && !window.bannerSlideshow && !BannerSlideshow.instance) {
+        console.log('Initializing banner slideshow');
         window.bannerSlideshow = new BannerSlideshow();
+    } else if (window.bannerSlideshow || BannerSlideshow.instance) {
+        console.log('Banner slideshow already exists, skipping initialization');
     }
 });
 

@@ -14,7 +14,7 @@ class GoldPriceSection {
 
         container.innerHTML = `
             <!-- Quick Discount Code Button -->
-            <div class="text-center px-8">
+            <div class="text-center py-8">
                 <button onclick="scrollToSpecialOffer()" class="btn btn-lg" style="background: linear-gradient(135deg, #FFD700, #FFA500); border: none; color: #333; font-weight: bold; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); transition: all 0.3s ease; border-radius: 50px; padding: 12px 24px;">
                     <span class="text-lg font-bold" data-lang="th">
                         🎫 เก็บโค้ดส่วนลดคลิกที่นี่
