@@ -1,10 +1,10 @@
 class SecondaryBannerSlideshow {
     constructor() {
         this.images = [
-            'Rich Menu_01.jpg',
-            'banner-2.jpg', 
-            'Banner-01.jpg',
-            'get-well-soon.jpg'
+            'http://www.ausiris.co.th/content/dam/ausirisgold/icon/rich-menu_01.jpg',
+            'http://www.ausiris.co.th/content/dam/ausirisgold/icon/rich-menu_mto_02.jpg', 
+            'http://www.ausiris.co.th/content/dam/ausirisgold/icon/rich-menu_01.jpg',
+            'http://www.ausiris.co.th/content/dam/ausirisgold/icon/rich-menu_mto_02.jpg'
         ];
         this.currentIndex = 0;
         this.intervalId = null;
@@ -30,7 +30,7 @@ class SecondaryBannerSlideshow {
         if (!container) return;
 
         const currentImage = this.images[this.currentIndex];
-        const imagePath = window.GitHubAssets ? window.GitHubAssets.getImagePath(currentImage) : `public/${currentImage}`;
+        const imagePath = window.GitHubAssets ? window.GitHubAssets.getImagePath(currentImage) : currentImage;
         
         container.style.backgroundImage = `url('${imagePath}')`;
         container.style.backgroundSize = 'contain';

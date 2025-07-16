@@ -120,10 +120,10 @@ class UnifiedLanguageManager {
             try {
                 // Secondary banner images only (no text content)
                 const bannerImages = [
-                    './public/Rich Menu_01.jpg',
-                    './public/banner-2.jpg', 
-                    './public/Banner-01.jpg',
-                    './public/get-well-soon.jpg'
+                    'http://www.ausiris.co.th/content/dam/ausirisgold/icon/rich-menu_01.jpg',
+                    'http://www.ausiris.co.th/content/dam/ausirisgold/icon/rich-menu_mto_02.jpg', 
+                    'http://www.ausiris.co.th/content/dam/ausirisgold/icon/rich-menu_01.jpg',
+                    'http://www.ausiris.co.th/content/dam/ausirisgold/icon/rich-menu_mto_02.jpg'
                 ];
                 
                 let currentSlide = 0;
