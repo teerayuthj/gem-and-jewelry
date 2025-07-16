@@ -25,7 +25,6 @@ class I18nManager {
             // Comprehensive fallback translations
             this.translations = {
                 th: {
-                    title: "ตัวจับเวลานับถอยหลัง - ข้อเสนอพิเศษ",
                     offer: {
                         header: "🎉 ข้อเสนอพิเศษวันนี้เท่านั้น! 🎉",
                         description: "สั่งซื้อภายในวันนี้ รับส่วนลด 100 บาท",
@@ -35,7 +34,7 @@ class I18nManager {
                         copyError: "คัดลอกโค้ด:",
                         codeExpiry: "⏰ โค้ดหมดอายุ:",
                         promotionPeriod: "ระยะเวลาโปรโมชั่น",
-                        discountCode: "AUS100TH"
+                        discountCode: "AUS50THB"
                     },
                     countdown: {
                         label: "⏳ เหลือเวลาอีก:",
@@ -75,7 +74,6 @@ class I18nManager {
                     }
                 },
                 en: {
-                    title: "Countdown Timer - Special Offer",
                     offer: {
                         header: "🎉 Today Only Special Offer! 🎉",
                         description: "Order today and get 100 THB discount",
@@ -85,7 +83,7 @@ class I18nManager {
                         copyError: "Copy code:",
                         codeExpiry: "⏰ Code expires:",
                         promotionPeriod: "Promotion Period",
-                        discountCode: "AUS100TH"
+                        discountCode: "AUS50THB"
                     },
                     countdown: {
                         label: "⏳ Time remaining:",
@@ -177,15 +175,6 @@ class I18nManager {
             const translation = this.getText(key);
             element.value = translation;
         });
-        
-        // Update page title
-        document.title = this.getText('title');
-        
-        // Update meta title if exists
-        const metaTitle = document.querySelector('title');
-        if (metaTitle) {
-            metaTitle.textContent = this.getText('title');
-        }
         
         // Handle language-specific elements
         document.querySelectorAll('[data-lang]').forEach(element => {

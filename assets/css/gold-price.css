@@ -144,111 +144,7 @@
     .price-amount {
         font-size: 16px;
     }
-    
-    /* Specific fix for iPhone 12 Pro (390px) */
-    @media (max-width: 395px) and (min-width: 375px) {
-        .gold-price-container .price-details {
-            min-width: 150px !important;
-            flex-direction: column !important;
-            align-items: flex-end !important;
-            gap: 0.2rem !important;
-        }
-        
-        .gold-price-container .price-amount {
-            font-size: 0.8rem !important;
-            white-space: nowrap !important;
-            text-align: right !important;
-        }
-        
-        /* Hide only the text "เปลี่ยนแปลง/Change" but keep the numbers */
-        .gold-price-container .price-change-label {
-            display: none !important;
-        }
-        
-        /* Keep price change numbers visible and aligned */
-        .gold-price-container .price-change {
-            font-size: 0.7rem !important;
-            text-align: right !important;
-            width: 100% !important;
-        }
-        
-        /* Show sell price for better space utilization */
-        .gold-price-container .sell-price {
-            display: inline-block !important;
-            font-size: 0.75rem !important;
-            color: #dc2626 !important;
-            font-weight: 600 !important;
-        }
-        
-        .gold-price-container .gold-name {
-            font-size: 0.85rem !important;
-            max-width: 160px !important;
-            white-space: nowrap !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
-        }
-        
-        /* Fix header alignment for sell and change columns */
-        .gold-price-container .flex.gap-4 {
-            flex-direction: column !important;
-            align-items: flex-end !important;
-            gap: 0.2rem !important;
-            text-align: right !important;
-        }
-        
-        /* Ensure consistent right alignment for all price elements */
-        .gold-price-container .price-details > * {
-            text-align: right !important;
-            justify-content: flex-end !important;
-            align-items: flex-end !important;
-        }
-        
-        /* Ensure price row layout is consistent */
-        .gold-price-container .price-row {
-            flex-wrap: nowrap !important;
-            justify-content: space-between !important;
-        }
-    }
-    
-    /* Fix layout for screens smaller than 395px */
-    @media (max-width: 395px) {
-        .price-details {
-            min-width: 160px;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 0.2rem;
-        }
-        
-        .price-amount {
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
-        
-        .price-change {
-            font-size: 0.75rem;
-        }
-        
-        /* Reduce padding for more space */
-        .price-row {
-            padding: 0.5rem 0.75rem;
-        }
-        
-        /* Ensure gold name doesn't wrap */
-        .gold-name {
-            font-size: 0.9rem;
-            flex-shrink: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 180px;
-        }
-        
-        /* Ensure price row stays single line */
-        .price-row {
-            flex-wrap: nowrap;
-        }
-    }
-    
+
     /* Stack price and change vertically on very small screens */
     @media (max-width: 350px) {
         .price-details {
@@ -317,4 +213,7 @@
 
 .gold-price-container::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
+}
+#visiblePrices {
+    font-family: 'Prompt', sans-serif;
 }

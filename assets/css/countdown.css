@@ -1,4 +1,19 @@
-/* Countdown-specific CSS */
+/* Countdown-specific CSS with namespace protection */
+
+/* Special Offer Section Protection - Moderate Specificity */
+#specialOfferSection {
+    /* Minimal reset to prevent conflicts */
+    font-family: 'Prompt', sans-serif !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    display: block !important;
+    position: relative !important;
+}
+
+/* Minimal children reset */
+#specialOfferSection * {
+    box-sizing: border-box !important;
+}
 
 /* Enhanced Countdown Styling for Sales Motivation */
 .countdown-container {
@@ -42,10 +57,12 @@
     color: white !important;
 }
 
+
 @keyframes pulse-urgency {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.02); }
 }
+
 
 .countdown-item {
     position: relative;

@@ -3,6 +3,20 @@ body {
     font-family: 'Prompt', sans-serif;
 }
 
+.text-sm {
+    font-size: 1rem !important;
+    line-height: 2rem !important;
+}
+
+.text-xs {
+    font-size: 0.9rem !important;
+    line-height: 1.2rem !important;
+}
+
+img, video {
+    height: revert-layer !important;
+}
+
 /* Desktop adjustments */
 @media (min-width: 1024px) {
     .card-body {
@@ -113,15 +127,15 @@ body {
     }
     
     .text-lg {
-        font-size: 0.9rem !important;
+        font-size: 1.2rem !important;
     }
     
     .text-xl {
-        font-size: 1rem !important;
+        font-size: 1.5rem !important;
     }
     
     .text-2xl {
-        font-size: 1.2rem !important;
+        font-size: 1.8rem !important;
     }
     
     /* Countdown numbers smaller on mobile */

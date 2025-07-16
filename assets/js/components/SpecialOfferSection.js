@@ -20,7 +20,7 @@ class SpecialOfferSection {
                                 🎉 ข้อเสนอพิเศษวันนี้เท่านั้น! 🎉
                             </h1>
                             
-                            <img src="${window.GitHubAssets ? window.GitHubAssets.getImagePath('offer-02.png') : 'public/offer-02.png'}" alt="Order today and get 100 THB discount" class="w-full max-w-sm h-auto rounded-lg mx-auto mb-3">
+                            <img src="${window.GitHubAssets ? window.GitHubAssets.getImagePath('http://www.ausiris.co.th/content/dam/ausirisgold/icon/offer-02.png') : 'http://www.ausiris.co.th/content/dam/ausirisgold/icon/offer-02.png'}" alt="Order today and get 100 THB discount" class="w-full max-w-sm h-auto rounded-lg mx-auto mb-3">
                             
                             <div id="discountCodeCard"></div>
                             

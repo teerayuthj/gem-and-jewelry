@@ -7,10 +7,10 @@ class BannerSlideshow {
         this.translations = {};
         this.isLanguageSwitching = false;
         this.slideImages = [
-            './public/Banner-01.jpg',
-            './public/1-2.jpg',
-            './public/offer.png',
-            './public/ausiris-next-2025.png'
+            'https://raw.githubusercontent.com/teerayuthj/gem-and-jewelry/main/public/Banner-01.jpg',
+            'https://raw.githubusercontent.com/teerayuthj/gem-and-jewelry/main/public/1-2.jpg',
+            'https://raw.githubusercontent.com/teerayuthj/gem-and-jewelry/main/public/offer.png',
+            'https://raw.githubusercontent.com/teerayuthj/gem-and-jewelry/main/public/ausiris-next-2025.png'
         ];
         this.slideClasses = [
             'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black',

@@ -105,9 +105,9 @@ class GoldPriceManager {
                         updateTime: "Last updated",
                         showMore: "Show more",
                         showLess: "Show less",
-                        priceBuy: "Buy Price",
-                        priceSell: "Sell Price",
-                        priceChange: "Price Change",
+                        priceBuy: "Buy",
+                        priceSell: "Sell",
+                        priceChange: "Price",
                         goldTypes: {
                             ausitis965: "Ausitis 96.5%",
                             ausitis9999: "Ausitis 99.99%",
@@ -279,7 +279,7 @@ class GoldPriceManager {
                         this.realData.G965B?.offer || 0, 
                         this.yesterdayData?.G965B?.offer || 0
                     ),
-                    icon: './public/logo1.png'
+                    icon: 'http://www.ausiris.co.th/content/dam/ausirisgold/icon/Logo1.png'
                 },
                 {
                     id: 'ausitis9999',
@@ -289,7 +289,7 @@ class GoldPriceManager {
                         this.realData.G9999B?.offer || 0,
                         this.yesterdayData?.G9999B?.offer || 0
                     ),
-                    icon: './public/logo1.png'
+                    icon: 'http://www.ausiris.co.th/content/dam/ausirisgold/icon/Logo1.png'
                 },
                 {
                     id: 'spotGold',
@@ -299,7 +299,7 @@ class GoldPriceManager {
                         this.realData.G9999US?.offer || 0,
                         this.yesterdayData?.G9999US?.offer || 0
                     ),
-                    icon: './public/logo2.jpg'
+                    icon: 'http://www.ausiris.co.th/content/dam/ausirisgold/icon/Logo2.jpg'
                 }
             ],
             hiddenPrices: [
@@ -311,7 +311,7 @@ class GoldPriceManager {
                         this.realData.G9999KG?.offer || 0,
                         this.yesterdayData?.G9999KG?.offer || 0
                     ),
-                    icon: './public/Logo1.png'
+                    icon: 'http://www.ausiris.co.th/content/dam/ausirisgold/icon/Logo1.png'
                 },
                 {
                     id: 'goldChit',
@@ -321,7 +321,7 @@ class GoldPriceManager {
                         this.realData.G965B?.offer_asso || 0,
                         this.yesterdayData?.G965B?.offer_asso || 0
                     ),
-                    icon: './public/logo4.jpg'
+                    icon: 'http://www.ausiris.co.th/content/dam/ausirisgold/icon/logo4.jpg'
                 },
                 {
                     id: 'silverUsdOz',
@@ -331,7 +331,7 @@ class GoldPriceManager {
                         parseFloat(this.silverData.Silver?.offerspot || 0),
                         parseFloat(this.silverYesterdayData?.Silver?.offerspot || 0)
                     ),
-                    icon: './public/logo3.jpg'
+                    icon: 'http://www.ausiris.co.th/content/dam/ausirisgold/icon/Logo3.jpg'
                 },
                 {
                     id: 'silverThb',
@@ -341,7 +341,7 @@ class GoldPriceManager {
                         parseInt(this.silverData.Silver?.offer || 0),
                         parseInt(this.silverYesterdayData?.Silver?.offer || 0)
                     ),
-                    icon: './public/logo5.jpg'
+                    icon: 'http://www.ausiris.co.th/content/dam/ausirisgold/icon/logo5.jpg'
                 }
             ]
         };
@@ -545,7 +545,7 @@ class GoldPriceManager {
                             <h2 class="text-lg font-bold" data-gold-i18n="goldPrices.title">
                                 ${this.getText('goldPrices.title')}
                             </h2>
-                            <div class="flex gap-4 text-[12px]">
+                            <div class="flex gap-4 text-[12px] font-bold">
                                 <span data-gold-i18n="goldPrices.priceSell">${this.getText('goldPrices.priceSell')}</span>
                                 <span data-gold-i18n="goldPrices.priceChange" class="price-change-label">${this.getText('goldPrices.priceChange')}</span>
                             </div>

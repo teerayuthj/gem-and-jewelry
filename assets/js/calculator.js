@@ -75,15 +75,11 @@ class GoldSilverCalculator {
     }
 
     getTranslatedText(key) {
-        if (typeof window.i18nManager !== 'undefined') {
-            return window.i18nManager.getText(key);
-        }
-        
+        // Always prepare fallback translations first
         // Fallback translations
         const translations = {
             th: {
                 calculator: {
-                    title: "คำนวณราคาทองคำและแท่งเงิน",
                     metalTypes: {
                         gold: "🥇 ทองคำ",
                         silver: "🥈 แท่งเงิน"
@@ -121,7 +117,6 @@ class GoldSilverCalculator {
             },
             en: {
                 calculator: {
-                    title: "Gold & Silver Calculator",
                     metalTypes: {
                         gold: "🥇 Gold",
                         silver: "🥈 Silver"
@@ -159,18 +154,48 @@ class GoldSilverCalculator {
             }
         };
         
-        const keys = key.split('.');
-        let value = translations[this.currentLang];
+        // Function to get value from translations object
+        const getValueFromTranslations = (translations, lang, key) => {
+            const keys = key.split('.');
+            let value = translations[lang];
+            
+            for (const k of keys) {
+                if (value && value[k] !== undefined) {
+                    value = value[k];
+                } else {
+                    return null;
+                }
+            }
+            return value;
+        };
         
-        for (const k of keys) {
-            if (value && value[k] !== undefined) {
-                value = value[k];
-            } else {
-                return key;
+        // Try i18nManager first, then fallback
+        if (typeof window.i18nManager !== 'undefined' && window.i18nManager) {
+            try {
+                const i18nText = window.i18nManager.getText(key);
+                if (i18nText && i18nText !== key) {
+                    return i18nText;
+                }
+            } catch (e) {
+                console.warn('i18nManager failed for key:', key, e);
             }
         }
         
-        return value;
+        // Use fallback translations
+        const fallbackText = getValueFromTranslations(translations, this.currentLang, key);
+        if (fallbackText !== null) {
+            return fallbackText;
+        }
+        
+        // Final fallback - try English if Thai fails
+        if (this.currentLang !== 'en') {
+            const englishText = getValueFromTranslations(translations, 'en', key);
+            if (englishText !== null) {
+                return englishText;
+            }
+        }
+        
+        return key;
     }
 
     getGoldTypeText(key) {

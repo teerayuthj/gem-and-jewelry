@@ -1,8 +1,7 @@
 {
   "th": {
-    "title": "ตัวจับเวลานับถอยหลัง - ข้อเสนอพิเศษ",
     "offer": {
-      "header": "🎉 ข้อเสนอพิเศษวันนี้เท่านั้น! 🎉",
+      "header": "ข้อเสนอพิเศษวันนี้เท่านั้น!",
       "description": "สั่งซื้อภายในวันนี้ รับส่วนลด 100 บาท",
       "codeTitle": "🏷️ คัดลอกโค้ดส่วนลด",
       "copyButton": "คัดลอก",
@@ -10,7 +9,7 @@
       "copyError": "คัดลอกโค้ด:",
       "codeExpiry": "⏰ โค้ดหมดอายุ:",
       "promotionPeriod": "ระยะเวลาโปรโมชั่น",
-      "discountCode": "AUS100TH"
+      "discountCode": "AUS50THB"
     },
     "countdown": {
       "label": "⏳ เหลือเวลาอีก:",
@@ -87,9 +86,8 @@
     }
   },
   "en": {
-    "title": "Countdown Timer - Special Offer",
     "offer": {
-      "header": "🎉 Today Only Special Offer! 🎉",
+      "header": "Today Only Special Offer!",
       "description": "Order today and get 100 THB discount",
       "codeTitle": "🏷️ Copy Discount Code",
       "copyButton": "Copy",
@@ -97,7 +95,7 @@
       "copyError": "Copy code:",
       "codeExpiry": "⏰ Code expires:",
       "promotionPeriod": "Promotion Period",
-      "discountCode": "AUS100TH"
+      "discountCode": "AUS50THB"
     },
     "countdown": {
       "label": "⏳ Time remaining:",
