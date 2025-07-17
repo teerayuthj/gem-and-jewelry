@@ -151,9 +151,19 @@ img, video {
         padding-top: 20px;
     }
     
-    /* Countdown numbers smaller on mobile */
+    /* Countdown numbers properly sized on mobile */
     .countdown.font-mono {
-        font-size: 2.75rem !important;
+        font-size: 1.5rem !important;
+        font-weight: 900 !important;
+    }
+    
+    /* Force countdown numbers in Special Offer Section to be properly sized */
+    #specialOfferSection .countdown.font-mono,
+    #specialOfferSection .countdown-item .countdown {
+        font-size: 1.5rem !important;
+        font-weight: 900 !important;
+        color: white !important;
+        text-shadow: none !important;
     }
     
     .countdown-item .text-sm {

@@ -136,6 +136,262 @@ body, html {
     transform: translateY(-1px) scale(1.02) !important;
 }
 
+/* Special Offer Section Enhanced Styles */
+#specialOfferSection {
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+    min-height: auto;
+    isolation: isolate;
+    padding: 2rem 0;
+}
+
+#specialOfferSection::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    z-index: 1;
+}
+
+#specialOfferSection .hero {
+    position: relative;
+    z-index: 2;
+}
+
+/* Enhanced Card Styling */
+#specialOfferSection .card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    width: 95%;
+    max-width: 420px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+}
+
+#specialOfferSection .card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+}
+
+/* Enhanced Header with Animation */
+#specialOfferSection h1 {
+    color: white !important;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    position: relative;
+    font-size: 2.2rem !important;
+    font-weight: 800 !important;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+
+/* Special Offer Image Enhancement */
+#specialOfferSection img {
+    border-radius: 16px;
+    box-shadow: none;
+    transition: all 0.3s ease;
+    border: none;
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    margin-bottom: 1.5rem;
+}
+
+#specialOfferSection img:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Enhanced Stats Section */
+#specialOfferSection .stats {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.8) 0%, rgba(255, 140, 0, 0.7) 100%);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 6px 24px rgba(255, 215, 0, 0.2);
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 350px;
+    margin: 1.5rem auto;
+    padding: 1rem;
+}
+
+#specialOfferSection .stats:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.85) 0%, rgba(255, 140, 0, 0.75) 100%);
+}
+
+/* Enhanced Action Button */
+#specialOfferSection #mainActionBtn {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.9) 0%, rgba(5, 150, 105, 0.9) 100%);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    box-shadow: 0 6px 24px rgba(16, 185, 129, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-shadow: none;
+    width: 100%;
+    max-width: 350px;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+}
+
+#specialOfferSection #mainActionBtn:hover {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.95) 0%, rgba(4, 120, 87, 0.95) 100%);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+#specialOfferSection #mainActionBtn:active {
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+}
+
+/* Enhanced Text Styling for Better Readability */
+#specialOfferSection .stat-title {
+    color: rgba(0, 0, 0, 0.8) !important;
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.5);
+}
+
+#specialOfferSection .stat-value {
+    color: rgba(0, 0, 0, 0.9) !important;
+    font-weight: 800 !important;
+    font-size: 1.3rem !important;
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.5);
+}
+
+/* Discount Code Enhancement */
+#specialOfferSection #discountCode {
+    font-size: 1.4rem !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8) !important;
+    letter-spacing: 0.1em !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 2px solid #14b8a6 !important;
+}
+
+/* Copy Button Enhancement */
+#specialOfferSection .copy-btn {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    background: #14b8a6 !important;
+    color: white !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Countdown Label Enhancement */
+#specialOfferSection #countdownLabel {
+    color: rgba(0, 0, 0, 0.8) !important;
+    font-weight: 700 !important;
+    font-size: 1.4rem !important;
+    text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+/* Expiry Date Enhancement */
+#specialOfferSection .text-gray-800 {
+    color: rgba(0, 0, 0, 0.9) !important;
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.6) !important;
+}
+
+/* DiscountCodeCard Enhancements */
+#specialOfferSection #discountCodeCard .card-body h3 {
+    color: #14b8a6 !important;
+    font-size: 1.3rem !important;
+    font-weight: 700 !important;
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8) !important;
+}
+
+#specialOfferSection #discountCodeCard .text-warning {
+    color: #d97706 !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.8) !important;
+}
+
+#specialOfferSection #discountCodeCard .card {
+    background: rgba(255, 248, 220, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+}
+
+#specialOfferSection #discountCodeCard .card-body {
+    overflow: hidden;
+    position: relative;
+    padding: 1.5rem !important;
+}
+
+/* Fix join group layout */
+#specialOfferSection #discountCodeCard .join {
+    display: flex !important;
+    width: 100% !important;
+    max-width: 350px !important;
+    border-radius: 0.5rem !important;
+    overflow: hidden !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+}
+
+#specialOfferSection #discountCodeCard .join-item {
+    border-radius: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+#specialOfferSection #discountCodeCard .join-item:first-child {
+    border-radius: 0.5rem 0 0 0.5rem !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+}
+
+#specialOfferSection #discountCodeCard .join-item:last-child {
+    border-radius: 0 0.5rem 0.5rem 0 !important;
+    flex-shrink: 0 !important;
+    width: auto !important;
+    min-width: 85px !important;
+    max-width: 85px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+}
+
+/* Additional container safety */
+#specialOfferSection #discountCodeCard {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .unified-lang-btn {
@@ -160,5 +416,116 @@ body, html {
     
     .secondary-banner-subtitle {
         font-size: 1rem;
+    }
+    
+    /* Special Offer Mobile Adjustments */
+    #specialOfferSection h1 {
+        font-size: 1.8rem !important;
+    }
+    
+    #specialOfferSection #discountCode {
+        font-size: 1.2rem !important;
+        font-weight: 700 !important;
+    }
+    
+    #specialOfferSection .copy-btn {
+        font-size: 0.9rem !important;
+    }
+    
+    #specialOfferSection #countdownLabel {
+        font-size: 1.2rem !important;
+    }
+    
+    #specialOfferSection .stat-title {
+        font-size: 1rem !important;
+    }
+    
+    #specialOfferSection .stat-value {
+        font-size: 1.1rem !important;
+    }
+    
+    #specialOfferSection #discountCodeCard .card-body h3 {
+        font-size: 1.1rem !important;
+    }
+    
+    #specialOfferSection #discountCodeCard .text-warning {
+        font-size: 0.9rem !important;
+    }
+    
+    /* Mobile join fixes */
+    #specialOfferSection #discountCodeCard .join {
+        max-width: 320px !important;
+        margin: 0 auto !important;
+    }
+    
+    #specialOfferSection #discountCodeCard .join-item:last-child {
+        min-width: 70px !important;
+        font-size: 0.8rem !important;
+    }
+    
+    #specialOfferSection .hero {
+        min-height: auto !important;
+        padding: 1rem !important;
+    }
+    
+    #specialOfferSection .card-body {
+        padding: 1.5rem 1rem !important;
+    }
+    
+    #specialOfferSection .card {
+        width: 95%;
+        max-width: 350px;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+    
+    #specialOfferSection img {
+        max-width: 260px;
+        margin-bottom: 1rem;
+    }
+    
+    #specialOfferSection .stats {
+        max-width: 320px;
+        margin: 1rem auto;
+        padding: 0.8rem;
+    }
+    
+    #specialOfferSection #mainActionBtn {
+        max-width: 320px;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        margin-top: 1rem;
+    }
+    
+    #specialOfferSection::before {
+        background-attachment: scroll;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    #specialOfferSection #discountCodeCard .join {
+        max-width: 260px !important;
+    }
+    
+    #specialOfferSection #discountCodeCard .join-item:last-child {
+        min-width: 60px !important;
+        max-width: 60px !important;
+        width: 60px !important;
+        font-size: 0.7rem !important;
+        padding: 0.4rem 0.2rem !important;
+    }
+    
+    #specialOfferSection #discountCodeCard .join-item:first-child {
+        max-width: calc(100% - 60px) !important;
+    }
+    
+    #specialOfferSection .card {
+        width: 98%;
+        max-width: 400px;
+    }
+    
+    #specialOfferSection .card-body {
+        padding: 1rem 0.5rem !important;
     }
 }

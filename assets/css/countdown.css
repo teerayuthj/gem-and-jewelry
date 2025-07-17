@@ -19,42 +19,111 @@
 .countdown-container {
     position: relative;
     animation: pulse-urgency 2s infinite;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 1rem 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 360px;
+    margin: 1.5rem auto;
 }
+
 
 /* Default countdown item styling */
 .countdown-item {
-    background: linear-gradient(135deg, #ff4757, #ff3742) !important;
+    background: linear-gradient(135deg, rgba(255, 71, 87, 0.9), rgba(255, 55, 66, 0.9)) !important;
+    backdrop-filter: blur(10px);
     color: white !important;
     box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    position: relative;
+    overflow: hidden;
+    width: 80px !important;
+    height: 80px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0.5rem !important;
 }
 
 /* Ensure countdown text is visible */
 .countdown-item .countdown {
     color: white !important;
+    font-size: 3rem !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
 }
 
 .countdown-item span {
     color: white !important;
 }
 
-/* Force countdown numbers to be visible */
+/* Force countdown numbers to be visible and properly sized */
 #countdown-days,
 #countdown-hours,
 #countdown-minutes,
 #countdown-seconds {
     color: white !important;
-    font-weight: bold !important;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3) !important;
+    font-weight: 900 !important;
+    font-size: 1.8rem !important;
+    text-shadow: none !important;
+    line-height: 1 !important;
+    display: block !important;
 }
 
-/* Fix daisyUI countdown component */
+/* Countdown container numbers enhancement */
+.countdown-item .countdown span,
+.countdown-item .font-mono {
+    font-size: 1.8rem !important;
+    font-weight: 900 !important;
+    color: white !important;
+    text-shadow: none !important;
+}
+
+/* Fix daisyUI countdown component with proper sizing */
 .countdown-item .countdown span {
     color: white !important;
+    font-size: 1.8rem !important;
+    font-weight: 900 !important;
+    text-shadow: none !important;
 }
 
 /* Override any daisyUI styles */
 .countdown-item .countdown span::before {
     color: white !important;
+    font-size: 1.8rem !important;
+    font-weight: 900 !important;
+}
+
+/* Additional overrides for all countdown elements */
+#specialOfferSection .countdown-item .countdown,
+#specialOfferSection .countdown-item .font-mono,
+#specialOfferSection .countdown-item span[style*="--value"] {
+    font-size: 1.8rem !important;
+    font-weight: 900 !important;
+    color: white !important;
+    text-shadow: none !important;
+    line-height: 1 !important;
+}
+
+/* Force all countdown numbers in Special Offer Section */
+#specialOfferSection .countdown-container .countdown-item .countdown span {
+    font-size: 1.8rem !important;
+    font-weight: 900 !important;
+    color: white !important;
+    text-shadow: none !important;
+}
+
+/* Countdown labels styling */
+.countdown-item .text-sm {
+    font-size: 0.65rem !important;
+    font-weight: 600 !important;
+    color: white !important;
+    margin-top: 0.2rem !important;
 }
 
 
@@ -68,6 +137,13 @@
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
+}
+
+.countdown-item:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 8px 20px rgba(255, 71, 87, 0.4);
+    background: linear-gradient(135deg, rgba(255, 71, 87, 0.95), rgba(255, 55, 66, 0.95)) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
 }
 
 .countdown-item::before {
@@ -155,10 +231,40 @@
 @media (max-width: 768px) {
     .countdown-container {
         animation: pulse-urgency 1.5s infinite;
+        padding: 0.8rem 0.3rem;
+        margin: 1rem auto;
+        max-width: 300px;
     }
     
+    
     .countdown-item {
-        transform: scale(0.9);
+        width: 70px !important;
+        height: 70px !important;
+        padding: 0.4rem !important;
+    }
+    
+    .countdown-item .countdown {
+        font-size: 1.5rem !important;
+    }
+    
+    .countdown-item .countdown span {
+        font-size: 1.5rem !important;
+        font-weight: 900 !important;
+    }
+    
+    #specialOfferSection .countdown-item .countdown,
+    #specialOfferSection .countdown-item .font-mono,
+    #specialOfferSection .countdown-item span[style*="--value"] {
+        font-size: 1.5rem !important;
+        font-weight: 900 !important;
+    }
+    
+    .countdown-item .text-sm {
+        font-size: 0.6rem !important;
+    }
+    
+    .countdown-item:hover {
+        transform: translateY(-2px) scale(0.95);
     }
 }
 

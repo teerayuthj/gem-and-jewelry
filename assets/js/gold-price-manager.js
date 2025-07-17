@@ -56,7 +56,7 @@ class GoldPriceManager {
         const container = document.getElementById('goldPriceContainer');
         if (container) {
             container.innerHTML = `
-                <div class="max-w-md mx-auto rounded-xl p-8 text-center">
+                <div class="w-full mx-auto rounded-xl p-8 text-center">
                     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto"></div>
                     <p class="mt-4 text-gray-600">กำลังโหลดข้อมูลราคาทองจริง...</p>
                     <p class="mt-2 text-xs text-gray-500">กำลังเชื่อมต่อ API...</p>
@@ -522,7 +522,7 @@ class GoldPriceManager {
         const priceChangeText = this.currentLang === 'th' ? 'เปลี่ยนแปลง' : 'Change';
 
         container.innerHTML = `
-            <div class="max-w-md mx-auto">
+            <div class="w-full mx-auto">
                 <!-- Date Header - Standalone with Gradient -->
                 <div class="mb-4 p-3 text-center rounded-lg" style="background: linear-gradient(135deg, #C2B061 0%, #AD8C2D 100%);">
                     <p class="text-white text-sm font-medium" id="goldDateHeader">
