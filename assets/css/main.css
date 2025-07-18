@@ -429,4 +429,45 @@ img, video {
         -moz-appearance: none !important;
         appearance: none !important;
     }
+    
+    /* Center social media icons and logo in mobile footer */
+    .footer-detail {
+        text-align: center !important;
+    }
+    
+    .footer-detail .footer-logo {
+        display: block !important;
+        margin: 0 auto 1rem auto !important;
+        text-align: center !important;
+        padding: 10px !important;
+    }
+    
+    .footer-detail .footer-logo img {
+        display: block !important;
+        margin: 0 auto !important;
+        text-align: center !important;
+    }
+    
+    .footer-detail .footer-address {
+        text-align: center !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    /* Center social media icons container */
+    .footer-detail div[style*="margin: 12px 0 12px 0"] {
+        text-align: center !important;
+        justify-content: center !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 1rem !important;
+    }
+    
+    /* Center social media icons */
+    .footer-detail .social-i {
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin: 0 !important;
+        padding: 10px !important;
+    }
 }

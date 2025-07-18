@@ -33,7 +33,7 @@ class MapContactSection {
                     </div>
                     
                     <!-- Contact Information -->
-                    <div style="flex: 1; min-width: 300px; padding: 1.5rem; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                    <div style="flex: 1; min-width: 300px; padding: 4rem 2rem; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
                         <h3 style="color: #2c3e50; margin-bottom: 1.5rem; font-size: 2.5rem; font-weight: 600;" 
                             data-i18n="contact.companyName">
                             Ausiris Company Limited
@@ -64,7 +64,7 @@ class MapContactSection {
                             </div>
                         </div>
                         
-                        <a href="https://page.line.me/lgy9487c?openQrModal=true" 
+                        <a href="https://page.line.me/spf7703j?openQrModal=true" 
                            target="_blank" 
                            rel="noopener noreferrer"
                            style="display: inline-flex; align-items: center; background: #00c300; color: white; padding: 0.8rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; font-size: 1.7rem; margin-top: 1rem;">
