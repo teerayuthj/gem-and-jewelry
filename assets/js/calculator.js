@@ -6,6 +6,7 @@ class GoldSilverCalculator {
         this.currentGoldType = '96.5_osiris';
         this.currentUnit = 'baht';
         this.currentLang = 'th';
+        this.updateInterval = null;
         
         // API URLs
         this.apiUrls = {
@@ -43,10 +44,34 @@ class GoldSilverCalculator {
         this.updateDisplay();
         this.updateLastUpdated();
         
-        // Auto-update every 5 seconds
-        setInterval(() => {
+        // Auto-update every 60 seconds to reduce CPU usage
+        this.updateInterval = setInterval(() => {
             this.fetchPricesFromAPI();
-        }, 5000);
+        }, 60000);
+        
+        // Add Page Visibility API to pause updates when tab is not active
+        this.setupVisibilityHandler();
+    }
+    
+    setupVisibilityHandler() {
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // Tab is hidden, clear interval to save CPU
+                if (this.updateInterval) {
+                    clearInterval(this.updateInterval);
+                    this.updateInterval = null;
+                }
+            } else {
+                // Tab is visible again, restart interval
+                if (!this.updateInterval) {
+                    this.updateInterval = setInterval(() => {
+                        this.fetchPricesFromAPI();
+                    }, 60000);
+                    // Fetch immediately when tab becomes visible
+                    this.fetchPricesFromAPI();
+                }
+            }
+        });
     }
 
     setupLanguageSupport() {
@@ -517,6 +542,18 @@ class GoldSilverCalculator {
             this.simulatePriceUpdate();
             this.updateDisplay();
             this.updateLastUpdated();
+            
+            // If too many errors, increase interval to reduce load
+            this.errorCount = (this.errorCount || 0) + 1;
+            if (this.errorCount >= 3) {
+                console.warn('Multiple API errors detected, reducing update frequency');
+                if (this.updateInterval) {
+                    clearInterval(this.updateInterval);
+                    this.updateInterval = setInterval(() => {
+                        this.fetchPricesFromAPI();
+                    }, 300000); // 5 minutes on error
+                }
+            }
         }
     }
 
@@ -539,6 +576,14 @@ class GoldSilverCalculator {
         const silverVariation = (Math.random() - 0.5) * 500;
         this.prices.silver['bar_99.99'].offer = Math.max(34000, 35391 + silverVariation);
         this.prices.silver['bar_99.99'].bid = this.prices.silver['bar_99.99'].offer - 300;
+    }
+    
+    // Cleanup method
+    destroy() {
+        if (this.updateInterval) {
+            clearInterval(this.updateInterval);
+            this.updateInterval = null;
+        }
     }
 
     updateLanguageContent() {

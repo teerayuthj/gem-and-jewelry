@@ -19,10 +19,14 @@ body, html {
 }
 
 .banner-content {
-    background: rgba(0, 0, 0, 0.3) !important;
-    backdrop-filter: blur(2px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.25) !important;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(10px) saturate(120%) !important;
+    border: none !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    border-color: transparent !important;
+    outline: none !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
 }
 
 .banner-title {
@@ -216,7 +220,7 @@ body, html {
 
 /* Enhanced Stats Section */
 #specialOfferSection .stats {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.8) 0%, rgba(255, 140, 0, 0.7) 100%);
+    background: linear-gradient(135deg, #FFD700, #FFA500);
     backdrop-filter: blur(15px);
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.25);
@@ -249,7 +253,6 @@ body, html {
     max-width: 350px;
     padding: 1rem 2rem;
     font-size: 1.1rem;
-    margin-top: 1.5rem;
 }
 
 #specialOfferSection #mainActionBtn:hover {
@@ -348,6 +351,7 @@ body, html {
     overflow: hidden;
     position: relative;
     padding: 1.5rem !important;
+    
 }
 
 /* Fix join group layout */
@@ -389,6 +393,7 @@ body, html {
     width: 100% !important;
     max-width: 100% !important;
     overflow: hidden !important;
+    padding: 1rem;
 }
 
 
@@ -424,7 +429,7 @@ body, html {
     }
     
     #specialOfferSection #discountCode {
-        font-size: 1.2rem !important;
+        font-size: 1.5rem !important;
         font-weight: 700 !important;
     }
     

@@ -140,32 +140,41 @@ class CountdownTimer {
     }
     
     setCountdownValues(days, hours, minutes, seconds) {
-        // Safely update countdown elements if they exist
-        if (this.elements.days) {
+        // Cache previous values to avoid unnecessary DOM updates
+        if (!this.previousValues) {
+            this.previousValues = { days: -1, hours: -1, minutes: -1, seconds: -1 };
+        }
+        
+        // Only update elements if values have changed
+        if (this.elements.days && this.previousValues.days !== days) {
             this.elements.days.style.setProperty('--value', days);
             this.elements.days.textContent = days;
             this.elements.days.setAttribute('aria-label', days);
+            this.previousValues.days = days;
         }
         
-        if (this.elements.hours) {
+        if (this.elements.hours && this.previousValues.hours !== hours) {
             this.elements.hours.style.setProperty('--value', hours);
             this.elements.hours.textContent = hours;
             this.elements.hours.setAttribute('aria-label', hours);
+            this.previousValues.hours = hours;
         }
         
-        if (this.elements.minutes) {
+        if (this.elements.minutes && this.previousValues.minutes !== minutes) {
             this.elements.minutes.style.setProperty('--value', minutes);
             this.elements.minutes.textContent = minutes;
             this.elements.minutes.setAttribute('aria-label', minutes);
+            this.previousValues.minutes = minutes;
         }
         
-        if (this.elements.seconds) {
+        if (this.elements.seconds && this.previousValues.seconds !== seconds) {
             this.elements.seconds.style.setProperty('--value', seconds);
             this.elements.seconds.textContent = seconds;
             this.elements.seconds.setAttribute('aria-label', seconds);
+            this.previousValues.seconds = seconds;
         }
         
-        // Apply urgency styling based on time remaining
+        // Apply urgency styling based on time remaining (only when needed)
         this.applyUrgencyStyling(days, hours, minutes, seconds);
     }
     
@@ -276,6 +285,29 @@ class CountdownTimer {
         this.intervalId = setInterval(() => {
             this.updateCountdown();
         }, 1000);
+        
+        // Add Page Visibility API to pause countdown when tab is not active
+        this.setupVisibilityHandler();
+    }
+    
+    setupVisibilityHandler() {
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // Tab is hidden, clear interval to save CPU
+                if (this.intervalId) {
+                    clearInterval(this.intervalId);
+                    this.intervalId = null;
+                }
+            } else {
+                // Tab is visible again, restart interval
+                if (!this.intervalId && this.isInitialized) {
+                    this.updateCountdown();
+                    this.intervalId = setInterval(() => {
+                        this.updateCountdown();
+                    }, 1000);
+                }
+            }
+        });
     }
 }
 

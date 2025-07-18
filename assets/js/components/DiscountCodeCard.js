@@ -19,15 +19,46 @@ class DiscountCodeCard {
                         🏷️ คัดลอกโค้ดส่วนลด
                     </h3>
                     
-                    <div class="join w-full max-w-md mx-auto">
+                    <div style="display: flex !important; max-width: 350px !important; margin: 0 auto !important; border-radius: 8px !important; overflow: hidden !important; box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;">
                         <input id="discountCode" type="text" value="AUS50THB" readonly 
-                               class="input input-bordered input-accent join-item flex-1 text-center font-bold" 
-                               data-i18n-value="offer.discountCode" />
-                        <button id="copyBtn" class="btn btn-accent join-item">
-                            <svg id="copyIcon" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                               data-i18n-value="offer.discountCode"
+                               style="
+                                   flex: 1 !important;
+                                   border: 2px solid #14b8a6 !important;
+                                   border-right: none !important;
+                                   border-radius: 8px 0 0 8px !important;
+                                   padding: 14px 16px !important;
+                                   text-align: center !important;
+                                   font-weight: bold !important;
+                                   font-size: 1.25rem !important;
+                                   background: white !important;
+                                   color: #0f172a !important;
+                                   outline: none !important;
+                                   min-width: 0 !important;
+                               " />
+                        <button id="copyBtn" 
+                                style="
+                                    background: #14b8a6 !important;
+                                    color: white !important;
+                                    border: 2px solid #14b8a6 !important;
+                                    border-radius: 0 8px 8px 0 !important;
+                                    padding: 14px 18px !important;
+                                    font-weight: bold !important;
+                                    font-size: 1.1rem !important;
+                                    cursor: pointer !important;
+                                    display: flex !important;
+                                    align-items: center !important;
+                                    gap: 6px !important;
+                                    min-width: 100px !important;
+                                    justify-content: center !important;
+                                    transition: all 0.2s ease !important;
+                                "
+                                onmouseover="this.style.background='#0f766e'"
+                                onmouseout="this.style.background='#14b8a6'">
+                            <svg id="copyIcon" style="width: 20px !important; height: 20px !important;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                             </svg>
-                            <svg id="checkIcon" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg id="checkIcon" style="width: 20px !important; height: 20px !important; display: none !important;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <span id="btnText" data-i18n="offer.copyButton">คัดลอก</span>
@@ -60,14 +91,14 @@ class DiscountCodeCard {
             document.execCommand('copy');
             
             // Show success state
-            copyIcon.classList.add('hidden');
-            checkIcon.classList.remove('hidden');
+            copyIcon.style.display = 'none';
+            checkIcon.style.display = 'block';
             btnText.textContent = 'คัดลอกแล้ว';
             
             // Reset after 2 seconds
             setTimeout(() => {
-                copyIcon.classList.remove('hidden');
-                checkIcon.classList.add('hidden');
+                copyIcon.style.display = 'block';
+                checkIcon.style.display = 'none';
                 btnText.textContent = 'คัดลอก';
             }, 2000);
         }

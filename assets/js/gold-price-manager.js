@@ -479,7 +479,7 @@ class GoldPriceManager {
         
         // Check if icon is a path or emoji
         const iconElement = priceData.icon.startsWith('./') || priceData.icon.startsWith('/') || priceData.icon.startsWith('http') ? 
-            `<img src="${priceData.icon}" alt="icon" class="w-6 h-6 rounded-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+            `<img src="${priceData.icon}" alt="icon" class="w-10 h-10 rounded-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
              <span class="text-xl" style="display:none;">🥇</span>` : 
             `<span class="text-xl">${priceData.icon}</span>`;
         

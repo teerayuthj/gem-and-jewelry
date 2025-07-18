@@ -24,10 +24,10 @@ class BannerSlideshow {
         this.translations = {};
         this.isLanguageSwitching = false;
         this.slideImages = [
-            './public/website-01.jpg',
-            'https://raw.githubusercontent.com/teerayuthj/gem-and-jewelry/main/public/1-2.jpg',
-            'https://raw.githubusercontent.com/teerayuthj/gem-and-jewelry/main/public/offer.png',
-            'https://raw.githubusercontent.com/teerayuthj/gem-and-jewelry/main/public/ausiris-next-2025.png'
+            './public/Ausiris-Gold.jpg',
+            './public/Ausiris-Silver.jpg',
+            './public/06green.png',
+            './public/ind.png'
         ];
         this.slideClasses = [
             'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black',

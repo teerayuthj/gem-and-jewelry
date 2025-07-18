@@ -16,7 +16,9 @@ class SpecialOfferSection {
                 <div class="hero-content text-center w-full max-w-4xl mx-auto">
                     <div class="card text-primary-content" style="width: 100%;">
                         <div class="card-body" style="padding: 3rem 2rem;">
-                            <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4" data-i18n="offer.header">
+                            <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4" 
+                                style="text-align: center !important; margin: 0 auto !important; width: 100% !important; display: block !important;" 
+                                data-i18n="offer.header">
                                 🎉 Today Only Special Offer! 🎉
                             </h1>
                             
@@ -72,10 +74,29 @@ class SpecialOfferSection {
                             </div>
                             
                             <!-- Action Button -->
-                            <a href="https://express.ausiris.co.th/" target="_blank" rel="noopener noreferrer" 
-                               id="mainActionBtn" class="btn btn-accent text-white text-lg md:text-xl px-8 py-4 mt-6" data-i18n="buttons.useDiscount">
-                                🛒 Get This Special Offer Now!
-                            </a>
+                            <div class="flex justify-center w-full">
+                                <a href="https://express.ausiris.co.th/" target="_blank" rel="noopener noreferrer" 
+                                   id="mainActionBtn" class="text-white font-bold transition-all duration-300" 
+                                   style="
+                                       background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%) !important;
+                                       padding: 1.5rem 3.5rem !important;
+                                       border: none !important;
+                                       border-radius: 30px !important;
+                                       text-decoration: none !important;
+                                       display: inline-block !important;
+                                       font-size: 1.375rem !important;
+                                       line-height: 1.4 !important;
+                                       min-width: 350px !important;
+                                       text-align: center !important;
+                                       box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4) !important;
+                                       margin: 1.5rem auto !important;
+                                   " 
+                                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(255, 107, 53, 0.6)';"
+                                   onmouseout="this.style.transform='translateY(0px)'; this.style.boxShadow='0 4px 15px rgba(255, 107, 53, 0.4)';"
+                                   data-i18n="buttons.getOffer">
+                                    🛒 Get This Special Offer Now!
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
