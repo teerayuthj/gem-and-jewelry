@@ -5,7 +5,7 @@ class GoldSilverCalculator {
         this.currentMetal = 'gold';
         this.currentGoldType = '96.5_osiris';
         this.currentUnit = 'baht';
-        this.currentLang = 'th';
+        this.currentLang = localStorage.getItem('language') || 'en';
         this.updateInterval = null;
         
         // API URLs

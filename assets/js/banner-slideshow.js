@@ -24,20 +24,16 @@ class BannerSlideshow {
         this.translations = {};
         this.isLanguageSwitching = false;
         this.slideImages = [
-            './public/Ausiris-Gold.jpg',
-            './public/Ausiris-Silver.jpg',
-            './public/06green.png',
-            './public/ind.png'
+            'http://www.ausiris.co.th/content/dam/ausirisgold/banner/Ausiris-Gold.jpg',
+            'http://www.ausiris.co.th/content/dam/ausirisgold/banner/Ausiris-Silver.jpg'
         ];
         this.slideClasses = [
             'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black',
-            'bg-gradient-to-r from-gray-400 to-gray-600 text-white',
-            'bg-gradient-to-r from-red-500 to-red-700 text-white',
-            'bg-gradient-to-r from-blue-500 to-blue-700 text-white'
+            'bg-gradient-to-r from-gray-400 to-gray-600 text-white'
         ];
         
         this.currentSlide = 0;
-        this.totalSlides = 4;
+        this.totalSlides = 2;
         this.autoPlayInterval = null;
         this.autoPlayDuration = options.autoPlayDuration || 5000;
         this.isPlaying = true;
@@ -125,16 +121,6 @@ class BannerSlideshow {
                             title: "แท่งเงินคุณภาพพรีเมี่ยม",
                             subtitle: "ราคาแท่งเงินอัปเดตแบบเรียลไทม์",
                             buttonText: "ดูราคาเงิน"
-                        },
-                        {
-                            title: "โปรโมชั่นพิเศษ",
-                            subtitle: "ส่วนลดสูงสุด 50% สำหรับลูกค้าใหม่",
-                            buttonText: "รับข้อเสนอพิเศษ"
-                        },
-                        {
-                            title: "ผู้เชี่ยวชาญด้านทองคำ",
-                            subtitle: "ประสบการณ์กว่า 10 ปี ในธุรกิจทองคำและเงิน",
-                            buttonText: "ติดต่อผู้เชี่ยวชาญ"
                         }
                     ]
                 },
@@ -149,16 +135,6 @@ class BannerSlideshow {
                             title: "Premium Silver Bars",
                             subtitle: "Real-time silver bar prices updated 24/7",
                             buttonText: "View Silver Prices"
-                        },
-                        {
-                            title: "Special Promotion",
-                            subtitle: "Up to 50% discount for new customers",
-                            buttonText: "Get Special Offer"
-                        },
-                        {
-                            title: "Gold Investment Experts",
-                            subtitle: "Over 10 years of experience in gold and silver business",
-                            buttonText: "Contact Expert"
                         }
                     ]
                 }

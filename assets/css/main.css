@@ -21,7 +21,7 @@ body {
 }
 
 .text-xs {
-    font-size: 0.9rem !important;
+    font-size: 1rem !important;
     line-height: 1.2rem !important;
 }
 
@@ -139,7 +139,7 @@ img, video {
     }
     
     .text-lg {
-        font-size: 1.2rem !important;
+        font-size: 1.5rem !important;
     }
     
     .text-xl {

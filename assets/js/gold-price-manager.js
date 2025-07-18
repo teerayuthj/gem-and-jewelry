@@ -107,7 +107,7 @@ class GoldPriceManager {
                         showLess: "Show less",
                         priceBuy: "Buy",
                         priceSell: "Sell",
-                        priceChange: "Price",
+                        priceChange: "Change",
                         goldTypes: {
                             ausitis965: "Ausitis 96.5%",
                             ausitis9999: "Ausitis 99.99%",
