@@ -1,6 +1,20 @@
 /* Main CSS for Countdown App */
 body {
-    font-family: 'Prompt', sans-serif;
+    font-family: 'Prompt', sans-serif !important;
+    touch-action: manipulation;
+}
+
+/* Fix passive event listener warnings */
+* {
+    touch-action: manipulation;
+}
+
+/* Specific fixes for maps and interactive elements */
+#mapContactSection,
+.map-container,
+[id*="map"],
+[class*="map"] {
+    touch-action: pan-x pan-y;
 }
 
 /* Override DaisyUI footer styles */
@@ -38,6 +52,19 @@ img, video {
     .hero-content {
         padding: 1rem !important;
     }
+    
+    .user {
+        margin-left: 40px !important;
+    }
+    
+    /* Center social media icons */
+    .footer-detail .social-i {
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin: 0 !important;
+        padding: 10px !important;
+    }
 }
 
 /* Mobile responsive adjustments */
@@ -60,6 +87,7 @@ img, video {
     /* Remove any debug borders but preserve input borders */
     *:not(input):not(.input) {
         outline: none !important;
+        font-family: 'Prompt', sans-serif !important;
     }
     
     *:focus:not(input):not(.input) {

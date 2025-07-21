@@ -107,12 +107,9 @@ class UnifiedLanguageManager {
                 const updateSecondaryBanner = () => {
                     const currentImage = bannerImages[currentSlide];
                     
-                    console.log('Secondary Banner: Loading slide', currentSlide, 'with image:', currentImage);
-                    
                     // Test if image exists before setting
                     const img = new Image();
                     img.onload = function() {
-                        console.log('Secondary Banner: Image loaded successfully:', currentImage);
                         // Remove any overlay - show pure image
                         secondaryContainer.style.backgroundImage = `url('${currentImage}')`;
                         secondaryContainer.style.backgroundSize = 'cover';

@@ -3,14 +3,12 @@ class BannerSlideshow {
     constructor(options = {}) {
         // Singleton pattern - prevent multiple instances
         if (BannerSlideshow.instance) {
-            console.log('Banner slideshow instance already exists, returning existing instance');
             return BannerSlideshow.instance;
         }
         
         // ลบ duplicate containers ก่อนสร้าง
         const allBanners = document.querySelectorAll('.banner-slideshow');
         if (allBanners.length > 1) {
-            console.log('Removing duplicate banner containers before initialization');
             allBanners.forEach((banner, index) => {
                 if (index > 0) {
                     banner.remove();
@@ -90,7 +88,6 @@ class BannerSlideshow {
         // ลบ duplicate containers บน mobile
         const allBanners = document.querySelectorAll('.banner-slideshow');
         if (allBanners.length > 1) {
-            console.log('Found multiple banner containers, removing duplicates');
             allBanners.forEach((banner, index) => {
                 if (index > 0) {
                     banner.remove();
@@ -207,7 +204,6 @@ class BannerSlideshow {
                 e.stopPropagation();
                 
                 if (this.isLanguageSwitching) {
-                    console.log('Banner: Language switching in progress, ignoring click');
                     return;
                 }
                 
@@ -399,12 +395,10 @@ class BannerSlideshow {
     
     switchLanguage() {
         if (this.isLanguageSwitching) {
-            console.log('Banner: Already switching language, ignoring');
             return;
         }
         
         this.isLanguageSwitching = true;
-        console.log('Banner: Starting language switch...');
         
         // Toggle language
         this.currentLang = this.currentLang === 'th' ? 'en' : 'th';
@@ -432,7 +426,6 @@ class BannerSlideshow {
             });
             
             // Only trigger ONE event to avoid infinite loops
-            console.log('Banner: Switching language to', this.currentLang);
             document.dispatchEvent(new CustomEvent('bannerLanguageChanged', {
                 detail: { language: this.currentLang }
             }));
@@ -440,7 +433,6 @@ class BannerSlideshow {
             // Reset flag after a short delay
             setTimeout(() => {
                 this.isLanguageSwitching = false;
-                console.log('Banner: Language switch completed');
             }, 800);
         }, 100);
     }
@@ -465,12 +457,10 @@ class BannerSlideshow {
                 langSwitcher.style.transform = '';
             }, 300);
             
-            console.log('Banner: Updated language button to', newText);
         }
     }
     
     handleButtonClick(buttonText) {
-        console.log(`Button clicked: ${buttonText}`);
         
         // Show notification with current language
         const notification = document.createElement('div');
@@ -498,7 +488,6 @@ class BannerSlideshow {
         
         if (thaiButtons.includes(buttonText) || englishButtons.includes(buttonText)) {
             // Add your specific button logic here
-            console.log(`Handling action for: ${buttonText}`);
         }
     }
     
@@ -542,13 +531,11 @@ class BannerSlideshow {
         this.translations = null;
         this.realData = null;
         
-        console.log('Banner slideshow destroyed completely');
     }
     
     setupLanguageSync() {
         // Listen for language changes from unified system only
         document.addEventListener('unifiedLanguageChanged', (event) => {
-            console.log('Banner: Received unified language change event:', event.detail.language);
             if (event.detail.language !== this.currentLang) {
                 this.currentLang = event.detail.language;
                 localStorage.setItem('bannerLanguage', this.currentLang);
@@ -565,10 +552,8 @@ class BannerSlideshow {
 document.addEventListener('DOMContentLoaded', () => {
     const bannerContainer = document.querySelector('.banner-slideshow');
     if (bannerContainer && !window.bannerSlideshow && !BannerSlideshow.instance) {
-        console.log('Initializing banner slideshow');
         window.bannerSlideshow = new BannerSlideshow();
     } else if (window.bannerSlideshow || BannerSlideshow.instance) {
-        console.log('Banner slideshow already exists, skipping initialization');
     }
 });
 

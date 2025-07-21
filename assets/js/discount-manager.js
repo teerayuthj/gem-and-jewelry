@@ -8,8 +8,8 @@ class DiscountManager {
         this.activeCodes = {};
         this.campaignConfig = {
             enabled: true,
-            startDate: '2025-06-30',
-            endDate: '2025-07-28',
+            startDate: '2025-09-09',
+            endDate: '2025-09-13',
             discountAmount: 50,
             currency: 'THB'
         };

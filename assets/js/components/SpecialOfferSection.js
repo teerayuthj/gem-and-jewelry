@@ -31,7 +31,7 @@ class SpecialOfferSection {
                                 <div class="stat">
                                     <div class="stat-title text-gray-500 text-lg" data-i18n="offer.promotionPeriod">Promotion Period</div>
                                     <div class="stat-value text-xl md:text-2xl">
-                                        <span id="startDate">30/06/2025</span> - <span id="endDate">28/07/2025</span>
+                                        <span id="startDate">09/09/2025</span> - <span id="endDate">13/09/2025</span>
                                     </div>
                                 </div>
                             </div>
@@ -110,8 +110,8 @@ class SpecialOfferSection {
             // เรียกใช้ CountdownTimer หลังจาก render เสร็จ
             if (typeof CountdownTimer !== 'undefined') {
                 const promotionConfig = {
-                    startDate: "30/06/2025",
-                    endDate: "28/07/2025",
+                    startDate: "09/09/2025",
+                    endDate: "13/09/2025",
                     discountCode: "AUS50THB"
                 };
                 new CountdownTimer(promotionConfig);

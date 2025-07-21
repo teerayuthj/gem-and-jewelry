@@ -109,11 +109,11 @@ class GoldPriceManager {
                         priceSell: "Sell",
                         priceChange: "Change",
                         goldTypes: {
-                            ausitis965: "Ausitis 96.5%",
-                            ausitis9999: "Ausitis 99.99%",
+                            ausitis965: "Ausiris 96.5%",
+                            ausitis9999: "Ausiris 99.99%",
                             spotGold: "Spot Gold (USD/oz)",
                             silverUsdOz: "Silver Bar (USD/oz)",
-                            goldKg: "Ausitis 99.99% (KG)",
+                            goldKg: "Ausiris 99.99% (KG)",
                             goldChit: "Gold Association 96.5%",
                             silverThb: "Silver Bar (THB/kg)"
                         },

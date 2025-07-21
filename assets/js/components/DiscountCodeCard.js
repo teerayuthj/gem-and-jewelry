@@ -27,10 +27,10 @@ class DiscountCodeCard {
                                    border: 2px solid #14b8a6 !important;
                                    border-right: none !important;
                                    border-radius: 8px 0 0 8px !important;
-                                   padding: 14px 16px !important;
+                                   padding: 4px 6px !important;
                                    text-align: center !important;
                                    font-weight: bold !important;
-                                   font-size: 1.25rem !important;
+                                   font-size: 1.5rem !important;
                                    background: white !important;
                                    color: #0f172a !important;
                                    outline: none !important;
@@ -66,7 +66,7 @@ class DiscountCodeCard {
                     </div>
                     
                     <p class="text-warning font-semibold mt-2">
-                        <span data-i18n="offer.codeExpiry">⏰ โค้ดหมดอายุ:</span> <span id="expiryDate">28/07/2025</span>
+                        <span data-i18n="offer.codeExpiry">⏰ โค้ดหมดอายุ:</span> <span id="expiryDate">13/09/2025</span>
                     </p>
                 </div>
             </div>
