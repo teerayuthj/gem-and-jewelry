@@ -98,7 +98,7 @@ class BannerSlideshow {
     
     async loadTranslations() {
         try {
-            const response = await fetch('./assets/data/banner-translations.json');
+            const response = await fetch('https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.5.0/assets/data/banner-translations.json');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

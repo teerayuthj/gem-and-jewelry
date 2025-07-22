@@ -89,61 +89,7 @@ class UnifiedLanguageManager {
         });
     }
     
-    initializeSecondaryBanner() {
-        const secondaryContainer = document.getElementById('secondaryBanner');
-        if (secondaryContainer) {
-            try {
-                // Secondary banner images only (no text content)
-                const bannerImages = [
-                    'http://www.ausiris.co.th/content/dam/ausirisgold/icon/rich-menu_01.jpg',
-                    'http://www.ausiris.co.th/content/dam/ausirisgold/icon/rich-menu_mto_02.jpg', 
-                    'http://www.ausiris.co.th/content/dam/ausirisgold/icon/rich-menu_01.jpg',
-                    'http://www.ausiris.co.th/content/dam/ausirisgold/icon/rich-menu_mto_02.jpg'
-                ];
-                
-                let currentSlide = 0;
-                const totalSlides = bannerImages.length;
-                
-                const updateSecondaryBanner = () => {
-                    const currentImage = bannerImages[currentSlide];
-                    
-                    // Test if image exists before setting
-                    const img = new Image();
-                    img.onload = function() {
-                        // Remove any overlay - show pure image
-                        secondaryContainer.style.backgroundImage = `url('${currentImage}')`;
-                        secondaryContainer.style.backgroundSize = 'cover';
-                        secondaryContainer.style.backgroundPosition = 'center';
-                        secondaryContainer.style.backgroundRepeat = 'no-repeat';
-                    };
-                    img.onerror = function() {
-                        console.error('Secondary Banner: Failed to load image:', currentImage);
-                        // Fallback gradient background
-                        secondaryContainer.style.backgroundImage = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                    };
-                    img.src = currentImage;
-                    
-                    // Clear any existing content - show only image
-                    secondaryContainer.innerHTML = '';
-                };
-                
-                // Initial load
-                updateSecondaryBanner();
-                
-                // Auto-advance slides every 4 seconds
-                setInterval(() => {
-                    currentSlide = (currentSlide + 1) % totalSlides;
-                    updateSecondaryBanner();
-                }, 4000);
-                
-                console.log('Secondary banner initialized');
-                
-            } catch (error) {
-                console.error('Secondary banner initialization failed:', error);
-            }
-        }
-    }
-    
+
     initializeGoldPrice() {
         // Gold Price Manager should initialize automatically
         if (window.goldPriceManager) {

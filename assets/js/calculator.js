@@ -150,9 +150,9 @@ class GoldSilverCalculator {
                     },
                     goldTypes: {
                         label: "Gold Type",
-                        "96.5_osiris": "96.5% Osiris",
-                        "99.99_osiris": "99.99% Osiris",
-                        "99.99_osiris_kg": "99.99% Osiris (Kilogram)",
+                        "96.5_osiris": "96.5% Ausiris",
+                        "99.99_osiris": "99.99% Ausiris",
+                        "99.99_osiris_kg": "99.99% Ausiris (Kilogram)",
                         "96.5_assoc": "96.5% Association"
                     },
                     units: {
