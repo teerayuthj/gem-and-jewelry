@@ -354,9 +354,9 @@
 /* Responsive design - ปรับปรุงสำหรับ mobile */
 @media (max-width: 768px) {
     .banner-slideshow {
-        height: 50vh;
-        min-height: 300px;
-        max-height: 400px;
+        height: 55vh;
+        min-height: 350px;
+        max-height: 430px;
         /* ป้องกันการซ้อนชั้นบน mobile */
         z-index: 1;
         position: relative;
@@ -446,9 +446,9 @@
 
 @media (max-width: 480px) {
     .banner-slideshow {
-        height: 45vh;
-        min-height: 280px;
-        max-height: 350px;
+        height: 50vh;
+        min-height: 300px;
+        max-height: 400px;
         /* ป้องกันการซ้อนชั้นบน mobile */
         z-index: 1;
         position: relative;
@@ -536,6 +536,15 @@
     
     .indicator.active {
         transform: scale(1.2);
+    }
+}
+
+/* สำหรับหน้าจอเล็กกว่า 390px */
+@media (max-width: 390px) {
+    .banner-slideshow {
+        height: 45vh;
+        min-height: 280px;
+        max-height: 350px;
     }
 }
 
