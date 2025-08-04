@@ -22,8 +22,8 @@ class BannerSlideshow {
         this.translations = {};
         this.isLanguageSwitching = false;
         this.slideImages = [
-            'http://www.ausiris.co.th/content/dam/ausirisgold/banner/Ausiris-Gold.jpg',
-            'http://www.ausiris.co.th/content/dam/ausirisgold/banner/Ausiris-Silver.jpg'
+            'http://www.ausiris.co.th/content/dam/ausirisgold/banner/banner-Ausiris%20Gold-01.jpg',
+            'http://www.ausiris.co.th/content/dam/ausirisgold/banner/banner-Ausiris%20Silver-01.jpg'
         ];
         this.slideClasses = [
             'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black',

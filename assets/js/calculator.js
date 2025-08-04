@@ -47,7 +47,7 @@ class GoldSilverCalculator {
         // Auto-update every 60 seconds to reduce CPU usage
         this.updateInterval = setInterval(() => {
             this.fetchPricesFromAPI();
-        }, 60000);
+        }, 3000);
         
         // Add Page Visibility API to pause updates when tab is not active
         this.setupVisibilityHandler();
