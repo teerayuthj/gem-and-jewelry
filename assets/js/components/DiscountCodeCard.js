@@ -20,7 +20,7 @@ class DiscountCodeCard {
                     </h3>
                     
                     <div style="display: flex !important; max-width: 350px !important; margin: 0 auto !important; border-radius: 8px !important; overflow: hidden !important; box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;">
-                        <input id="discountCode" type="text" value="AUS50THB" readonly 
+                        <input id="discountCode" type="text" value="AUBGJF50TH" readonly 
                                data-i18n-value="offer.discountCode"
                                style="
                                    flex: 1 !important;

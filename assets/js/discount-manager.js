@@ -2,8 +2,8 @@
 class DiscountManager {
     constructor() {
         this.defaultCodes = {
-            th: 'AUS50THB',
-            en: 'AUS50THB'
+            th: 'AUBGJF50TH',
+            en: 'AUBGJF50TH'
         };
         this.activeCodes = {};
         this.campaignConfig = {
@@ -65,7 +65,7 @@ class DiscountManager {
     }
 
     getDiscountCode(language = 'th') {
-        return this.activeCodes[language] || this.defaultCodes[language] || 'AUS50THB';
+        return this.activeCodes[language] || this.defaultCodes[language] || 'AUBGJF50TH';
     }
 
     setDiscountCode(language, code) {

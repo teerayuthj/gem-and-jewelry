@@ -112,7 +112,7 @@ class SpecialOfferSection {
                 const promotionConfig = {
                     startDate: "09/09/2025",
                     endDate: "13/09/2025",
-                    discountCode: "AUS50THB"
+                    discountCode: "AUBGJF50TH"
                 };
                 new CountdownTimer(promotionConfig);
             }

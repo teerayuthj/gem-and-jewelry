@@ -34,7 +34,7 @@ class I18nManager {
                         copyError: "คัดลอกโค้ด:",
                         codeExpiry: "⏰ โค้ดหมดอายุ:",
                         promotionPeriod: "ระยะเวลาโปรโมชั่น",
-                        discountCode: "AUS50THB"
+                        discountCode: "AUBGJF50TH"
                     },
                     countdown: {
                         label: "⏳ เหลือเวลาอีก:",
@@ -83,7 +83,7 @@ class I18nManager {
                         copyError: "Copy code:",
                         codeExpiry: "⏰ Code expires:",
                         promotionPeriod: "Promotion Period",
-                        discountCode: "AUS50THB"
+                        discountCode: "AUBGJF50TH"
                     },
                     countdown: {
                         label: "⏳ Time remaining:",
