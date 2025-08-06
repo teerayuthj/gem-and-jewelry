@@ -60,7 +60,9 @@
     <!-- Scripts from GitHub -->
     <script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.5.6/assets/js/banner-slideshow.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.5.6/assets/js/i18n.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.5.6/assets/js/shared-price-manager.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.5.6/assets/js/gold-price-manager.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.5.6/assets/js/exchange-rate-manager.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.5.6/assets/js/thai-header-fix.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.5.6/assets/js/discount-manager.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.5.6/assets/js/countdown.js"></script>
@@ -97,6 +99,18 @@
 
         // Calculator initialization
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize SharedPriceManager if available
+            if (typeof SharedPriceManager !== 'undefined') {
+                window.sharedPriceManager = new SharedPriceManager();
+                console.log('SharedPriceManager initialized');
+            }
+            
+            // Initialize ExchangeRateManager if available
+            if (typeof ExchangeRateManager !== 'undefined') {
+                window.exchangeRateManager = new ExchangeRateManager();
+                console.log('ExchangeRateManager initialized');
+            }
+            
             new GemApp.GoldSilverCalculator('calculator-app');
         });
     </script>

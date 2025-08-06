@@ -82,8 +82,8 @@ class UnifiedLanguageManager {
         return new Promise((resolve) => {
             console.log('UnifiedLanguageManager: Skipping banner initialization - handled by banner-slideshow.js');
             
-            // Just initialize secondary banner
-            this.initializeSecondaryBanner();
+            // Secondary banner is handled by SecondaryBannerSlideshow component
+            console.log('UnifiedLanguageManager: Secondary banner handled by SecondaryBannerSlideshow component');
             
             resolve(null);
         });

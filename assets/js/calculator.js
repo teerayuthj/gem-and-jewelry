@@ -510,6 +510,12 @@ class GoldSilverCalculator {
             currencyDisplay.textContent = this.currentCurrency;
         }
         
+        // Also update currency inside total section
+        const currencyInside = this.container.querySelector('.currency-inside');
+        if (currencyInside) {
+            currencyInside.textContent = this.currentCurrency;
+        }
+        
         // Update exchange rate info
         this.updateExchangeRateInfo();
     }
@@ -830,7 +836,7 @@ class GoldSilverCalculator {
         
         const currencyInside = this.container.querySelector('.currency-inside');
         if (currencyInside) {
-            currencyInside.textContent = this.getTranslatedText('calculator.total.currency');
+            currencyInside.textContent = this.currentCurrency;
         }
         
         

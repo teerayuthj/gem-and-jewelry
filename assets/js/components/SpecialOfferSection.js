@@ -120,6 +120,9 @@ class SpecialOfferSection {
         setTimeout(() => {
             new DiscountCodeCard();
             
+            // Apply translations
+            this.applyTranslations();
+            
             // เรียกใช้ CountdownTimer หลังจาก render เสร็จ
             if (typeof CountdownTimer !== 'undefined') {
                 const promotionConfig = {
@@ -130,6 +133,39 @@ class SpecialOfferSection {
                 new CountdownTimer(promotionConfig);
             }
         }, 200);
+    }
+
+    async applyTranslations() {
+        try {
+            // Load translations data
+            const response = await fetch('./assets/data/translations.json');
+            const translations = await response.json();
+            
+            // Get current language (default to 'en')
+            const currentLang = localStorage.getItem('language') || 'en';
+            
+            // Find all elements with data-i18n attribute
+            const elements = document.querySelectorAll('[data-i18n]');
+            
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                const text = this.getNestedTranslation(translations[currentLang], key);
+                
+                if (text && text !== key) {
+                    element.innerHTML = text;
+                }
+            });
+            
+            console.log('Special Offer translations applied successfully');
+        } catch (error) {
+            console.error('Error applying Special Offer translations:', error);
+        }
+    }
+
+    getNestedTranslation(obj, path) {
+        return path.split('.').reduce((current, key) => {
+            return current && current[key] !== undefined ? current[key] : null;
+        }, obj);
     }
 }
 
