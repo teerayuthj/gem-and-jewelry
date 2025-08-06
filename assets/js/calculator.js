@@ -55,6 +55,7 @@ class GoldSilverCalculator {
         this.subscribeToExchangeRateManager();
         this.render();
         this.bindEvents();
+        this.initializeUI();
         this.updateDisplay();
     }
     
@@ -386,8 +387,8 @@ class GoldSilverCalculator {
                         <div class="input-group">
                             <label for="unitSelector" class="input-label">${this.getTranslatedText('calculator.units.label')}</label>
                             <select id="unitSelector" class="calc-select">
+                                <!-- Units will be populated by initializeUI() method -->
                                 <option value="baht">${this.getUnitText('baht')}</option>
-                                <option value="kg">${this.getUnitText('kg')}</option>
                                 <option value="gram">${this.getUnitText('gram')}</option>
                             </select>
                         </div>
@@ -480,6 +481,27 @@ class GoldSilverCalculator {
             this.updateCurrencyDisplay();
             this.calculatePrice(); // Only recalculate total, don't update sell/buy prices
         });
+    }
+
+    initializeUI() {
+        // Ensure gold type selector is visible on initial load for gold
+        const goldTypeSelector = this.container.querySelector('#goldTypeSelector');
+        if (goldTypeSelector && this.currentMetal === 'gold') {
+            goldTypeSelector.style.display = 'block';
+        }
+        
+        // Set initial metal selector state
+        const goldOption = this.container.querySelector('[data-metal="gold"]');
+        const selectorBg = this.container.querySelector('#selectorBg');
+        if (goldOption && selectorBg) {
+            goldOption.classList.add('active');
+            selectorBg.className = 'selector-bg gold';
+        }
+        
+        // Initialize unit selector for the default gold type
+        if (this.currentMetal === 'gold') {
+            this.updateUnitSelectorForGoldType(this.currentGoldType);
+        }
     }
 
     updateCurrencyDisplay() {
@@ -614,18 +636,20 @@ class GoldSilverCalculator {
                 <option value="baht">${this.getUnitText('baht')}</option>
                 <option value="gram">${this.getUnitText('gram')}</option>
             `;
-        } else {
-            // Base units for other gold types (96.5% Ausiris, 99.99% Ausiris)
+        } else if (goldType === '96.5_osiris') {
+            // 96.5% Ausiris - no kilogram
+            unitOptions = `
+                <option value="baht">${this.getUnitText('baht')}</option>
+                <option value="gram">${this.getUnitText('gram')}</option>
+            `;
+        } else if (goldType === '99.99_osiris') {
+            // 99.99% Ausiris - includes kilogram and Troy Ounce
             unitOptions = `
                 <option value="baht">${this.getUnitText('baht')}</option>
                 <option value="kg">${this.getUnitText('kg')}</option>
                 <option value="gram">${this.getUnitText('gram')}</option>
+                <option value="troy_oz">${this.getUnitText('troy_oz')}</option>
             `;
-
-            // Add Troy Ounce for 99.99% regular (not kg)
-            if (goldType === '99.99_osiris') {
-                unitOptions += `<option value="troy_oz">${this.getUnitText('troy_oz')}</option>`;
-            }
         }
 
         unitSelector.innerHTML = unitOptions;

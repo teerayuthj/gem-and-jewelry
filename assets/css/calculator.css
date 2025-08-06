@@ -110,6 +110,11 @@ body {
     margin-bottom: 20px;
 }
 
+/* Gold Type Selector - ensure it displays by default for gold */
+#goldTypeSelector {
+    display: block;
+}
+
 .input-group {
     position: relative;
     margin-bottom: 15px;
