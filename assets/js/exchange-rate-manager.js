@@ -13,7 +13,7 @@ class ExchangeRateManager {
         this.lastFetchTime = null;
         
         // Local nginx API configuration
-        this.apiUrl = 'http://nginx.new-gold-shop.orb.local/api/currency';
+        this.apiUrl = 'http://27.254.3.14:7005/api/currency';
         this.updateIntervalMinutes = 60; // Update every 60 minutes (free plan friendly)
         
         // Cached exchange rates
