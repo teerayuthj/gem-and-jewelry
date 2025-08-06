@@ -1,10 +1,66 @@
 class SpecialOfferSection {
     constructor() {
+        this.currentLang = this.detectLanguage();
         this.init();
+    }
+
+    detectLanguage() {
+        // Try multiple sources to detect language
+        return localStorage.getItem('language') || 
+               document.documentElement.lang || 
+               (navigator.language.startsWith('th') ? 'th' : 'en');
+    }
+
+    getText(key) {
+        const texts = {
+            th: {
+                header: "🎉 ข้อเสนอพิเศษวันนี้เท่านั้น! 🎉",
+                terms: "📋 <strong>เงื่อนไข:</strong> ส่วนลด 50.- สำหรับค่าพรีเมียมสินค้าทองคำแท่ง และทองรูปพรรณ 96.5% เงื่อนไขเป็นไปตามที่บริษัทกำหนดฯ",
+                promotionPeriod: "ระยะเวลาโปรโมชั่น",
+                timeRemaining: "⏳ เหลือเวลาอีก:",
+                days: "วัน",
+                hours: "ชั่วโมง", 
+                minutes: "นาที",
+                seconds: "วินาที",
+                getOffer: "🛒 รับข้อเสนอพิเศษตอนนี้เลย!"
+            },
+            en: {
+                header: "🎉 Today Only Special Offer! 🎉",
+                terms: "📋 <strong>Terms:</strong> 50 THB discount for premium on gold bars and 96.5% gold jewelry. Terms and conditions apply as determined by the company.",
+                promotionPeriod: "Promotion Period", 
+                timeRemaining: "⏳ Time remaining:",
+                days: "Days",
+                hours: "Hours",
+                minutes: "Minutes", 
+                seconds: "Seconds",
+                getOffer: "🛒 Get This Special Offer Now!"
+            }
+        };
+        
+        return texts[this.currentLang]?.[key] || texts.en[key];
     }
 
     init() {
         this.render();
+        this.setupLanguageListener();
+    }
+
+    setupLanguageListener() {
+        // Listen for language changes
+        document.addEventListener('languageChanged', (event) => {
+            this.currentLang = event.detail.language;
+            this.render();
+        });
+        
+        document.addEventListener('bannerLanguageChanged', (event) => {
+            this.currentLang = event.detail.language;
+            this.render();
+        });
+        
+        document.addEventListener('unifiedLanguageChanged', (event) => {
+            this.currentLang = event.detail.language;
+            this.render();
+        });
     }
 
     render() {
@@ -17,9 +73,8 @@ class SpecialOfferSection {
                     <div class="card text-primary-content" style="width: 100%;">
                         <div class="card-body" style="padding: 3rem 2rem;">
                             <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4" 
-                                style="text-align: center !important; margin: 0 auto !important; width: 100% !important; display: block !important;" 
-                                data-i18n="offer.header">
-                                🎉 Today Only Special Offer! 🎉
+                                style="text-align: center !important; margin: 0 auto !important; width: 100% !important; display: block !important;">
+                                ${this.getText('header')}
                             </h1>
                             
                             <img src="http://www.ausiris.co.th/content/dam/ausirisgold/icon/offer-02.png" alt="Order today and get 100 THB discount" class="w-full max-w-md h-auto rounded-lg mx-auto mb-6">
@@ -33,7 +88,8 @@ class SpecialOfferSection {
                                         border: 2px solid rgba(209,213,219,0.8);">
                                 <div class="flex items-start">
                                     <div class="w-full">
-                                        <p class="text-sm text-gray-800 font-semibold leading-relaxed" data-i18n="offer.terms">
+                                        <p class="text-sm text-gray-800 font-semibold leading-relaxed">
+                                            ${this.getText('terms')}
                                         </p>
                                     </div>
                                 </div>
@@ -42,7 +98,7 @@ class SpecialOfferSection {
                             <!-- Promotion Period -->
                             <div class="stats bg-gradient-to-br from-yellow-50 to-amber-100 text-gray-800 shadow-lg mb-6" style="padding: 2rem;">
                                 <div class="stat">
-                                    <div class="stat-title text-gray-500 text-lg" data-i18n="offer.promotionPeriod">Promotion Period</div>
+                                    <div class="stat-title text-gray-500 text-lg">${this.getText('promotionPeriod')}</div>
                                     <div class="stat-value text-xl md:text-2xl">
                                         <span id="startDate">09/09/2025</span> - <span id="endDate">13/09/2025</span>
                                     </div>
@@ -51,8 +107,8 @@ class SpecialOfferSection {
                             
                             <!-- Countdown Timer -->
                             <div class="mb-8">
-                                <h3 class="text-xl text-gray-800 md:text-2xl lg:text-3xl font-bold mb-4" id="countdownLabel" data-i18n="countdown.label">
-                                    ⏳ Time remaining:
+                                <h3 class="text-xl text-gray-800 md:text-2xl lg:text-3xl font-bold mb-4" id="countdownLabel">
+                                    ${this.getText('timeRemaining')}
                                 </h3>
                                 
                                 <!-- Enhanced Countdown with Urgency Effects -->
@@ -62,25 +118,25 @@ class SpecialOfferSection {
                                             <span class="countdown font-mono text-4xl md:text-5xl lg:text-6xl">
                                                 <span id="countdown-days" style="--value:12;" aria-live="polite">12</span>
                                             </span>
-                                            <span class="text-sm md:text-base mt-2 font-semibold" data-i18n="countdown.days">Days</span>
+                                            <span class="text-sm md:text-base mt-2 font-semibold">${this.getText('days')}</span>
                                         </div>
                                         <div id="hours-container" class="countdown-item flex flex-col p-6 md:p-8 lg:p-10 rounded-box text-white font-bold shadow-lg">
                                             <span class="countdown font-mono text-4xl md:text-5xl lg:text-6xl">
                                                 <span id="countdown-hours" style="--value:10;" aria-live="polite">10</span>
                                             </span>
-                                            <span class="text-sm md:text-base mt-2 font-semibold" data-i18n="countdown.hours">Hours</span>
+                                            <span class="text-sm md:text-base mt-2 font-semibold">${this.getText('hours')}</span>
                                         </div>
                                         <div id="minutes-container" class="countdown-item flex flex-col p-6 md:p-8 lg:p-10 rounded-box text-white font-bold shadow-lg">
                                             <span class="countdown font-mono text-4xl md:text-5xl lg:text-6xl">
                                                 <span id="countdown-minutes" style="--value:24;" aria-live="polite">24</span>
                                             </span>
-                                            <span class="text-sm md:text-base mt-2 font-semibold" data-i18n="countdown.minutes">Minutes</span>
+                                            <span class="text-sm md:text-base mt-2 font-semibold">${this.getText('minutes')}</span>
                                         </div>
                                         <div id="seconds-container" class="countdown-item flex flex-col p-6 md:p-8 lg:p-10 rounded-box text-white font-bold shadow-lg">
                                             <span class="countdown font-mono text-4xl md:text-5xl lg:text-6xl">
                                                 <span id="countdown-seconds" style="--value:42;" aria-live="polite">42</span>
                                             </span>
-                                            <span class="text-sm md:text-base mt-2 font-semibold" data-i18n="countdown.seconds">Seconds</span>
+                                            <span class="text-sm md:text-base mt-2 font-semibold">${this.getText('seconds')}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -106,8 +162,8 @@ class SpecialOfferSection {
                                    " 
                                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(255, 107, 53, 0.6)';"
                                    onmouseout="this.style.transform='translateY(0px)'; this.style.boxShadow='0 4px 15px rgba(255, 107, 53, 0.4)';"
-                                   data-i18n="buttons.getOffer">
-                                    🛒 Get This Special Offer Now!
+>
+                                    ${this.getText('getOffer')}
                                 </a>
                             </div>
                         </div>
@@ -120,9 +176,6 @@ class SpecialOfferSection {
         setTimeout(() => {
             new DiscountCodeCard();
             
-            // Apply translations
-            this.applyTranslations();
-            
             // เรียกใช้ CountdownTimer หลังจาก render เสร็จ
             if (typeof CountdownTimer !== 'undefined') {
                 const promotionConfig = {
@@ -133,39 +186,6 @@ class SpecialOfferSection {
                 new CountdownTimer(promotionConfig);
             }
         }, 200);
-    }
-
-    async applyTranslations() {
-        try {
-            // Load translations data
-            const response = await fetch('./assets/data/translations.json');
-            const translations = await response.json();
-            
-            // Get current language (default to 'en')
-            const currentLang = localStorage.getItem('language') || 'en';
-            
-            // Find all elements with data-i18n attribute
-            const elements = document.querySelectorAll('[data-i18n]');
-            
-            elements.forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                const text = this.getNestedTranslation(translations[currentLang], key);
-                
-                if (text && text !== key) {
-                    element.innerHTML = text;
-                }
-            });
-            
-            console.log('Special Offer translations applied successfully');
-        } catch (error) {
-            console.error('Error applying Special Offer translations:', error);
-        }
-    }
-
-    getNestedTranslation(obj, path) {
-        return path.split('.').reduce((current, key) => {
-            return current && current[key] !== undefined ? current[key] : null;
-        }, obj);
     }
 }
 
