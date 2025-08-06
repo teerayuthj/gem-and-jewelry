@@ -668,6 +668,12 @@ class GoldSilverCalculator {
         const sellPriceElement = this.container.querySelector('#sellPrice');
         const buyPriceElement = this.container.querySelector('#buyPrice');
         
+        // Check if elements exist before trying to set textContent
+        if (!sellPriceElement || !buyPriceElement) {
+            console.warn('Calculator price elements not found in DOM, skipping updateDisplay');
+            return;
+        }
+        
         if (this.currentMetal === 'gold') {
             currentPrices = this.prices.gold[this.currentGoldType];
         } else {
@@ -684,6 +690,13 @@ class GoldSilverCalculator {
     calculatePrice() {
         const amountInput = this.container.querySelector('#amount');
         const totalPriceElement = this.container.querySelector('#totalPrice');
+        
+        // Check if elements exist before proceeding
+        if (!amountInput || !totalPriceElement) {
+            console.warn('Calculator input elements not found in DOM, skipping calculatePrice');
+            return;
+        }
+        
         const amount = parseFloat(amountInput.value) || 0;
         let currentPrices;
         let totalPriceInTHB = 0;
