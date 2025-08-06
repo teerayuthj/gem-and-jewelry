@@ -26,6 +26,19 @@ class SpecialOfferSection {
                             
                             <div id="discountCodeCard"></div>
                             
+                            <!-- Terms and Conditions -->
+                            <div class="backdrop-blur-md bg-white/20 border border-white/30 p-4 mb-4 md:mb-6 mx-4 md:mx-0 rounded-xl shadow-lg" 
+                                 style="background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); 
+                                        backdrop-filter: blur(10px); 
+                                        border: 1px solid rgba(255,255,255,0.2);">
+                                <div class="flex items-start">
+                                    <div class="w-full">
+                                        <p class="text-sm text-gray-100 leading-relaxed" data-i18n="offer.terms">
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <!-- Promotion Period -->
                             <div class="stats bg-gradient-to-br from-yellow-50 to-amber-100 text-gray-800 shadow-lg mb-6" style="padding: 2rem;">
                                 <div class="stat">

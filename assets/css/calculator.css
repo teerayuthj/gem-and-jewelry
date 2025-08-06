@@ -6,6 +6,9 @@ body {
 #calculator-app {
     background: #045B96;
     padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .calculator-container {
@@ -32,13 +35,14 @@ body {
 }
 
 .calculator-title {
-    text-align: center;
+    text-align: center !important;
     color: #045B96;
     margin-bottom: 20px;
     font-size: 22px;
     font-weight: 700;
     padding: 10px;
     font-family: 'Prompt', sans-serif;
+    width: 100%;
 }
 
 /* ====== Metal Selector ====== */
@@ -343,13 +347,16 @@ body {
     
     .calculator-container {
         padding: 18px;
-        margin: 0;
+        margin: 0 auto;
         max-width: 100%;
     }
     
     .calculator-title {
         font-size: 20px;
         margin-bottom: 15px;
+        text-align: center !important;
+        padding: 12px 20px;
+        line-height: 1.3;
     }
     
     .price-display {
@@ -408,12 +415,15 @@ body {
     
     .calculator-container {
         padding: 15px;
-        margin: 0;
+        margin: 0 auto;
     }
     
     .calculator-title {
         font-size: 18px;
         margin-bottom: 12px;
+        text-align: center !important;
+        padding: 10px 15px;
+        line-height: 1.3;
     }
     
     .price-display {

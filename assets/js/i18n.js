@@ -157,7 +157,12 @@ class I18nManager {
         elements.forEach(element => {
             const key = element.getAttribute('data-i18n');
             const translation = this.getText(key);
-            element.textContent = translation;
+            // Use innerHTML for HTML content, textContent for plain text
+            if (translation.includes('<')) {
+                element.innerHTML = translation;
+            } else {
+                element.textContent = translation;
+            }
         });
         
         // Update elements with data-i18n-placeholder attribute

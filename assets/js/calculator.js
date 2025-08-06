@@ -5,13 +5,24 @@ class GoldSilverCalculator {
         this.currentMetal = 'gold';
         this.currentGoldType = '96.5_osiris';
         this.currentUnit = 'baht';
+        this.currentCurrency = 'THB';
         this.currentLang = localStorage.getItem('language') || 'en';
-        this.updateInterval = null;
+        this.sharedPriceManager = window.sharedPriceManager;
+        this.exchangeRateManager = window.exchangeRateManager;
+        this.unsubscribePrices = null;
+        this.unsubscribeRates = null;
         
-        // API URLs
-        this.apiUrls = {
-            gold: 'http://27.254.77.78/rest/public/rest/goldspot',
-            silver: 'http://27.254.77.78/rest/public/rest/silver'
+        // Exchange rates (will be updated from ExchangeRateManager)
+        this.exchangeRates = {
+            THB: 1,
+            USD: 0.031,
+            EUR: 0.027,
+            JPY: 4.54,
+            CNY: 0.22,
+            KRW: 42.8,
+            INR: 2.71,
+            SGD: 0.040,
+            HKD: 0.243
         };
 
         // Price data
@@ -27,11 +38,12 @@ class GoldSilverCalculator {
             }
         };
 
-        // Unit conversions
+        // Unit conversions to grams
         this.conversions = {
             gram: 1,
             baht: 15.244,
-            kg: 1000
+            kg: 1000,
+            troy_oz: 31.1035       // Troy Ounce (international standard)
         };
 
         this.init();
@@ -39,39 +51,102 @@ class GoldSilverCalculator {
 
     init() {
         this.setupLanguageSupport();
+        this.subscribeToSharedPriceManager();
+        this.subscribeToExchangeRateManager();
         this.render();
         this.bindEvents();
         this.updateDisplay();
-        this.updateLastUpdated();
-        
-        // Auto-update every 60 seconds to reduce CPU usage
-        this.updateInterval = setInterval(() => {
-            this.fetchPricesFromAPI();
-        }, 3000);
-        
-        // Add Page Visibility API to pause updates when tab is not active
-        this.setupVisibilityHandler();
     }
     
-    setupVisibilityHandler() {
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                // Tab is hidden, clear interval to save CPU
-                if (this.updateInterval) {
-                    clearInterval(this.updateInterval);
-                    this.updateInterval = null;
-                }
-            } else {
-                // Tab is visible again, restart interval
-                if (!this.updateInterval) {
-                    this.updateInterval = setInterval(() => {
-                        this.fetchPricesFromAPI();
-                    }, 60000);
-                    // Fetch immediately when tab becomes visible
-                    this.fetchPricesFromAPI();
-                }
-            }
+    // Subscribe to SharedPriceManager for real-time data
+    subscribeToSharedPriceManager() {
+        if (!this.sharedPriceManager) {
+            console.error('SharedPriceManager not available for Calculator');
+            // Use fallback data
+            this.generateFallbackPrices();
+            return;
+        }
+
+        // Subscribe to price updates
+        this.unsubscribePrices = this.sharedPriceManager.subscribe('GoldSilverCalculator', (data) => {
+            this.updatePricesFromShared(data);
         });
+        
+        console.log('GoldSilverCalculator subscribed to SharedPriceManager');
+    }
+
+    // Subscribe to ExchangeRateManager for currency conversion
+    subscribeToExchangeRateManager() {
+        if (!this.exchangeRateManager) {
+            console.error('ExchangeRateManager not available for Calculator');
+            return;
+        }
+
+        // Subscribe to exchange rate updates
+        this.unsubscribeRates = this.exchangeRateManager.subscribe('GoldSilverCalculator', (data) => {
+            this.updateExchangeRatesFromManager(data);
+        });
+        
+        console.log('GoldSilverCalculator subscribed to ExchangeRateManager');
+    }
+
+    // Update exchange rates from ExchangeRateManager
+    updateExchangeRatesFromManager(rateData) {
+        if (!rateData.rates) return;
+
+        // Update exchange rates from the manager
+        this.exchangeRates = { ...rateData.rates };
+        
+        console.log('Calculator: Exchange rates updated from ExchangeRateManager');
+        
+        // Update exchange rate display
+        this.updateExchangeRateInfo();
+        
+        // Recalculate price if needed
+        this.calculatePrice();
+    }
+
+    // Update prices from SharedPriceManager data
+    updatePricesFromShared(sharedData) {
+        if (!sharedData.gold || !sharedData.silver) return;
+
+        // Update gold prices according to API format
+        if (sharedData.gold.G965B) {
+            this.prices.gold['96.5_osiris'].bid = sharedData.gold.G965B.bid || this.prices.gold['96.5_osiris'].bid;
+            this.prices.gold['96.5_osiris'].offer = sharedData.gold.G965B.offer || this.prices.gold['96.5_osiris'].offer;
+            this.prices.gold['96.5_assoc'].bid = sharedData.gold.G965B.bid_asso || this.prices.gold['96.5_assoc'].bid;
+            this.prices.gold['96.5_assoc'].offer = sharedData.gold.G965B.offer_asso || this.prices.gold['96.5_assoc'].offer;
+        }
+        
+        if (sharedData.gold.G9999B) {
+            this.prices.gold['99.99_osiris'].bid = sharedData.gold.G9999B.bid || this.prices.gold['99.99_osiris'].bid;
+            this.prices.gold['99.99_osiris'].offer = sharedData.gold.G9999B.offer || this.prices.gold['99.99_osiris'].offer;
+        }
+        
+        if (sharedData.gold.G9999KG) {
+            this.prices.gold['99.99_osiris_kg'].bid = sharedData.gold.G9999KG.bid || this.prices.gold['99.99_osiris_kg'].bid;
+            this.prices.gold['99.99_osiris_kg'].offer = sharedData.gold.G9999KG.offer || this.prices.gold['99.99_osiris_kg'].offer;
+        }
+
+        // Update silver prices according to API format
+        if (sharedData.silver.Silver) {
+            this.prices.silver['bar_99.99'].bid = parseInt(sharedData.silver.Silver.bid) || this.prices.silver['bar_99.99'].bid;
+            this.prices.silver['bar_99.99'].offer = parseInt(sharedData.silver.Silver.offer) || this.prices.silver['bar_99.99'].offer;
+        }
+        
+        // Store synced update time from SharedPriceManager
+        this.syncedUpdateTime = sharedData.syncedUpdateTime;
+        
+        // Update display with synced time
+        this.updateDisplay();
+    }
+
+    // Generate fallback prices when SharedPriceManager is not available
+    generateFallbackPrices() {
+        console.log('Calculator using fallback prices');
+        // Keep existing fallback prices in this.prices
+        this.simulatePriceUpdate();
+        this.updateDisplay();
     }
 
     setupLanguageSupport() {
@@ -120,25 +195,35 @@ class GoldSilverCalculator {
                     units: {
                         label: "หน่วย",
                         baht: "บาททอง",
-                        kg: "กิโลกรัม",
-                        gram: "กรัม"
+                        kg: "กิโลกรัม", 
+                        gram: "กรัม",
+                        troy_oz: "ทรอย เอานซ์"
+                    },
+                    currencies: {
+                        label: "สกุลเงิน",  
+                        THB: "บาท (THB)",
+                        USD: "ดอลลาร์สหรัฐ (USD)",
+                        EUR: "ยูโร (EUR)",
+                        JPY: "เยน (JPY)",
+                        CNY: "หยวน (CNY)",
+                        KRW: "วอน (KRW)",
+                        INR: "รูปี (INR)",
+                        SGD: "ดอลลาร์สิงคโปร์ (SGD)",
+                        HKD: "ดอลลาร์ฮ่องกง (HKD)"
                     },
                     weight: {
                         label: "น้ำหนัก",
                         placeholder: "0.00"
                     },
                     prices: {
-                        sellPerBaht: "ราคาซื้อ (ต่อบาททอง)",
-                        buyPerBaht: "ราคาขาย (ต่อบาททอง)",
-                        sellPerKg: "ราคาซื้อ (ต่อกิโลกรัม)",
-                        buyPerKg: "ราคาขาย (ต่อกิโลกรัม)"
+                        sell: "ราคาซื้อ",
+                        buy: "ราคาขาย"
                     },
                     total: {
-                        label: "มูลค่ารวม (ราคาขาย)",
-                        currency: "บาท"
+                        label: "มูลค่ารวม"
                     },
-                    lastUpdated: "อัพเดทล่าสุด:",
-                    note: "💡 <strong>หมายเหตุ:</strong> ราคาที่แสดงเป็นราคาอ้างอิงตามข้อมูลตลาด อัพเดทแบบเรียลไทม์ อิงตามทองคำโลกและเงื่อนไขการซื้อขาย"
+                    noteGold: "💡 <strong>หมายเหตุ:</strong> ราคาอ้างอิงแบบเรียลไทม์ การแปลงสกุลเงินอาจคลาดเคลื่อนจากอัตราตลาดจริง ยังไม่รวมค่ากำเหน็จและเงื่อนไขการซื้อขาย",
+                    noteSilver: "💡 <strong>หมายเหตุ:</strong> ราคาอ้างอิงแบบเรียลไทม์ การแปลงสกุลเงินอาจคลาดเคลื่อนจากอัตราตลาดจริง ยังไม่รวม VAT 7% และเงื่อนไขการซื้อขาย"
                 }
             },
             en: {
@@ -159,24 +244,34 @@ class GoldSilverCalculator {
                         label: "Unit",
                         baht: "Baht Gold",
                         kg: "Kilogram",
-                        gram: "Gram"
+                        gram: "Gram",
+                        troy_oz: "Troy Ounce"
+                    },
+                    currencies: {
+                        label: "Currency",
+                        THB: "Thai Baht (THB)",
+                        USD: "US Dollar (USD)",
+                        EUR: "Euro (EUR)",
+                        JPY: "Japanese Yen (JPY)",
+                        CNY: "Chinese Yuan (CNY)",
+                        KRW: "Korean Won (KRW)",
+                        INR: "Indian Rupee (INR)",
+                        SGD: "Singapore Dollar (SGD)",
+                        HKD: "Hong Kong Dollar (HKD)"
                     },
                     weight: {
                         label: "Weight",
                         placeholder: "0.00"
                     },
                     prices: {
-                        sellPerBaht: "Sell Price (per Baht Gold)",
-                        buyPerBaht: "Buy Price (per Baht Gold)",
-                        sellPerKg: "Sell Price (per Kilogram)",
-                        buyPerKg: "Buy Price (per Kilogram)"
+                        sell: "Sell Price",
+                        buy: "Buy Price"
                     },
                     total: {
-                        label: "Total Value (Sell Price)",
-                        currency: "THB"
+                        label: "Total Value"
                     },
-                    lastUpdated: "Last Updated:",
-                    note: "💡 <strong>Note:</strong> Prices shown are reference prices based on market data. Real-time updates based on global gold prices and trading conditions."
+                    noteGold: "💡 <strong>Note:</strong> Real-time reference prices. Currency conversion may vary from actual market rates. Excludes premium and trading conditions.",
+                    noteSilver: "💡 <strong>Note:</strong> Real-time reference prices. Currency conversion may vary from actual market rates. Excludes 7% VAT and trading conditions."
                 }
             }
         };
@@ -241,6 +336,14 @@ class GoldSilverCalculator {
         return key;
     }
 
+    getCurrencyText(key) {
+        const currencies = this.getTranslatedText('calculator.currencies');
+        if (currencies && typeof currencies === 'object') {
+            return currencies[key] || key;
+        }
+        return key;
+    }
+
     // Helper function to format numbers without decimals
     formatNumber(num) {
         if (typeof num !== 'number' || isNaN(num)) return '0';
@@ -250,7 +353,7 @@ class GoldSilverCalculator {
     render() {
         this.container.innerHTML = `
             <div class="calculator-container">
-                <h1 class="calculator-title">${this.getTranslatedText('calculator.title')}</h1>
+                <h1 class="calculator-title">${this.getTranslatedText('calculator.title').replace(/\n/g, '<br>')}</h1>
                 
                 <div class="metal-selector">
                     <div class="selector-bg gold" id="selectorBg"></div>
@@ -289,16 +392,38 @@ class GoldSilverCalculator {
                             </select>
                         </div>
                     </div>
+                    
+                    <!-- แถวที่ 3: สกุลเงิน (เต็มความกว้าง) -->
+                    <div class="input-group">
+                        <label for="currencySelector" class="input-label">${this.getTranslatedText('calculator.currencies.label')}</label>
+                        <select id="currencySelector" class="calc-select">
+                            <option value="THB">${this.getCurrencyText('THB')}</option>
+                            <option value="USD">${this.getCurrencyText('USD')}</option>
+                            <option value="EUR">${this.getCurrencyText('EUR')}</option>
+                            <option value="JPY">${this.getCurrencyText('JPY')}</option>
+                            <option value="CNY">${this.getCurrencyText('CNY')}</option>
+                            <option value="KRW">${this.getCurrencyText('KRW')}</option>
+                            <option value="INR">${this.getCurrencyText('INR')}</option>
+                            <option value="SGD">${this.getCurrencyText('SGD')}</option>
+                            <option value="HKD">${this.getCurrencyText('HKD')}</option>
+                        </select>
+                        <div id="exchangeRateInfo" class="exchange-rate-info" style="margin-top: 8px; font-size: 12px; color: #666; display: none;">
+                            <!-- Exchange rate info will be displayed here -->
+                        </div>
+                        <div id="exchangeRateTime" class="exchange-rate-time" style="margin-top: 4px; font-size: 11px; color: #999; display: none;">
+                            <!-- Exchange rate update time will be displayed here -->
+                        </div>
+                    </div>
                 </div>
 
                 <div class="price-display">
                     <div class="price-info" id="priceInfo">
                         <div class="price-item sell">
-                            <div class="price-label">${this.getTranslatedText('calculator.prices.sellPerBaht')}</div>
+                            <div class="price-label">${this.getTranslatedText('calculator.prices.sell')}</div>
                             <div class="price-value sell-price" id="sellPrice">50,838</div>
                         </div>
                         <div class="price-item buy">
-                            <div class="price-label">${this.getTranslatedText('calculator.prices.buyPerBaht')}</div>
+                            <div class="price-label">${this.getTranslatedText('calculator.prices.buy')}</div>
                             <div class="price-value buy-price" id="buyPrice">50,738</div>
                         </div>
                     </div>
@@ -307,18 +432,14 @@ class GoldSilverCalculator {
                         <div class="total-price" id="totalPriceCard">
                             <div class="total-label-inside">${this.getTranslatedText('calculator.total.label')}</div>
                             <div class="total-value" id="totalPrice">0</div>
-                            <div class="currency-inside">${this.getTranslatedText('calculator.total.currency')}</div>
+                            <div class="currency-inside" id="currencyDisplay">THB</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="last-updated">
-                    <span class="status-indicator"></span>
-                    ${this.getTranslatedText('calculator.lastUpdated')} <span id="lastUpdated">14:25:00 น.</span>
-                </div>
 
                 <div class="info-text">
-                    ${this.getTranslatedText('calculator.note')}
+                    ${this.getTranslatedText(`calculator.note${this.currentMetal === 'gold' ? 'Gold' : 'Silver'}`)}
                 </div>
             </div>
         `;
@@ -351,6 +472,76 @@ class GoldSilverCalculator {
             this.currentUnit = e.target.value;
             this.calculatePrice();
         });
+
+        // Currency selector event
+        const currencySelector = this.container.querySelector('#currencySelector');
+        currencySelector.addEventListener('change', (e) => {
+            this.currentCurrency = e.target.value;
+            this.updateCurrencyDisplay();
+            this.calculatePrice(); // Only recalculate total, don't update sell/buy prices
+        });
+    }
+
+    updateCurrencyDisplay() {
+        const currencyDisplay = this.container.querySelector('#currencyDisplay');
+        if (currencyDisplay) {
+            currencyDisplay.textContent = this.currentCurrency;
+        }
+        
+        // Update exchange rate info
+        this.updateExchangeRateInfo();
+    }
+
+    updateExchangeRateInfo() {
+        const exchangeRateInfo = this.container.querySelector('#exchangeRateInfo');
+        const exchangeRateTime = this.container.querySelector('#exchangeRateTime');
+        if (!exchangeRateInfo) return;
+
+        if (this.currentCurrency === 'THB') {
+            // Hide for THB since it's the base currency
+            exchangeRateInfo.style.display = 'none';
+            if (exchangeRateTime) exchangeRateTime.style.display = 'none';
+            return;
+        }
+
+        const rate = this.exchangeRates[this.currentCurrency];
+        if (!rate) {
+            exchangeRateInfo.style.display = 'none';
+            if (exchangeRateTime) exchangeRateTime.style.display = 'none';
+            return;
+        }
+
+        // Since ExchangeRateManager converts to THB base:
+        // rate = how much of foreign currency you get for 1 THB
+        const thbToTarget = rate; // 1 THB = rate foreign currency
+        const targetToThb = 1 / rate; // 1 foreign currency = 1/rate THB
+
+        let rateText;
+        if (this.currentLang === 'th') {
+            if (thbToTarget < 1) {
+                // For currencies where 1 THB < 1 foreign currency (like USD, EUR)
+                rateText = `1 ${this.currentCurrency} = ${targetToThb.toFixed(2)} บาท`;
+            } else {
+                // For currencies where 1 THB > 1 foreign currency (like JPY, KRW)
+                rateText = `1 บาท = ${thbToTarget.toFixed(2)} ${this.currentCurrency}`;
+            }
+        } else {
+            if (thbToTarget < 1) {
+                rateText = `1 ${this.currentCurrency} = ${targetToThb.toFixed(2)} THB`;
+            } else {
+                rateText = `1 THB = ${thbToTarget.toFixed(2)} ${this.currentCurrency}`;
+            }
+        }
+
+        exchangeRateInfo.textContent = rateText;
+        exchangeRateInfo.style.display = 'block';
+
+        // Show update time
+        if (exchangeRateTime && this.exchangeRateManager) {
+            const updateInfo = this.exchangeRateManager.getUpdateInfo();
+            exchangeRateTime.textContent = `Last updated: ${updateInfo}`;
+            exchangeRateTime.style.display = 'block';
+        }
     }
 
     switchMetal(metal) {
@@ -370,23 +561,23 @@ class GoldSilverCalculator {
         const goldTypeSelector = this.container.querySelector('#goldTypeSelector');
         goldTypeSelector.style.display = metal === 'gold' ? 'block' : 'none';
         
-        // Update unit options for silver
+        // Update unit options for silver vs gold
         const unitSelector = this.container.querySelector('#unitSelector');
         if (metal === 'silver') {
             unitSelector.innerHTML = `
                 <option value="kg">${this.getUnitText('kg')}</option>
-                <option value="gram">${this.getUnitText('gram')}</option>
             `;
             this.currentUnit = 'kg';
             unitSelector.value = 'kg';
         } else {
-            unitSelector.innerHTML = `
-                <option value="baht">${this.getUnitText('baht')}</option>
-                <option value="kg">${this.getUnitText('kg')}</option>
-                <option value="gram">${this.getUnitText('gram')}</option>
-            `;
-            this.currentUnit = 'baht';
-            unitSelector.value = 'baht';
+            // Gold - update units based on gold type
+            this.updateUnitSelectorForGoldType(this.currentGoldType);
+        }
+        
+        // Update note text based on metal type
+        const infoText = this.container.querySelector('.info-text');
+        if (infoText) {
+            infoText.innerHTML = this.getTranslatedText(`calculator.note${this.currentMetal === 'gold' ? 'Gold' : 'Silver'}`);
         }
         
         this.updateDisplay();
@@ -400,39 +591,68 @@ class GoldSilverCalculator {
             goldTypeSelect.value = type;
         }
         
+        // Update unit selector based on gold type
+        this.updateUnitSelectorForGoldType(type);
+        
         this.updateDisplay();
+    }
+
+    updateUnitSelectorForGoldType(goldType) {
+        const unitSelector = this.container.querySelector('#unitSelector');
+        if (!unitSelector) return;
+
+        let unitOptions = '';
+        let defaultUnit = 'baht';
+
+        if (goldType === '99.99_osiris_kg') {
+            // 99.99% Kilogram - only kg unit
+            unitOptions = `<option value="kg">${this.getUnitText('kg')}</option>`;
+            defaultUnit = 'kg';
+        } else if (goldType === '96.5_assoc') {
+            // 96.5% Association - no kilogram
+            unitOptions = `
+                <option value="baht">${this.getUnitText('baht')}</option>
+                <option value="gram">${this.getUnitText('gram')}</option>
+            `;
+        } else {
+            // Base units for other gold types (96.5% Ausiris, 99.99% Ausiris)
+            unitOptions = `
+                <option value="baht">${this.getUnitText('baht')}</option>
+                <option value="kg">${this.getUnitText('kg')}</option>
+                <option value="gram">${this.getUnitText('gram')}</option>
+            `;
+
+            // Add Troy Ounce for 99.99% regular (not kg)
+            if (goldType === '99.99_osiris') {
+                unitOptions += `<option value="troy_oz">${this.getUnitText('troy_oz')}</option>`;
+            }
+        }
+
+        unitSelector.innerHTML = unitOptions;
+        
+        // Reset to appropriate default if current unit is not available
+        if (!unitSelector.querySelector(`option[value="${this.currentUnit}"]`)) {
+            this.currentUnit = defaultUnit;
+            unitSelector.value = defaultUnit;
+        } else {
+            unitSelector.value = this.currentUnit;
+        }
     }
 
     updateDisplay() {
         let currentPrices;
         const sellPriceElement = this.container.querySelector('#sellPrice');
         const buyPriceElement = this.container.querySelector('#buyPrice');
-        const priceLabels = this.container.querySelectorAll('.price-label');
         
         if (this.currentMetal === 'gold') {
             currentPrices = this.prices.gold[this.currentGoldType];
-            
-            if (this.currentGoldType === '99.99_osiris_kg') {
-                // Display price per kilogram
-                sellPriceElement.textContent = this.formatNumber(currentPrices.bid);
-                buyPriceElement.textContent = this.formatNumber(currentPrices.offer);
-                priceLabels[0].textContent = this.getTranslatedText('calculator.prices.sellPerKg');
-                priceLabels[1].textContent = this.getTranslatedText('calculator.prices.buyPerKg');
-            } else {
-                // Display price per baht gold
-                sellPriceElement.textContent = this.formatNumber(currentPrices.bid);
-                buyPriceElement.textContent = this.formatNumber(currentPrices.offer);
-                priceLabels[0].textContent = this.getTranslatedText('calculator.prices.sellPerBaht');
-                priceLabels[1].textContent = this.getTranslatedText('calculator.prices.buyPerBaht');
-            }
         } else {
-            // Silver - display price per kilogram
             currentPrices = this.prices.silver['bar_99.99'];
-            sellPriceElement.textContent = this.formatNumber(currentPrices.bid);
-            buyPriceElement.textContent = this.formatNumber(currentPrices.offer);
-            priceLabels[0].textContent = this.getTranslatedText('calculator.prices.sellPerKg');
-            priceLabels[1].textContent = this.getTranslatedText('calculator.prices.buyPerKg');
         }
+        
+        // Keep sell/buy prices in THB (no currency conversion)
+        sellPriceElement.textContent = Math.round(currentPrices.bid).toLocaleString();
+        buyPriceElement.textContent = Math.round(currentPrices.offer).toLocaleString();
         
         this.calculatePrice();
     }
@@ -442,120 +662,40 @@ class GoldSilverCalculator {
         const totalPriceElement = this.container.querySelector('#totalPrice');
         const amount = parseFloat(amountInput.value) || 0;
         let currentPrices;
-        let totalPrice = 0;
+        let totalPriceInTHB = 0;
+        
+        // Convert input amount to grams first
+        const amountInGrams = amount * this.conversions[this.currentUnit];
         
         if (this.currentMetal === 'gold') {
             currentPrices = this.prices.gold[this.currentGoldType];
             
             if (this.currentGoldType === '99.99_osiris_kg') {
                 // ทอง 99.99% กิโลกรัม - ราคาต่อกิโลกรัม
-                if (this.currentUnit === 'kg') {
-                    totalPrice = amount * currentPrices.offer;
-                } else if (this.currentUnit === 'gram') {
-                    totalPrice = (amount / 1000) * currentPrices.offer;
-                } else if (this.currentUnit === 'baht') {
-                    const grams = amount * 15.244;
-                    totalPrice = (grams / 1000) * currentPrices.offer;
-                }
+                totalPriceInTHB = (amountInGrams / 1000) * currentPrices.offer;
             } else {
-                // ทองปกติ - ราคาต่อบาททอง (ใช้ราคาขาย)
-                if (this.currentUnit === 'baht') {
-                    totalPrice = amount * currentPrices.offer;
-                } else if (this.currentUnit === 'gram') {
-                    const baht = amount / 15.244;
-                    totalPrice = baht * currentPrices.offer;
-                } else if (this.currentUnit === 'kg') {
-                    const baht = (amount * 1000) / 15.244;
-                    totalPrice = baht * currentPrices.offer;
-                }
+                // ทองปกติ - ราคาต่อบาททอง (ใช้ราคาขาย) 
+                const bahtGold = amountInGrams / 15.244; // Convert grams to baht gold
+                totalPriceInTHB = bahtGold * currentPrices.offer;
             }
         } else {
             // เงิน - ราคาต่อกิโลกรัม (ใช้ราคาขาย)
             currentPrices = this.prices.silver['bar_99.99'];
-            
-            if (this.currentUnit === 'kg') {
-                totalPrice = amount * currentPrices.offer;
-            } else if (this.currentUnit === 'gram') {
-                totalPrice = (amount / 1000) * currentPrices.offer;
-            }
+            totalPriceInTHB = (amountInGrams / 1000) * currentPrices.offer;
         }
         
-        totalPriceElement.textContent = this.formatNumber(totalPrice);
+        // Convert from THB to selected currency
+        const finalPrice = totalPriceInTHB * this.exchangeRates[this.currentCurrency];
+        
+        // Format price as whole numbers (no decimal places)
+        const formattedPrice = Math.round(finalPrice).toLocaleString();
+        
+        totalPriceElement.textContent = formattedPrice;
     }
 
-    updateLastUpdated() {
-        const lastUpdatedElement = this.container.querySelector('#lastUpdated');
-        const now = new Date();
-        const timeString = now.toLocaleTimeString('th-TH', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false
-        }) + ' น.';
-        lastUpdatedElement.textContent = timeString;
-    }
 
-    async fetchPricesFromAPI() {
-        try {
-            // Fetch Gold prices
-            if (this.apiUrls.gold) {
-                const goldResponse = await fetch(this.apiUrls.gold);
-                const goldData = await goldResponse.json();
-                
-                // Update gold prices according to API format
-                if (goldData.G965B) {
-                    this.prices.gold['96.5_osiris'].bid = goldData.G965B.bid;
-                    this.prices.gold['96.5_osiris'].offer = goldData.G965B.offer;
-                    this.prices.gold['96.5_assoc'].bid = goldData.G965B.bid_asso;
-                    this.prices.gold['96.5_assoc'].offer = goldData.G965B.offer_asso;
-                }
-                
-                if (goldData.G9999B) {
-                    this.prices.gold['99.99_osiris'].bid = goldData.G9999B.bid;
-                    this.prices.gold['99.99_osiris'].offer = goldData.G9999B.offer;
-                }
-                
-                if (goldData.G9999KG) {
-                    this.prices.gold['99.99_osiris_kg'].bid = goldData.G9999KG.bid;
-                    this.prices.gold['99.99_osiris_kg'].offer = goldData.G9999KG.offer;
-                }
-            }
-            
-            // Fetch Silver prices
-            if (this.apiUrls.silver) {
-                const silverResponse = await fetch(this.apiUrls.silver);
-                const silverData = await silverResponse.json();
-                
-                // Update silver prices according to API format
-                if (silverData.Silver) {
-                    this.prices.silver['bar_99.99'].bid = parseInt(silverData.Silver.bid);
-                    this.prices.silver['bar_99.99'].offer = parseInt(silverData.Silver.offer);
-                }
-            }
-            
-            // Update display
-            this.updateDisplay();
-            this.updateLastUpdated();
-            
-        } catch (error) {
-            console.log('API connection failed, using mock prices');
-            this.simulatePriceUpdate();
-            this.updateDisplay();
-            this.updateLastUpdated();
-            
-            // If too many errors, increase interval to reduce load
-            this.errorCount = (this.errorCount || 0) + 1;
-            if (this.errorCount >= 3) {
-                console.warn('Multiple API errors detected, reducing update frequency');
-                if (this.updateInterval) {
-                    clearInterval(this.updateInterval);
-                    this.updateInterval = setInterval(() => {
-                        this.fetchPricesFromAPI();
-                    }, 300000); // 5 minutes on error
-                }
-            }
-        }
-    }
+    // No longer needed - prices come from SharedPriceManager
+    // fetchPricesFromAPI() method removed
 
     simulatePriceUpdate() {
         // Simulate small price variations
@@ -580,17 +720,22 @@ class GoldSilverCalculator {
     
     // Cleanup method
     destroy() {
-        if (this.updateInterval) {
-            clearInterval(this.updateInterval);
-            this.updateInterval = null;
+        if (this.unsubscribePrices) {
+            this.unsubscribePrices();
+            this.unsubscribePrices = null;
         }
+        if (this.unsubscribeRates) {
+            this.unsubscribeRates();
+            this.unsubscribeRates = null;
+        }
+        console.log('GoldSilverCalculator unsubscribed from managers');
     }
 
     updateLanguageContent() {
         // Update calculator title
         const titleElement = this.container.querySelector('.calculator-title');
         if (titleElement) {
-            titleElement.textContent = this.getTranslatedText('calculator.title');
+            titleElement.innerHTML = this.getTranslatedText('calculator.title').replace(/\n/g, '<br>');
         }
         
         // Update metal selector buttons
@@ -651,24 +796,21 @@ class GoldSilverCalculator {
             currencyInside.textContent = this.getTranslatedText('calculator.total.currency');
         }
         
-        // Update last updated text
-        const lastUpdatedText = this.container.querySelector('.last-updated');
-        if (lastUpdatedText) {
-            const timeSpan = lastUpdatedText.querySelector('#lastUpdated');
-            const timeText = timeSpan ? timeSpan.textContent : '';
-            lastUpdatedText.innerHTML = `
-                <span class="status-indicator"></span>
-                ${this.getTranslatedText('calculator.lastUpdated')} <span id="lastUpdated">${timeText}</span>
-            `;
-        }
         
-        // Update info text
+        // Update info text based on metal type
         const infoText = this.container.querySelector('.info-text');
         if (infoText) {
-            infoText.innerHTML = this.getTranslatedText('calculator.note');
+            infoText.innerHTML = this.getTranslatedText(`calculator.note${this.currentMetal === 'gold' ? 'Gold' : 'Silver'}`);
         }
         
-        // Update price display labels
+        // Update price labels
+        const priceLabels = this.container.querySelectorAll('.price-label');
+        if (priceLabels.length >= 2) {
+            priceLabels[0].textContent = this.getTranslatedText('calculator.prices.sell');
+            priceLabels[1].textContent = this.getTranslatedText('calculator.prices.buy');
+        }
+        
+        // Update price display
         this.updateDisplay();
     }
 }

@@ -45,7 +45,7 @@ class MapContactSection {
                         
                         <div style="margin-bottom: 1.5rem;">
                             <div style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
-                                <i class="fas fa-map-marker-alt" style="color: #e74c3c; font-size: 1.2rem; margin-right: 0.8rem; margin-top: 0.2rem;"></i>
+                                <span style="color: #e74c3c; font-size: 1.2rem; margin-right: 0.8rem; margin-top: 0.2rem;">📍</span>
                                 <div>
                                     <p style="margin: 0; color: #34495e; line-height: 1.6; font-size: 1.5rem;">
                                         <span data-i18n="contact.address.line1">อาคารสีลม คอมเพล็กซ์ ชั้น 4</span><br>
@@ -56,7 +56,7 @@ class MapContactSection {
                             </div>
                             
                             <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-                                <i class="fas fa-phone" style="color: #2ecc71; font-size: 1.2rem; margin-right: 0.8rem;"></i>
+                                <span style="color: #2ecc71; font-size: 1.2rem; margin-right: 0.8rem;">📞</span>
                                 <a href="tel:+6621234567" style="color: #3498db; text-decoration: none; transition: color 0.3s ease; font-size: 1.5rem;" 
                                    data-i18n="contact.phone">
                                     02-613-4711-3 
@@ -68,7 +68,7 @@ class MapContactSection {
                            target="_blank" 
                            rel="noopener noreferrer"
                            style="display: inline-flex; align-items: center; background: #00c300; color: white; padding: 0.8rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; font-size: 1.7rem; margin-top: 1rem;">
-                            <i class="fab fa-line" style="font-size: 1.5rem; margin-right: 0.5rem;"></i>
+                            <span style="font-size: 1.5rem; margin-right: 0.5rem;">💬</span>
                             <span data-i18n="contact.lineButton">ติดต่อผ่าน LINE</span>
                         </a>
                     </div>

@@ -8,7 +8,8 @@ class GoldPriceManager {
         this.yesterdayData = null;
         this.silverData = null;
         this.silverYesterdayData = null;
-        this.updateInterval = null;
+        this.sharedPriceManager = window.sharedPriceManager;
+        this.unsubscribe = null;
         this.init();
     }
 
@@ -17,10 +18,9 @@ class GoldPriceManager {
         this.showLoadingState();
         
         await this.loadGoldTranslations();
-        await this.loadRealPrices();
+        this.subscribeToSharedPriceManager();
         this.render();
         this.bindEvents();
-        this.startAutoUpdate();
         
         // Listen for language changes
         document.addEventListener('languageChanged', (event) => {
@@ -112,7 +112,7 @@ class GoldPriceManager {
                             ausitis965: "Ausiris 96.5%",
                             ausitis9999: "Ausiris 99.99%",
                             spotGold: "Spot Gold (USD/oz)",
-                            silverUsdOz: "Silver Bar (USD/oz)",
+                            silverUsdOz: "Silver Bar\n(USD/oz)",
                             goldKg: "Ausiris 99.99% (KG)",
                             goldChit: "Gold Association 96.5%",
                             silverThb: "Silver Bar (THB/kg)"
@@ -124,30 +124,33 @@ class GoldPriceManager {
         }
     }
 
-    async loadRealPrices() {
-        try {
-            // Load all API endpoints
-            const [goldResponse, goldYesterdayResponse, silverResponse, silverYesterdayResponse] = await Promise.all([
-                fetch('http://27.254.77.78/rest/public/rest/goldspot'),
-                fetch('http://27.254.77.78/rest/public/rest/goldspot-yesterday'),
-                fetch('http://27.254.77.78/rest/public/rest/silver'),
-                fetch('http://27.254.77.78/rest/public/rest/silver-yesterday')
-            ]);
-
-            this.realData = await goldResponse.json();
-            this.yesterdayData = await goldYesterdayResponse.json();
-            this.silverData = await silverResponse.json();
-            this.silverYesterdayData = await silverYesterdayResponse.json();
-            
-            // Debug the time string specifically
-            if (this.realData && this.realData.G965B) {
-
-            }
-
-        } catch (error) {
-            console.error('Failed to load real prices:', error);
-            // Use fallback mock data if API fails
+    // Subscribe to SharedPriceManager for real-time data
+    subscribeToSharedPriceManager() {
+        if (!this.sharedPriceManager) {
+            console.error('SharedPriceManager not available');
             this.loadFallbackData();
+            return;
+        }
+
+        // Subscribe to price updates
+        this.unsubscribe = this.sharedPriceManager.subscribe('GoldPriceManager', (data) => {
+            this.updateDataFromShared(data);
+        });
+        
+        console.log('GoldPriceManager subscribed to SharedPriceManager');
+    }
+
+    // Update local data from SharedPriceManager
+    updateDataFromShared(sharedData) {
+        this.realData = sharedData.gold;
+        this.yesterdayData = sharedData.goldYesterday;
+        this.silverData = sharedData.silver;
+        this.silverYesterdayData = sharedData.silverYesterday;
+        this.syncedUpdateTime = sharedData.syncedUpdateTime; // Store synced time
+        
+        // Update the display if component is already rendered
+        if (document.getElementById('goldPriceContainer') && document.getElementById('visiblePrices')) {
+            this.updatePricesDisplay();
         }
     }
 
@@ -264,12 +267,13 @@ class GoldPriceManager {
             return this.generateFallbackData();
         }
 
-        const updateTime = this.realData.G965B?.time || new Date().toISOString();
-        const formattedTime = this.formatTime(updateTime);
+        // Use synced time from SharedPriceManager if available, otherwise format API time
+        const apiTime = this.realData.G965B?.time || new Date().toISOString();
+        const displayTime = this.syncedUpdateTime || this.formatTime(apiTime);
 
         return {
-            updateTime: formattedTime,
-            date: this.formatDate(updateTime),
+            updateTime: displayTime,
+            date: this.formatDate(apiTime),
             visiblePrices: [
                 {
                     id: 'ausitis965',
@@ -416,6 +420,10 @@ class GoldPriceManager {
 
     formatPrice(price, type = 'gold', id = '') {
         if (type === 'usd') {
+            // Show decimal places for Silver USD/oz
+            if (id === 'silverUsdOz') {
+                return `${price.toFixed(2)}`;
+            }
             return `${Math.round(price).toLocaleString()}`;
         }
         
@@ -430,7 +438,10 @@ class GoldPriceManager {
 
     formatPriceWithUnit(price, type = 'gold', id = '') {
         if (type === 'usd') {
-            const formatted = Math.round(price).toLocaleString();
+            // Show decimal places for Silver USD/oz
+            const formatted = (id === 'silverUsdOz') ? 
+                price.toFixed(2) : 
+                Math.round(price).toLocaleString();
             return {
                 number: formatted,
                 unit: 'USD'
@@ -484,7 +495,7 @@ class GoldPriceManager {
             `<span class="text-xl">${priceData.icon}</span>`;
         
         // Format price with separate number and unit
-        const { number, unit } = this.formatPriceWithUnit(priceData.buyPrice, priceData.type, priceData.id);
+        const { number } = this.formatPriceWithUnit(priceData.buyPrice, priceData.type, priceData.id);
         
         return `
             <div class="flex items-center justify-between p-3 border-t border-gray-200 hover:bg-blue-100 transition-colors">
@@ -517,10 +528,6 @@ class GoldPriceManager {
         const visibleRows = data.visiblePrices.map(price => this.createPriceRow(price)).join('');
         const hiddenRows = data.hiddenPrices.map(price => this.createPriceRow(price)).join('');
 
-        // Force use correct translations
-        const priceSellText = this.currentLang === 'th' ? 'ขาย' : 'Sell';
-        const priceChangeText = this.currentLang === 'th' ? 'เปลี่ยนแปลง' : 'Change';
-
         container.innerHTML = `
             <div class="w-full mx-auto">
                 <!-- Date Header - Standalone with Gradient -->
@@ -535,7 +542,7 @@ class GoldPriceManager {
                     <!-- Update Time -->
                     <div class="p-2 text-center">
                         <p class="text-gray-600 text-xs" id="goldUpdateTime">
-                            ${this.getText('goldPrices.updateTime')}: ${data.updateTime} น.
+                            ${this.getText('goldPrices.updateTime')}: ${data.updateTime}
                         </p>
                     </div>
                     
@@ -648,22 +655,8 @@ class GoldPriceManager {
         }
     }
 
-    startAutoUpdate() {
-        // Update every 3 seconds
-        this.updateInterval = setInterval(async () => {
-            await this.loadRealPrices();
-            this.updatePricesDisplay();
-        }, 3000);
-        console.log('Auto-update started (every 3 seconds)');
-    }
-
-    stopAutoUpdate() {
-        if (this.updateInterval) {
-            clearInterval(this.updateInterval);
-            this.updateInterval = null;
-            console.log('Auto-update stopped');
-        }
-    }
+    // No longer needed - SharedPriceManager handles updates
+    // startAutoUpdate() and stopAutoUpdate() removed
 
     updateLanguageContent() {
         // Update all text elements
@@ -691,7 +684,7 @@ class GoldPriceManager {
 
         const timeElement = document.getElementById('goldUpdateTime');
         if (timeElement) {
-            timeElement.textContent = `${this.getText('goldPrices.updateTime')}: ${data.updateTime} น.`;
+            timeElement.textContent = `${this.getText('goldPrices.updateTime')}: ${data.updateTime}`;
         }
 
         // Re-render price rows to update gold type names
@@ -716,7 +709,7 @@ class GoldPriceManager {
         // Update time display
         const timeElement = document.getElementById('goldUpdateTime');
         if (timeElement) {
-            timeElement.textContent = `${this.getText('goldPrices.updateTime')}: ${data.updateTime} น.`;
+            timeElement.textContent = `${this.getText('goldPrices.updateTime')}: ${data.updateTime}`;
         }
 
         // Update date display
@@ -736,7 +729,11 @@ class GoldPriceManager {
     
     // Clean up when component is destroyed
     destroy() {
-        this.stopAutoUpdate();
+        if (this.unsubscribe) {
+            this.unsubscribe();
+            this.unsubscribe = null;
+        }
+        console.log('GoldPriceManager unsubscribed from SharedPriceManager');
     }
 }
 

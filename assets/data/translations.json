@@ -9,6 +9,7 @@
       "copyError": "คัดลอกโค้ด:",
       "codeExpiry": "⏰ โค้ดหมดอายุ:",
       "promotionPeriod": "ระยะเวลาโปรโมชั่น",
+      "terms": "📋 <strong>เงื่อนไข:</strong> ส่วนลด 50.- สำหรับค่าพรีเมียมสินค้าทองคำแท่ง และทองรูปพรรณ 96.5% เงื่อนไขเป็นไปตามที่บริษัทกำหนดฯ",
       "discountCode": "AUBGJF50TH"
     },
     "countdown": {
@@ -66,7 +67,7 @@
         "buyPerKg": "ราคาขาย (ต่อกิโลกรัม)"
       },
       "total": {
-        "label": "มูลค่ารวม (ราคาขาย)",
+        "label": "มูลค่ารวม",
         "currency": "บาท"
       },
       "lastUpdated": "อัพเดทล่าสุด:",
@@ -95,6 +96,7 @@
       "copyError": "Copy code:",
       "codeExpiry": "⏰ Code expires:",
       "promotionPeriod": "Promotion Period",
+      "terms": "📋 <strong>Terms:</strong> 50 THB discount for premium on gold bars and 96.5% gold jewelry. Terms and conditions apply as determined by the company.",
       "discountCode": "AUBGJF50TH"
     },
     "countdown": {
@@ -123,7 +125,7 @@
       "switch": "ไทย"
     },
     "calculator": {
-      "title": "Gold & Silver Calculator",
+      "title": "Gold & Silver\nPrices Calculator",
       "metalTypes": {
         "gold": "🥇 Gold",
         "silver": "🥈 Silver"
@@ -152,7 +154,7 @@
         "buyPerKg": "Buy (per Kilogram)"
       },
       "total": {
-        "label": "Total Value (Sell Price)",
+        "label": "Total Value",
         "currency": "THB"
       },
       "lastUpdated": "Last Updated:",

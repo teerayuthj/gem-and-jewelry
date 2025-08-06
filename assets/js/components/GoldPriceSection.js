@@ -31,7 +31,7 @@ class GoldPriceSection {
                     ราคาทองคำและแท่งเงิน Real Time ออสสิริส
                 </h2>
                 <h2 class="text-2xl md:text-2xl lg:text-3xl font-bold text-gray-800 mb-2 hidden" data-lang="en">
-                    Real-time Gold and Silver Prices by Ausiris
+                    Real-time Gold and Silver Prices<br>by Ausiris
                 </h2>
             </div>
             
