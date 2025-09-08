@@ -110,39 +110,40 @@
                 console.log('ExchangeRateManager initialized');
             }
             
-            // Initialize Calculator with error handling
-            setTimeout(() => {
-                console.log('GemApp available:', typeof GemApp !== 'undefined');
-                console.log('GemApp object:', GemApp);
-                console.log('GoldSilverCalculator:', GemApp?.GoldSilverCalculator);
-                
+            // Initialize Calculator with proper error handling and retries
+            function initializeCalculator() {
                 if (typeof GemApp !== 'undefined' && GemApp.GoldSilverCalculator) {
                     try {
                         new GemApp.GoldSilverCalculator('calculator-app');
                         console.log('GoldSilverCalculator initialized successfully');
+                        return true;
                     } catch (error) {
                         console.error('Error initializing GoldSilverCalculator:', error);
+                        return false;
                     }
-                } else {
-                    console.error('GemApp.GoldSilverCalculator not available, retrying...');
-                    // Retry after a short delay
-                    setTimeout(() => {
-                        console.log('Retry - GemApp available:', typeof GemApp !== 'undefined');
-                        console.log('Retry - GemApp object:', GemApp);
-                        
-                        if (typeof GemApp !== 'undefined' && GemApp.GoldSilverCalculator) {
-                            try {
-                                new GemApp.GoldSilverCalculator('calculator-app');
-                                console.log('GoldSilverCalculator initialized on retry');
-                            } catch (error) {
-                                console.error('Error on retry:', error);
-                            }
-                        } else {
-                            console.error('GemApp.GoldSilverCalculator still not available');
-                        }
-                    }, 1000);
                 }
-            }, 200);
+                return false;
+            }
+
+            // Try to initialize calculator with multiple attempts
+            let attempts = 0;
+            const maxAttempts = 10;
+            
+            function tryInitialize() {
+                attempts++;
+                if (initializeCalculator()) {
+                    return; // Success, stop trying
+                }
+                
+                if (attempts < maxAttempts) {
+                    console.log(`Calculator initialization attempt ${attempts}/${maxAttempts}, retrying...`);
+                    setTimeout(tryInitialize, 500);
+                } else {
+                    console.error('Failed to initialize GoldSilverCalculator after', maxAttempts, 'attempts');
+                }
+            }
+            
+            setTimeout(tryInitialize, 200);
         });
     </script>
 </body>
