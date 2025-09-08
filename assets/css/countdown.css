@@ -176,9 +176,10 @@
 }
 
 .countdown-warning {
-    background: linear-gradient(135deg, #fdcb6e, #e17055) !important;
+    /* Changed from orange to red tones */
+    background: linear-gradient(135deg, #ff4757, #ff3742) !important;
     animation: warning-glow 3s infinite;
-    box-shadow: 0 0 10px rgba(253, 203, 110, 0.3);
+    box-shadow: 0 0 10px rgba(255, 71, 87, 0.3);
 }
 
 .countdown-normal {
@@ -219,11 +220,12 @@
 }
 
 @keyframes warning-glow {
+    /* Updated glow to red to match new warning color */
     0%, 100% { 
-        box-shadow: 0 0 10px rgba(253, 203, 110, 0.3);
+        box-shadow: 0 0 10px rgba(255, 71, 87, 0.3);
     }
     50% { 
-        box-shadow: 0 0 20px rgba(253, 203, 110, 0.5);
+        box-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
     }
 }
 

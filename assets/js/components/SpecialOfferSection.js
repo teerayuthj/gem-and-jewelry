@@ -100,7 +100,7 @@ class SpecialOfferSection {
                                 <div class="stat">
                                     <div class="stat-title text-gray-500 text-lg">${this.getText('promotionPeriod')}</div>
                                     <div class="stat-value text-xl md:text-2xl">
-                                        <span id="startDate">09/09/2025</span> - <span id="endDate">13/09/2025</span>
+                                        <span id="startDate">09/09/2025</span> - <span id="endDate">31/12/2025</span>
                                     </div>
                                 </div>
                             </div>
@@ -180,7 +180,7 @@ class SpecialOfferSection {
             if (typeof CountdownTimer !== 'undefined') {
                 const promotionConfig = {
                     startDate: "09/09/2025",
-                    endDate: "13/09/2025",
+                    endDate: "31/12/2025",
                     discountCode: "AUBGJF50TH"
                 };
                 new CountdownTimer(promotionConfig);

@@ -106,7 +106,8 @@ class CountdownTimer {
             this.updateCountdownLabel('countdown.labelBeforeStart');
             this.updateActionButton('buttons.getReady');
             if (this.elements.actionBtn) {
-                this.elements.actionBtn.classList.add('btn-disabled');
+                // Keep button clickable in Get Ready state
+                this.elements.actionBtn.classList.remove('btn-disabled');
             }
         } else if (now >= startDate && now <= endDateWithTime) {
             // During promotion
@@ -265,7 +266,31 @@ class CountdownTimer {
                 };
                 text = fallbacks[key] || key;
             }
-            this.elements.actionBtn.textContent = text;
+            const btn = this.elements.actionBtn;
+            btn.textContent = text;
+
+            // Standardize click behavior for promotion states
+            const url = 'https://express.ausiris.co.th/';
+            const isAnchor = btn.tagName.toLowerCase() === 'a';
+
+            // Reset previous behavior
+            if (isAnchor) {
+                btn.removeAttribute('href');
+                btn.removeAttribute('target');
+                btn.removeAttribute('rel');
+            } else {
+                btn.onclick = null;
+            }
+
+            if (key === 'buttons.getReady' || key === 'buttons.getOffer') {
+                if (isAnchor) {
+                    btn.setAttribute('href', url);
+                    btn.setAttribute('target', '_blank');
+                    btn.setAttribute('rel', 'noopener noreferrer');
+                } else {
+                    btn.onclick = () => window.open(url, '_blank', 'noopener');
+                }
+            }
         }
     }
     

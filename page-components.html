@@ -111,7 +111,39 @@
                 console.log('ExchangeRateManager initialized');
             }
             
-            new GemApp.GoldSilverCalculator('calculator-app');
+            // Initialize Calculator with error handling
+            setTimeout(() => {
+                console.log('GemApp available:', typeof GemApp !== 'undefined');
+                console.log('GemApp object:', GemApp);
+                console.log('GoldSilverCalculator:', GemApp?.GoldSilverCalculator);
+                
+                if (typeof GemApp !== 'undefined' && GemApp.GoldSilverCalculator) {
+                    try {
+                        new GemApp.GoldSilverCalculator('calculator-app');
+                        console.log('GoldSilverCalculator initialized successfully');
+                    } catch (error) {
+                        console.error('Error initializing GoldSilverCalculator:', error);
+                    }
+                } else {
+                    console.error('GemApp.GoldSilverCalculator not available, retrying...');
+                    // Retry after a short delay
+                    setTimeout(() => {
+                        console.log('Retry - GemApp available:', typeof GemApp !== 'undefined');
+                        console.log('Retry - GemApp object:', GemApp);
+                        
+                        if (typeof GemApp !== 'undefined' && GemApp.GoldSilverCalculator) {
+                            try {
+                                new GemApp.GoldSilverCalculator('calculator-app');
+                                console.log('GoldSilverCalculator initialized on retry');
+                            } catch (error) {
+                                console.error('Error on retry:', error);
+                            }
+                        } else {
+                            console.error('GemApp.GoldSilverCalculator still not available');
+                        }
+                    }, 1000);
+                }
+            }, 200);
         });
     </script>
 </body>

@@ -66,7 +66,7 @@ class DiscountCodeCard {
                     </div>
                     
                     <p class="text-warning font-semibold mt-2">
-                        <span data-i18n="offer.codeExpiry">⏰ โค้ดหมดอายุ:</span> <span id="expiryDate">13/09/2025</span>
+                        <span data-i18n="offer.codeExpiry">⏰ โค้ดหมดอายุ:</span> <span id="expiryDate">31/12/2025</span>
                     </p>
                 </div>
             </div>

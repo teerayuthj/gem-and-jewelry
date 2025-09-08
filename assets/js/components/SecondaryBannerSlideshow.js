@@ -1,8 +1,10 @@
 class SecondaryBannerSlideshow {
     constructor() {
         this.images = [
-            'http://www.ausiris.co.th/content/dam/ausirisgold/banner/Banner-Sale-page%20Test-1.jpg',
-            'http://www.ausiris.co.th/content/dam/ausirisgold/banner/Banner-Sale-page-Test-2.jpg', 
+            'http://www.ausiris.co.th/content/dam/ausirisgold/banner/ads-page-1.jpg',
+            'http://www.ausiris.co.th/content/dam/ausirisgold/banner/ads-page-2.jpg',
+            'http://www.ausiris.co.th/content/dam/ausirisgold/banner/ads-page-3.jpg',
+            'http://www.ausiris.co.th/content/dam/ausirisgold/banner/ads-page-4.png'
         ];
         this.currentIndex = 0;
         this.intervalId = null;
