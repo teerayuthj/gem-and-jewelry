@@ -534,3 +534,24 @@ body, html {
         padding: 1rem 0.5rem !important;
     }
 }
+
+/* Reduce motion and heavy effects when user prefers less animation */
+@media (prefers-reduced-motion: reduce) {
+    .animate-spin,
+    .spin {
+        animation: none !important;
+    }
+    #specialOfferSection #mainActionBtn,
+    #specialOfferSection #mainActionBtn:hover,
+    #specialOfferSection #mainActionBtn:active {
+        transform: none !important;
+        transition: none !important;
+        box-shadow: none !important;
+    }
+    #specialOfferSection .stats,
+    #specialOfferSection .card,
+    #specialOfferSection .card-body {
+        transition: none !important;
+        backdrop-filter: none !important;
+    }
+}

@@ -1,5 +1,9 @@
 class SecondaryBannerSlideshow {
     constructor() {
+        // Ensure single running instance
+        if (SecondaryBannerSlideshow.instance) {
+            return SecondaryBannerSlideshow.instance;
+        }
         this.images = [
             'http://www.ausiris.co.th/content/dam/ausirisgold/banner/ads-page-1.jpg',
             'http://www.ausiris.co.th/content/dam/ausirisgold/banner/ads-page-2.jpg',
@@ -8,11 +12,19 @@ class SecondaryBannerSlideshow {
         ];
         this.currentIndex = 0;
         this.intervalId = null;
+        this.isInView = true;
+        this.visibilityHandler = this.handleVisibilityChange.bind(this);
+        this.intersectionObserver = null;
+        this.prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        this.intervalMs = this.prefersReduced ? 8000 : 4000;
         this.init();
+        SecondaryBannerSlideshow.instance = this;
     }
 
     init() {
         this.render();
+        this.setupVisibilityHandling();
+        this.setupIntersectionObserver();
         this.startSlideshow();
     }
 
@@ -42,13 +54,15 @@ class SecondaryBannerSlideshow {
     }
 
     startSlideshow() {
+        if (this.intervalId) return; // avoid duplicates
         // Update immediately
         this.updateBanner();
-        
-        // Then update every 4 seconds
+        // Then update periodically
         this.intervalId = setInterval(() => {
-            this.updateBanner();
-        }, 4000);
+            if (this.isInView && !document.hidden) {
+                this.updateBanner();
+            }
+        }, this.intervalMs);
     }
 
     stopSlideshow() {
@@ -58,9 +72,45 @@ class SecondaryBannerSlideshow {
         }
     }
 
+    setupVisibilityHandling() {
+        document.addEventListener('visibilitychange', this.visibilityHandler);
+    }
+
+    handleVisibilityChange() {
+        if (document.hidden) {
+            this.stopSlideshow();
+        } else if (this.isInView) {
+            this.startSlideshow();
+        }
+    }
+
+    setupIntersectionObserver() {
+        const container = document.getElementById('secondaryBanner');
+        if (!container || !('IntersectionObserver' in window)) return;
+        this.intersectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                this.isInView = entry.isIntersecting && entry.intersectionRatio > 0.1;
+                if (this.isInView && !document.hidden) {
+                    this.startSlideshow();
+                } else {
+                    this.stopSlideshow();
+                }
+            });
+        }, { threshold: [0, 0.1, 0.25] });
+        this.intersectionObserver.observe(container);
+    }
+
     // Clean up method
     destroy() {
         this.stopSlideshow();
+        document.removeEventListener('visibilitychange', this.visibilityHandler);
+        if (this.intersectionObserver) {
+            this.intersectionObserver.disconnect();
+            this.intersectionObserver = null;
+        }
+        if (SecondaryBannerSlideshow.instance === this) {
+            SecondaryBannerSlideshow.instance = null;
+        }
     }
 }
 
@@ -71,4 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (secondaryContainer) {
         new SecondaryBannerSlideshow();
     }
+    // Cleanup when leaving the page
+    window.addEventListener('beforeunload', () => {
+        if (SecondaryBannerSlideshow.instance) {
+            SecondaryBannerSlideshow.instance.destroy();
+        }
+    });
 });

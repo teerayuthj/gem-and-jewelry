@@ -286,3 +286,25 @@
         transform: translateY(-5px);
     }
 }
+
+/* Reduce motion for users who prefer less animation */
+@media (prefers-reduced-motion: reduce) {
+    .countdown-container {
+        animation: none !important;
+        backdrop-filter: none !important;
+    }
+    .countdown-item::before {
+        animation: none !important;
+    }
+    .countdown-critical,
+    .countdown-urgent,
+    .countdown-warning,
+    .countdown-normal,
+    .stock-alert {
+        animation: none !important;
+    }
+    .countdown-item:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+}

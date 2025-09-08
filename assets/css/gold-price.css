@@ -109,6 +109,19 @@
     50% { opacity: 0.5; }
 }
 
+/* Reduce motion for gold price UI */
+@media (prefers-reduced-motion: reduce) {
+    .price-loading,
+    .price-row,
+    .gold-btn,
+    .lang-transition,
+    .price-icon {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+    }
+}
+
 /* Price alignment and formatting */
 .price-amount {
     font-variant-numeric: tabular-nums;

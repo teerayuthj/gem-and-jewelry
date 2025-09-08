@@ -344,6 +344,25 @@ body {
     font-weight: 600;
 }
 
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .metal-option,
+    .selector-bg,
+    .price-row,
+    .gold-btn,
+    .status-indicator,
+    .calculator-container,
+    .btn,
+    .btn:hover,
+    .btn:active {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+    }
+}
+
 /* ====== Calculator Responsive ====== */
 @media (max-width: 768px) {
     #calculator-app {

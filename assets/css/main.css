@@ -361,6 +361,14 @@ img, video {
     100% { left: 100%; }
 }
 
+/* Global reduced motion: disable generic animations/transitions */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
 /* Main action button */
 .main-action-btn {
     padding: 1rem 2rem;

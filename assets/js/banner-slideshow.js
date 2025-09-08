@@ -35,6 +35,13 @@ class BannerSlideshow {
         this.autoPlayInterval = null;
         this.autoPlayDuration = options.autoPlayDuration || 5000;
         this.isPlaying = true;
+        this.isInView = true;
+        this.visibilityHandler = this.handleVisibilityChange.bind(this);
+        this.intersectionObserver = null;
+        this.prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (this.prefersReduced && this.autoPlayDuration < 8000) {
+            this.autoPlayDuration = 8000; // slow down autoplay for reduced motion users
+        }
         this.touchStartX = 0;
         this.touchStartY = 0;
         
@@ -66,6 +73,8 @@ class BannerSlideshow {
         await this.loadTranslations();
         this.render();
         this.bindEvents();
+        this.setupVisibilityHandling();
+        this.setupIntersectionObserver();
         this.startAutoPlay();
     }
     
@@ -348,12 +357,14 @@ class BannerSlideshow {
     }
     
     startAutoPlay() {
-        if (this.isPlaying) {
-            this.updateProgressBar();
-            this.autoPlayInterval = setInterval(() => {
+        if (!this.isPlaying) return;
+        if (this.autoPlayInterval) return; // avoid duplicates
+        this.updateProgressBar();
+        this.autoPlayInterval = setInterval(() => {
+            if (this.isInView && !document.hidden) {
                 this.nextSlide();
-            }, this.autoPlayDuration);
-        }
+            }
+        }, this.autoPlayDuration);
     }
     
     pauseAutoPlay() {
@@ -377,8 +388,11 @@ class BannerSlideshow {
             progressBar.style.transition = 'none';
             
             requestAnimationFrame(() => {
-                progressBar.style.transition = `width ${this.autoPlayDuration}ms linear`;
-                progressBar.style.width = '100%';
+                // Only animate when visible to user and in view
+                if (this.isInView && !document.hidden) {
+                    progressBar.style.transition = `width ${this.autoPlayDuration}ms linear`;
+                    progressBar.style.width = '100%';
+                }
             });
         }
     }
@@ -487,7 +501,12 @@ class BannerSlideshow {
         const englishButtons = ['Start Investing', 'View Silver Prices', 'Get Special Offer', 'Contact Expert'];
         
         if (thaiButtons.includes(buttonText) || englishButtons.includes(buttonText)) {
-            // Add your specific button logic here
+            // Handle button redirects
+            if (buttonText === 'เริ่มต้นลงทุน' || buttonText === 'Start Investing') {
+                window.open('http://www.ausiris.co.th/content/index/bullion.html', '_blank');
+            } else if (buttonText === 'ดูราคาเงิน' || buttonText === 'View Silver Prices') {
+                window.open('http://www.ausiris.co.th/content/index/silver.html', '_blank');
+            }
         }
     }
     
@@ -507,12 +526,17 @@ class BannerSlideshow {
         
         // Remove all event listeners
         document.removeEventListener('keydown', this.keydownHandler);
+        document.removeEventListener('visibilitychange', this.visibilityHandler);
         
         if (this.container) {
             this.container.removeEventListener('mouseenter', this.mouseEnterHandler);
             this.container.removeEventListener('mouseleave', this.mouseLeaveHandler);
             this.container.removeEventListener('touchstart', this.touchStartHandler);
             this.container.removeEventListener('touchend', this.touchEndHandler);
+        }
+        if (this.intersectionObserver) {
+            this.intersectionObserver.disconnect();
+            this.intersectionObserver = null;
         }
         
         // Clear container completely
@@ -545,6 +569,33 @@ class BannerSlideshow {
         });
         
         // Don't listen to own banner events to avoid loops
+    }
+
+    setupVisibilityHandling() {
+        document.addEventListener('visibilitychange', this.visibilityHandler);
+    }
+
+    handleVisibilityChange() {
+        if (document.hidden) {
+            this.pauseAutoPlay();
+        } else if (this.isInView) {
+            this.resumeAutoPlay();
+        }
+    }
+
+    setupIntersectionObserver() {
+        if (!('IntersectionObserver' in window) || !this.container) return;
+        this.intersectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                this.isInView = entry.isIntersecting && entry.intersectionRatio > 0.1;
+                if (this.isInView && !document.hidden) {
+                    this.resumeAutoPlay();
+                } else {
+                    this.pauseAutoPlay();
+                }
+            });
+        }, { threshold: [0, 0.1, 0.25] });
+        this.intersectionObserver.observe(this.container);
     }
 }
 

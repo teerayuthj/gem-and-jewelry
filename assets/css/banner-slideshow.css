@@ -129,6 +129,28 @@
     }
 }
 
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .banner-content,
+    .banner-title,
+    .banner-subtitle,
+    .banner-button,
+    .banner-slide,
+    .progress-bar,
+    .indicator,
+    .nav-button,
+    .lang-switcher {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+    }
+    .banner-content,
+    .lang-switcher,
+    .nav-button {
+        backdrop-filter: none !important;
+    }
+}
+
 /* Slide container - ปรับปรุงการแสดงผล */
 .banner-slide {
     position: absolute;
