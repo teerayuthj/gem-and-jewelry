@@ -26,7 +26,7 @@ class SpecialOfferSection {
             },
             en: {
                 header: "🎉 Today Only Special Offer! 🎉",
-                terms: "📋 <strong>Terms:</strong> 50 THB discount for premium on gold bars and 96.5% gold jewelry. Terms and conditions apply as determined by the company.",
+                terms: "📋 <strong>Terms:</strong> You've receive a 50 THB discount on goldsmith fees for gold bars and gold jewelry 96.5%",
                 promotionPeriod: "Promotion Period", 
                 timeRemaining: "⏳ Time remaining:",
                 days: "Days",
