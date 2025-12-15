@@ -21,6 +21,9 @@ class GoldSavingCalculator {
         // ราคาทอง (จะดึงจาก API หรือใช้ค่าเริ่มต้น)
         this.goldPrice = GoldProducts.baseGoldPrice;
 
+        // ราคาทองสิ้นเดือนย้อนหลัง
+        this.endOfMonthPrices = [];
+
         // Translations
         this.translations = {
             th: {
@@ -39,6 +42,8 @@ class GoldSavingCalculator {
                 needMore: 'ต้องออมเพิ่ม',
                 goldPrice: 'ราคาทองวันนี้',
                 perBaht: 'บาท/บาททอง',
+                goldWeight: 'น้ำหนักทองสะสม',
+                bahtGold: 'บาททอง',
                 benefit1: 'ทองคำรักษามูลค่าดีกว่าเงินสด',
                 benefit2: 'ออมทุกเดือน สร้างวินัยทางการเงิน',
                 benefit3: 'เป็นเจ้าของทองคำแท่งได้ง่ายๆ',
@@ -61,6 +66,8 @@ class GoldSavingCalculator {
                 needMore: 'Need More',
                 goldPrice: "Today's Gold Price",
                 perBaht: 'THB/Baht Gold',
+                goldWeight: 'Accumulated Gold',
+                bahtGold: 'Baht Gold',
                 benefit1: 'Gold preserves value better than cash',
                 benefit2: 'Monthly savings build financial discipline',
                 benefit3: 'Own gold bars easily',
@@ -83,6 +90,8 @@ class GoldSavingCalculator {
                 needMore: '还需要',
                 goldPrice: '今日金价',
                 perBaht: '泰铢/泰铢黄金',
+                goldWeight: '累计黄金',
+                bahtGold: '泰铢黄金',
                 benefit1: '黄金比现金更保值',
                 benefit2: '每月储蓄培养财务纪律',
                 benefit3: '轻松拥有金条',
@@ -98,6 +107,7 @@ class GoldSavingCalculator {
         this.render();
         this.bindEvents();
         this.updateCalculation();
+        this.fetchEndOfMonthPrices().finally(() => this.updateCalculation());
         this.fetchGoldPrice();
     }
 
@@ -218,6 +228,15 @@ class GoldSavingCalculator {
                                         <div class="info-value" id="infoMonthly">${this.formatNumber(this.monthlyAmount)}</div>
                                     </div>
                                 </div>
+                                <div class="info-card">
+                                    <div class="info-icon">
+                                        <i class="fas fa-balance-scale"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <div class="info-label">${this.t('goldWeight')} (${this.t('bahtGold')})</div>
+                                        <div class="info-value" id="infoGoldWeight">0.0000</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -251,6 +270,74 @@ class GoldSavingCalculator {
                 </div>
             </div>
         `;
+    }
+
+    async fetchEndOfMonthPrices() {
+        try {
+            const response = await fetch('http://27.254.3.14:8000/api/datagraph');
+            const text = await response.text();
+            const lines = text.trim().split('\n');
+
+            const allData = lines.map(line => {
+                const parts = line.split(',');
+                return {
+                    date: parts[0],
+                    time: parts[1],
+                    sellBar: parseInt(parts[2]),
+                    buyBar: parseInt(parts[3]),
+                    sellNecklace: parseInt(parts[4]),
+                    buyNecklace: parseInt(parts[5])
+                };
+            });
+
+            const monthlyPrices = {};
+            allData.forEach(item => {
+                const date = new Date(item.date);
+                const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                if (!monthlyPrices[monthKey] || new Date(item.date) > new Date(monthlyPrices[monthKey].date)) {
+                    monthlyPrices[monthKey] = item;
+                }
+            });
+
+            this.endOfMonthPrices = Object.values(monthlyPrices).sort(
+                (a, b) => new Date(a.date) - new Date(b.date)
+            );
+        } catch (error) {
+            console.error('Error fetching end of month prices:', error);
+            this.endOfMonthPrices = [];
+        }
+    }
+
+    getPurchasePricesForMonths(monthCount, fallbackPrice) {
+        const safeCount = Math.max(1, Math.floor(Number(monthCount) || 1));
+        const safeFallback = Number.isFinite(fallbackPrice) && fallbackPrice > 0 ? fallbackPrice : this.goldPrice;
+
+        const fromHistory = this.endOfMonthPrices
+            .slice(-safeCount)
+            .map(item => Number(item.sellBar))
+            .filter(price => Number.isFinite(price) && price > 0);
+
+        const missingCount = safeCount - fromHistory.length;
+        return missingCount > 0 ? Array(missingCount).fill(safeFallback).concat(fromHistory) : fromHistory;
+    }
+
+    calculateDcaGold(monthlyAmount, months, fallbackPrice) {
+        const prices = this.getPurchasePricesForMonths(months, fallbackPrice);
+        const safeMonthlyAmount = Math.max(0, Number(monthlyAmount) || 0);
+
+        let totalGoldBaht = 0;
+        for (const price of prices) {
+            const safePrice = Number.isFinite(price) && price > 0 ? price : fallbackPrice;
+            if (Number.isFinite(safePrice) && safePrice > 0) {
+                totalGoldBaht += safeMonthlyAmount / safePrice;
+            }
+        }
+
+        const totalSpent = safeMonthlyAmount * prices.length;
+        const avgCostPrice =
+            totalGoldBaht > 0 ? totalSpent / totalGoldBaht : (Number(fallbackPrice) || this.goldPrice);
+
+        return { totalGoldBaht, avgCostPrice };
     }
 
     bindEvents() {
@@ -338,28 +425,36 @@ class GoldSavingCalculator {
             infoMonthly.textContent = this.formatNumber(this.monthlyAmount);
         }
 
+        const { totalGoldBaht } = this.calculateDcaGold(this.monthlyAmount, this.months, this.goldPrice);
+        const infoGoldWeight = document.getElementById('infoGoldWeight');
+        if (infoGoldWeight) {
+            infoGoldWeight.textContent = totalGoldBaht.toFixed(4);
+        }
+
         // Update products
-        this.renderProducts(total);
+        this.renderProducts({ goldBaht: totalGoldBaht, estimatePrice: this.goldPrice });
     }
 
-    renderProducts(budget) {
+    renderProducts({ goldBaht, estimatePrice }) {
         const grid = document.getElementById('productsGrid');
-        const allProducts = GoldProducts.getProductsWithPrice(this.goldPrice);
-        const affordableIds = new Set(
-            GoldProducts.getAffordableProducts(budget, this.goldPrice).map(p => p.id)
+        const priceForProductDisplay =
+            Number.isFinite(estimatePrice) && estimatePrice > 0 ? estimatePrice : this.goldPrice;
+        const allProducts = GoldProducts.getProductsWithPrice(priceForProductDisplay).sort(
+            (a, b) => a.multiplier - b.multiplier
         );
 
         // แสดงสินค้าทั้งหมด โดยสินค้าที่ซื้อได้จะเน้น
         let html = '';
 
         allProducts.forEach(product => {
-            const canAfford = affordableIds.has(product.id);
-            const difference = product.price - budget;
+            const canAfford = goldBaht >= product.multiplier;
+            const missingGold = Math.max(0, product.multiplier - goldBaht);
+            const missingBahtEstimate = Math.ceil(missingGold * priceForProductDisplay);
 
             html += `
                 <div class="product-card ${canAfford ? 'affordable' : 'not-affordable'}">
                     ${canAfford ? `<div class="can-buy-badge"><i class="fas fa-check"></i> ${this.t('canBuy')}</div>` : ''}
-                    ${!canAfford && difference <= budget * 0.3 ?
+                    ${!canAfford && missingGold > 0 && missingGold <= product.multiplier * 0.3 ?
                         `<div class="almost-badge"><i class="fas fa-clock"></i> ${this.t('almostThere')}</div>` : ''}
 
                     <div class="product-image">
@@ -374,7 +469,8 @@ class GoldSavingCalculator {
 
                         ${!canAfford ? `
                             <p class="need-more">
-                                ${this.t('needMore')}: +${this.formatNumber(difference)} ${this.t('baht')}
+                                ${this.t('needMore')}: +${missingGold.toFixed(4)} ${this.t('bahtGold')}
+                                (~${this.formatNumber(missingBahtEstimate)} ${this.t('baht')})
                             </p>
                         ` : ''}
                     </div>
@@ -388,15 +484,18 @@ class GoldSavingCalculator {
         });
 
         // ถ้าไม่มีสินค้าที่ซื้อได้เลย
-        if (affordableIds.size === 0) {
+        const anyAffordable = allProducts.some(p => goldBaht >= p.multiplier);
+        if (!anyAffordable) {
             const cheapest = allProducts[0];
-            const needMore = cheapest.price - budget;
+            const needMoreGold = Math.max(0, cheapest.multiplier - goldBaht);
+            const needMoreBaht = Math.ceil(needMoreGold * priceForProductDisplay);
             html = `
                 <div class="no-product-message">
                     <i class="fas fa-coins"></i>
                     <p>${this.t('noProduct')}</p>
                     <p class="tip">${this.t('savingTip')}</p>
-                    <p class="need-amount">ต้องการอีก <strong>${this.formatNumber(needMore)}</strong> บาท<br>
+                    <p class="need-amount">ต้องการอีก <strong>${needMoreGold.toFixed(4)}</strong> ${this.t('bahtGold')}
+                    (~<strong>${this.formatNumber(needMoreBaht)}</strong> ${this.t('baht')})<br>
                     เพื่อซื้อ ${cheapest.name}</p>
                 </div>
             ` + html;

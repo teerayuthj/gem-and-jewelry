@@ -1,0 +1,1099 @@
+/**
+ * Gold Saving Calculator 2 Styles
+ * Theme: Modern Gradient with Company Blue & Gold
+ */
+
+/* Wrapper */
+.gold-saving2-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    font-family: 'Prompt', sans-serif;
+}
+
+/* Header - New Hero Style */
+.saving2-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 3rem 2rem;
+    background: linear-gradient(to bottom, #045B96, #002E65);
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.saving2-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    animation: shimmer 15s infinite linear;
+}
+
+@keyframes shimmer {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.saving2-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.5rem;
+    position: relative;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+}
+
+.saving2-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+/* Price Badge - Floating Style */
+.price-badge-row {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+.price-badge2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.95);
+    padding: 0.75rem 1.25rem;
+    border-radius: 50px;
+    color: #002E65;
+    font-size: 0.95rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    backdrop-filter: blur(10px);
+}
+
+.price-badge2 i {
+    color: #045B96;
+}
+
+.price-badge2 strong {
+    color: #002E65;
+    font-size: 1.3rem;
+}
+
+.price-badge2.avg-price {
+    background: linear-gradient(135deg, #ffd700, #ffb347);
+    color: white;
+}
+
+.price-badge2.avg-price i {
+    color: white;
+}
+
+.price-badge2.avg-price strong {
+    color: white;
+}
+
+/* Main Calculator Container - Card Style */
+.calculator2-container {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 2rem;
+    align-items: start;
+}
+
+/* Left Panel - Input Controls */
+.calculator2-left {
+    background: white;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+}
+
+/* Amount Section */
+.amount-section2 {
+    margin-bottom: 2rem;
+}
+
+.section-title2 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.section-title2 .icon-circle {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom, #045B96, #002E65);
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+}
+
+/* Amount Display - Big Number */
+.amount-display2 {
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f5f7fa, #e4e8ed);
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+}
+
+.amount-value2 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #045B96, #002E65);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.amount-unit2 {
+    font-size: 1.2rem;
+    color: #666;
+    margin-left: 0.5rem;
+}
+
+/* Slider 2 */
+.slider-container2 {
+    padding: 0 0.5rem;
+}
+
+.amount-slider2 {
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #045B96 0%, #002E65 100%);
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    margin-bottom: 0.75rem;
+}
+
+.amount-slider2::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(4, 91, 150, 0.4);
+    border: 4px solid #002E65;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.amount-slider2::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 6px 20px rgba(4, 91, 150, 0.5);
+}
+
+.slider-marks2 {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* Quick Amount Buttons */
+.quick-amounts2 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.quick-btn2 {
+    flex: 1;
+    min-width: 80px;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    background: white;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.quick-btn2:hover {
+    border-color: #045B96;
+    color: #045B96;
+    background: rgba(4, 91, 150, 0.05);
+}
+
+.quick-btn2.active {
+    background: linear-gradient(to right, #045B96, #002E65);
+    border-color: transparent;
+    color: white;
+}
+
+/* Duration Section */
+.duration-section2 {
+    margin-bottom: 2rem;
+}
+
+.duration-cards2 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.duration-card2 {
+    padding: 1.5rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 16px;
+    background: white;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.duration-card2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, #045B96, #002E65);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.duration-card2:hover {
+    border-color: #045B96;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(4, 91, 150, 0.2);
+}
+
+.duration-card2.active {
+    border-color: transparent;
+}
+
+.duration-card2.active::before {
+    opacity: 1;
+}
+
+.duration-card2 .num {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s;
+}
+
+.duration-card2 .label {
+    font-size: 0.85rem;
+    color: #888;
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s;
+}
+
+.duration-card2.active .num,
+.duration-card2.active .label {
+    color: white;
+}
+
+/* Custom Duration */
+.custom-duration2 {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f5f7fa;
+    border-radius: 12px;
+}
+
+.custom-duration2 label {
+    font-size: 0.95rem;
+    color: #666;
+}
+
+.custom-input2 {
+    width: 100px;
+    padding: 0.75rem 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border: 2px solid #045B96;
+    border-radius: 10px;
+    text-align: center;
+    background: white;
+    color: #333;
+}
+
+.custom-input2:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(4, 91, 150, 0.2);
+}
+
+/* Right Panel - Results */
+.calculator2-right {
+    position: sticky;
+    top: 2rem;
+}
+
+/* Total Card - Glassmorphism */
+.total-card2 {
+    background: linear-gradient(to bottom, #045B96, #002E65);
+    border-radius: 24px;
+    padding: 2.5rem;
+    color: white;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(4, 91, 150, 0.4);
+}
+
+.total-card2::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+}
+
+.total-label2 {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.total-value2 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    position: relative;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.total-unit2 {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    margin-left: 0.5rem;
+}
+
+.total-formula2 {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.3);
+    font-size: 1rem;
+    opacity: 0.9;
+    position: relative;
+}
+
+/* Gold Weight Result */
+.gold-result2 {
+    background: linear-gradient(135deg, #d4af37, #b8860b);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 15px 40px rgba(184, 134, 11, 0.4);
+}
+
+.gold-result2 .icon-big {
+    font-size: 3rem;
+    color: white;
+    margin-bottom: 0.5rem;
+    filter: drop-shadow(0 2px 10px rgba(0,0,0,0.3));
+}
+
+.gold-result2 .result-label {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.95);
+    margin-bottom: 0.25rem;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.gold-result2 .result-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+}
+
+.gold-result2 .result-sub {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.9);
+    margin-top: 0.5rem;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Historical Average Info */
+.avg-info-card2 {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.avg-info-card2 h4 {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.avg-info-card2 h4 i {
+    color: #045B96;
+}
+
+.avg-list2 {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.avg-item2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: #f5f7fa;
+    border-radius: 10px;
+}
+
+.avg-item2 .date {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.avg-item2 .price {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #045B96;
+}
+
+.avg-total2 {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px dashed #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.avg-total2 .label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.avg-total2 .value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #045B96;
+}
+
+/* Benefits Section */
+.benefits2 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.benefit2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+    transition: all 0.3s;
+}
+
+.benefit2:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(4, 91, 150, 0.15);
+}
+
+.benefit2 .icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom, #045B96, #002E65);
+    border-radius: 16px;
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.benefit2 span {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.4;
+}
+
+/* Products Section */
+.products2-section {
+    margin-top: 2rem;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, rgba(4, 91, 150, 0.05), rgba(0, 46, 101, 0.05));
+    border-radius: 24px;
+    border: 1px solid rgba(4, 91, 150, 0.1);
+}
+
+.products2-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.products2-title i {
+    color: #045B96;
+}
+
+.products2-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Product Card 2 */
+.product-card2 {
+    position: relative;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: all 0.4s ease;
+    border: 2px solid transparent;
+}
+
+.product-card2:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(4, 91, 150, 0.2);
+    border-color: rgba(4, 91, 150, 0.3);
+}
+
+.product-card2.affordable {
+    border-color: #4caf50;
+    background: linear-gradient(180deg, white 0%, rgba(76, 175, 80, 0.05) 100%);
+}
+
+.product-card2.not-affordable {
+    opacity: 0.7;
+}
+
+.product-card2.not-affordable:hover {
+    opacity: 1;
+}
+
+/* Badge */
+.product-badge2 {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.product-badge2.can-buy {
+    background: linear-gradient(135deg, #4caf50, #81c784);
+    color: white;
+}
+
+.product-badge2.almost {
+    background: linear-gradient(135deg, #ff9800, #ffb74d);
+    color: white;
+}
+
+/* Product Image */
+.product-img2 {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 1.5rem;
+    position: relative;
+}
+
+.product-img2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(4, 91, 150, 0.08), transparent 70%);
+}
+
+.product-img2 img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
+    transition: transform 0.4s;
+}
+
+.product-card2:hover .product-img2 img {
+    transform: scale(1.05);
+}
+
+/* Product Info */
+.product-info2 {
+    padding: 1.25rem;
+}
+
+.product-name2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.product-weight2 {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.5rem;
+}
+
+.product-price2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #045B96, #002E65);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.product-diff2 {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #e53935;
+}
+
+/* Product Button */
+.product-btn2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: calc(100% - 2rem);
+    margin: 0 1rem 1rem;
+    padding: 0.85rem;
+    background: linear-gradient(to right, #045B96, #002E65);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.product-btn2:hover {
+    background: linear-gradient(to right, #002E65, #045B96);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(4, 91, 150, 0.4);
+}
+
+.product-btn2.disabled {
+    background: #e0e0e0;
+    color: #999;
+    pointer-events: none;
+}
+
+/* No Product Message */
+.no-product2 {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, rgba(4, 91, 150, 0.1), rgba(0, 46, 101, 0.1));
+    border-radius: 20px;
+    border: 2px dashed rgba(4, 91, 150, 0.3);
+    margin-bottom: 1.5rem;
+}
+
+.no-product2 i {
+    font-size: 3rem;
+    color: #045B96;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.no-product2 p {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.no-product2 .tip {
+    font-size: 1rem;
+    color: #888;
+}
+
+.no-product2 .need-amount2 {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    color: #045B96;
+}
+
+.no-product2 .need-amount2 strong {
+    font-size: 1.6rem;
+}
+
+/* Disclaimer */
+.disclaimer2 {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: rgba(255, 152, 0, 0.1);
+    border-radius: 12px;
+    border-left: 4px solid #ff9800;
+    font-size: 0.85rem;
+    color: #666;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.disclaimer2 i {
+    color: #ff9800;
+    font-size: 1.1rem;
+    margin-top: 2px;
+}
+
+/* Debug Console */
+.debug-console {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #1a1a2e;
+    border-radius: 12px;
+    font-family: 'Monaco', monospace;
+    font-size: 0.75rem;
+    color: #4caf50;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+}
+
+.debug-console.show {
+    display: block;
+}
+
+.debug-console .line {
+    padding: 0.25rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.debug-console .date {
+    color: #ff9800;
+}
+
+.debug-console .price {
+    color: #81c784;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .calculator2-container {
+        grid-template-columns: 1fr;
+    }
+
+    .calculator2-right {
+        position: static;
+    }
+
+    .duration-cards2 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .products2-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .gold-saving2-wrapper {
+        padding: 1rem;
+    }
+
+    .saving2-header {
+        padding: 2rem 1.5rem;
+        border-radius: 20px;
+    }
+
+    .saving2-title {
+        font-size: 2rem;
+    }
+
+    .saving2-subtitle {
+        font-size: 1rem;
+    }
+
+    .price-badge-row {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .price-badge2 {
+        font-size: 0.85rem;
+        padding: 0.6rem 1rem;
+    }
+
+    .calculator2-left {
+        padding: 1.5rem;
+        border-radius: 20px;
+    }
+
+    .amount-display2 {
+        padding: 1.5rem;
+    }
+
+    .amount-value2 {
+        font-size: 2.5rem;
+    }
+
+    .duration-cards2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .duration-card2 {
+        padding: 1.25rem 0.75rem;
+    }
+
+    .duration-card2 .num {
+        font-size: 1.5rem;
+    }
+
+    .total-card2 {
+        padding: 2rem;
+    }
+
+    .total-value2 {
+        font-size: 2.5rem;
+    }
+
+    .gold-result2 {
+        padding: 1.5rem;
+    }
+
+    .gold-result2 .result-value {
+        font-size: 2rem;
+    }
+
+    .benefits2 {
+        grid-template-columns: 1fr;
+    }
+
+    .benefit2 {
+        flex-direction: row;
+        text-align: left;
+        gap: 1rem;
+    }
+
+    .benefit2 .icon {
+        margin-bottom: 0;
+    }
+
+    .products2-section {
+        padding: 1.5rem;
+    }
+
+    .products2-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .product-img2 {
+        height: 140px;
+    }
+}
+
+@media (max-width: 480px) {
+    .saving2-header {
+        padding: 1.5rem 1rem;
+    }
+
+    .saving2-title {
+        font-size: 1.5rem;
+    }
+
+    .saving2-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .calculator2-left {
+        padding: 1.25rem;
+    }
+
+    .section-title2 {
+        font-size: 1rem;
+    }
+
+    .section-title2 .icon-circle {
+        width: 32px;
+        height: 32px;
+        font-size: 0.85rem;
+    }
+
+    .amount-display2 {
+        padding: 1.25rem;
+    }
+
+    .amount-value2 {
+        font-size: 2rem;
+    }
+
+    .quick-amounts2 {
+        gap: 0.5rem;
+    }
+
+    .quick-btn2 {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.85rem;
+        min-width: 60px;
+    }
+
+    .duration-card2 {
+        padding: 1rem 0.5rem;
+    }
+
+    .duration-card2 .num {
+        font-size: 1.3rem;
+    }
+
+    .duration-card2 .label {
+        font-size: 0.75rem;
+    }
+
+    .total-card2 {
+        padding: 1.5rem;
+        border-radius: 20px;
+    }
+
+    .total-value2 {
+        font-size: 2rem;
+    }
+
+    .total-unit2 {
+        font-size: 1rem;
+    }
+
+    .gold-result2 {
+        padding: 1.25rem;
+        border-radius: 16px;
+    }
+
+    .gold-result2 .icon-big {
+        font-size: 2.5rem;
+    }
+
+    .gold-result2 .result-value {
+        font-size: 1.75rem;
+    }
+
+    .avg-info-card2 {
+        padding: 1.25rem;
+    }
+
+    .products2-section {
+        padding: 1.25rem;
+        border-radius: 20px;
+    }
+
+    .products2-title {
+        font-size: 1.2rem;
+    }
+
+    .products2-grid {
+        gap: 0.75rem;
+    }
+
+    .product-card2 {
+        border-radius: 16px;
+    }
+
+    .product-img2 {
+        height: 120px;
+        padding: 1rem;
+    }
+
+    .product-info2 {
+        padding: 1rem;
+    }
+
+    .product-name2 {
+        font-size: 0.9rem;
+    }
+
+    .product-price2 {
+        font-size: 1.2rem;
+    }
+
+    .product-btn2 {
+        padding: 0.7rem;
+        font-size: 0.85rem;
+        margin: 0 0.75rem 0.75rem;
+        width: calc(100% - 1.5rem);
+    }
+
+    .product-badge2 {
+        font-size: 0.65rem;
+        padding: 0.3rem 0.6rem;
+    }
+}
+
+/* Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.product-card2 {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+.product-card2:nth-child(1) { animation-delay: 0.1s; }
+.product-card2:nth-child(2) { animation-delay: 0.15s; }
+.product-card2:nth-child(3) { animation-delay: 0.2s; }
+.product-card2:nth-child(4) { animation-delay: 0.25s; }
+.product-card2:nth-child(5) { animation-delay: 0.3s; }
+.product-card2:nth-child(6) { animation-delay: 0.35s; }

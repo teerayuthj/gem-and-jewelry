@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ออมทอง สร้างอนาคต | Gold Saving Calculator V2</title>
+
+    <!-- Tailwind CSS + daisyUI CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- CSS Library -->
+    <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/style.css">
+    <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/swiper.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.min.css">
+    <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/bootstrap-select.css">
+
+    <!-- JS Library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.2.7/js/swiper.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.0/d3.min.js"></script>
+    <script src="https://use.fontawesome.com/21df7b781f.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="http://www.ausiris.co.th/etc/designs/ausiris-gold/js/bootstrap-select.min.js"></script>
+    <script src="http://www.ausiris.co.th/etc/designs/ausiris-gold/js/lodash.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.wpcc.io/lib/1.0.2/cookieconsent.min.css" />
+    <script src="https://cdn.wpcc.io/lib/1.0.2/cookieconsent.min.js" defer></script>
+    <script>window.addEventListener("load", function () { window.wpcc.init({ "colors": { "popup": { "background": "#222222", "text": "#ffffff", "border": "#f9f9f9" }, "button": { "background": "#f9f9f9", "text": "#000000" } }, "transparency": "10", "fontsize": "small", "content": { "href": "http://www.ausiris.co.th/content/index/aboutus/cookies-policy.html", "message": "เว็บไซต์นี้มีการเก็บข้อมูลใช้คุกกี้ (Cookies) เพื่อการพัฒนาและปรับปรุงเว็บไซต์ หากท่านใช้บริการเว็บไซต์นี้โดยไม่มีการปรับตั้งค่าใดๆ แสดงว่าท่านยินยอมที่จะรับคุกกี้บนเว็บไซต์ และนโยบายสิทธิส่วนบุคคลของเรา", "link": "นโยบายการใช้คุกกี้", "button": "ให้ความยินยอม" }, "position": "bottom", "padding": "small", "margin": "small", "corners": "small" }) });</script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="./assets/css/main.css">
+    <link rel="stylesheet" href="./assets/css/gold-saving2.css">
+
+</head>
+
+<body style="background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%); min-height: 100vh;">
+
+    <!-- Navigation Back -->
+    <nav class="bg-white shadow-sm" style="position: sticky; top: 0; z-index: 100;">
+        <div class="max-w-6xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <a href="page.html" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>กลับหน้าหลัก</span>
+                </a>
+                <div class="flex items-center gap-2">
+                    <img src="http://www.ausiris.co.th/content/dam/ausirisgold/brand/logo-ausiris-gold.svg"
+                        alt="Ausiris Gold" class="h-8" onerror="this.style.display='none'">
+                </div>
+                <!-- Language Switcher -->
+                <div class="flex gap-2" id="langSwitcher">
+                    <button class="lang-btn2 active" data-lang="th">TH</button>
+                    <button class="lang-btn2" data-lang="en">EN</button>
+                    <button class="lang-btn2" data-lang="cn">CN</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Gold Saving Calculator Section -->
+    <section id="goldSavingSection2" class="py-8">
+        <div id="gold-saving-app2">
+            <!-- Calculator will be rendered here -->
+            <div style="text-align: center; padding: 3rem;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: #045B96;"></i>
+                <p style="margin-top: 1rem; color: #666;">กำลังโหลด...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compare Link -->
+    <div style="text-align: center; padding: 1rem;">
+        <a href="saving.html" style="color: #045B96; text-decoration: underline; font-size: 0.9rem;">
+            <i class="fas fa-exchange-alt"></i> ดูแบบคลาสสิก (Version 1)
+        </a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 mt-8">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p class="text-sm text-gray-400">
+                &copy; 2025 Ausiris Gold. All rights reserved.
+            </p>
+            <p class="text-xs text-gray-500 mt-2">
+                ราคาทองอ้างอิงจากราคาตลาด อาจมีการเปลี่ยนแปลงได้
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="./assets/js/shared-price-manager.js"></script>
+    <script src="./assets/js/gold-products.js"></script>
+    <script src="./assets/js/gold-saving-calculator2.js"></script>
+
+    <script>
+        // Initialize Gold Saving Calculator 2
+        let goldSavingCalc2;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            goldSavingCalc2 = new GoldSavingCalculator2('gold-saving-app2');
+
+            // Language Switcher
+            const langBtns = document.querySelectorAll('.lang-btn2');
+            langBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    langBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    goldSavingCalc2.setLanguage(btn.dataset.lang);
+                });
+            });
+        });
+    </script>
+
+    <style>
+        /* Language Switcher Styles */
+        .lang-btn2 {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background: white;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lang-btn2:hover {
+            border-color: #045B96;
+            color: #045B96;
+        }
+
+        .lang-btn2.active {
+            background: linear-gradient(to right, #045B96, #002E65);
+            border-color: #045B96;
+            color: white;
+        }
+
+        /* Responsive Styles for iPad and Mobile */
+        @media (max-width: 1024px) {
+
+            /* iPad Portrait & Landscape */
+            nav .flex {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            /* iPad Mini & Small Tablets */
+            nav .max-w-6xl {
+                padding: 0.75rem;
+            }
+
+            nav .flex {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            #langSwitcher {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+                margin-top: 0.5rem;
+            }
+
+            .lang-btn2 {
+                padding: 0.35rem 0.7rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            /* Mobile Phones */
+            nav .flex>a span {
+                display: none;
+            }
+
+            nav .flex>a {
+                font-size: 1.2rem;
+            }
+
+            #goldSavingSection2 {
+                padding: 1rem 0;
+            }
+
+            footer {
+                padding: 1rem;
+            }
+        }
+    </style>
+</body>
+
+</html>
