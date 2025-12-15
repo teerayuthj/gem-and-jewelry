@@ -34,41 +34,42 @@ class MapContactSection {
                     
                     <!-- Contact Information -->
                     <div style="flex: 1; min-width: 300px; padding: 4rem 2rem; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-                        <h3 style="color: #2c3e50; margin-bottom: 1.5rem; font-size: 2.5rem; font-weight: 600;" 
+                        <h3 class="contact-company-name" style="color: #2c3e50; margin-bottom: 1.5rem; font-size: 2.5rem; font-weight: 600;"
                             data-i18n="contact.companyName">
                             Ausiris Company Limited
-                            <div style="font-size: 1.2rem; color: #7f8c8d; font-weight: 500; margin-top: 0.25rem;" 
+                            <div class="contact-company-name-en" style="font-size: 1.2rem; color: #7f8c8d; font-weight: 500; margin-top: 0.25rem;"
                                  data-i18n="contact.companyNameEn">
                             AUSIRIS Co., Ltd (flagship store)
                             </div>
                         </h3>
-                        
+
                         <div style="margin-bottom: 1.5rem;">
                             <div style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
-                                <span style="color: #e74c3c; font-size: 1.2rem; margin-right: 0.8rem; margin-top: 0.2rem;">📍</span>
+                                <span class="contact-icon" style="color: #e74c3c; font-size: 1.2rem; margin-right: 0.8rem; margin-top: 0.2rem;">📍</span>
                                 <div>
-                                    <p style="margin: 0; color: #34495e; line-height: 1.6; font-size: 1.5rem;">
+                                    <p class="contact-address" style="margin: 0; color: #34495e; line-height: 1.6; font-size: 1.5rem;">
                                         <span data-i18n="contact.address.line1">อาคารสีลม คอมเพล็กซ์ ชั้น 4</span><br>
                                         <span data-i18n="contact.address.line2">เลขที่ 191 Si Lom Rd, Si Lom,</span><br>
                                         <span data-i18n="contact.address.line3">Bang Rak, Bangkok 10500</span>
                                     </p>
                                 </div>
                             </div>
-                            
+
                             <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-                                <span style="color: #2ecc71; font-size: 1.2rem; margin-right: 0.8rem;">📞</span>
-                                <a href="tel:+6621234567" style="color: #3498db; text-decoration: none; transition: color 0.3s ease; font-size: 1.5rem;" 
+                                <span class="contact-icon" style="color: #2ecc71; font-size: 1.2rem; margin-right: 0.8rem;">📞</span>
+                                <a href="tel:+6621234567" class="contact-phone" style="color: #3498db; text-decoration: none; transition: color 0.3s ease; font-size: 1.5rem;"
                                    data-i18n="contact.phone">
-                                    02-613-4711-3 
+                                    02-613-4711-3
                                 </a>
                             </div>
                         </div>
-                        
-                        <a href="https://page.line.me/spf7703j?openQrModal=true" 
-                           target="_blank" 
+
+                        <a href="https://page.line.me/spf7703j?openQrModal=true"
+                           target="_blank"
                            rel="noopener noreferrer"
+                           class="contact-line-button"
                            style="display: inline-flex; align-items: center; background: #00c300; color: white; padding: 0.8rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; font-size: 1.7rem; margin-top: 1rem;">
-                            <span style="font-size: 1.5rem; margin-right: 0.5rem;">💬</span>
+                            <span class="contact-line-icon" style="font-size: 1.5rem; margin-right: 0.5rem;">💬</span>
                             <span data-i18n="contact.lineButton">ติดต่อผ่าน LINE</span>
                         </a>
                     </div>

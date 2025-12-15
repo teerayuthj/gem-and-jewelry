@@ -75,12 +75,12 @@
     },
     "contact": {
       "title": "เยี่ยมชมเรา",
-      "companyName": "Ausiris Company Limited",
-      "companyNameEn": "AUSIRIS Co., Ltd (flagship store)",
+      "companyName": "Ausiris Flagship Store @Silom Complex",
+      "companyNameEn": "Ausiris Flagship Store @Silom Complex",
       "address": {
-        "line1": "อาคารสีลม คอมเพล็กซ์ ชั้น 4",
-        "line2": "เลขที่ 191 Si Lom Rd, Si Lom,",
-        "line3": "Bang Rak, Bangkok 10500"
+        "line1": "ชั้น 4 อาคารสีลม คอมเพล็กซ์",
+        "line2": "191 ถนนสีลม แขวงสีลม",
+        "line3": "เขตบางรัก กรุงเทพฯ 10500"
       },
       "phone": "02-613-4711-3",
       "lineButton": "ติดต่อผ่าน LINE"
@@ -162,11 +162,11 @@
     },
     "contact": {
       "title": "Visit Us",
-      "companyName": "Ausiris Company Limited",
-      "companyNameEn": "AUSIRIS Co., Ltd (flagship store)",
+      "companyName": "Ausiris Flagship Store @Silom Complex",
+      "companyNameEn": "Ausiris Flagship Store @Silom Complex",
       "address": {
-        "line1": "Silom Complex Building, 4th Floor",
-        "line2": "191 Si Lom Rd, Si Lom,",
+        "line1": "4th Floor, Silom Complex",
+        "line2": "191 Silom Rd, Silom",
         "line3": "Bang Rak, Bangkok 10500"
       },
       "phone": "02-613-4711-3",
