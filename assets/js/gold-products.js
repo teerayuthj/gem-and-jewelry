@@ -137,15 +137,63 @@ const GoldProducts = {
             popular: false
         },
         {
-            id: 'gold-5-baht',
-            name: 'ทองคำแท่ง 5 บาท',
-            nameEn: 'Gold Bar 5 Baht',
-            description: 'การ์ดมาตรฐาน (76 กรัม)',
+            id: 'gold-bar-5-baht',
+            name: 'ทองคำแท่งหลอม ลายมาตรฐาน 5 บาท',
+            nameEn: 'Cast Gold Bar 5 Baht',
+            description: 'ทองคำแท่งหลอม (76 กรัม)',
             weight: '5 บาท',
             multiplier: 5,
+            premium: 150,
+            image: 'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/5baht-ausiris.jpeg',
+            link: 'https://express.ausiris.co.th/cast-gold/5baht-cast.html',
+            popular: false
+        },
+        {
+            id: 'gold-bar-10-baht',
+            name: 'ทองคำแท่งหลอม ลายมาตรฐาน 10 บาท',
+            nameEn: 'Cast Gold Bar 10 Baht',
+            description: 'ทองคำแท่งหลอม (152 กรัม)',
+            weight: '10 บาท',
+            multiplier: 10,
             premium: 200,
             image: 'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/5baht-ausiris.jpeg',
-            link: 'https://express.ausiris.co.th/5baht/5baht-default.html',
+            link: 'https://express.ausiris.co.th/cast-gold/10baht-cast.html',
+            popular: true
+        },
+        {
+            id: 'gold-bar-20-baht',
+            name: 'ทองคำแท่งหลอม ลายมาตรฐาน 20 บาท',
+            nameEn: 'Cast Gold Bar 20 Baht',
+            description: 'ทองคำแท่งหลอม (304 กรัม)',
+            weight: '20 บาท',
+            multiplier: 20,
+            premium: 300,
+            image: 'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/5baht-ausiris.jpeg',
+            link: 'https://express.ausiris.co.th/cast-gold/20baht-cast.html',
+            popular: false
+        },
+        {
+            id: 'gold-bar-50-baht',
+            name: 'ทองคำแท่งหลอม ลายมาตรฐาน 50 บาท',
+            nameEn: 'Cast Gold Bar 50 Baht',
+            description: 'ทองคำแท่งหลอม (760 กรัม)',
+            weight: '50 บาท',
+            multiplier: 50,
+            premium: 500,
+            image: 'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/5baht-ausiris.jpeg',
+            link: 'https://express.ausiris.co.th/cast-gold/50baht-cast.html',
+            popular: false
+        },
+        {
+            id: 'gold-1kg',
+            name: 'ทองคำแท่ง PAMP SWISS 1 กิโลกรัม',
+            nameEn: 'PAMP SWISS Gold Bar 1 KG',
+            description: 'ทองคำแท่ง PAMP SWISS (1000 กรัม)',
+            weight: '1 กิโลกรัม',
+            multiplier: 65.599,
+            premium: 500,
+            image: 'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/5baht-ausiris.jpeg',
+            link: 'https://express.ausiris.co.th/1kg/1kg-default.html',
             popular: false
         }
     ],

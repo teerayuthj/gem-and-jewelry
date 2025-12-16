@@ -59,8 +59,15 @@ class GoldSavingCalculator2 {
                 savingTip: 'ลองเพิ่มจำนวนเงินหรือระยะเวลาออม',
                 goldWeight: 'น้ำหนักทองโดยประมาณ',
                 bahtGold: 'บาททอง',
-                historicalPrices: 'ราคาทองย้อนหลัง (สิ้นเดือน)',
-                weightedAvg: 'ราคาเฉลี่ยถ่วงน้ำหนัก',
+                currentValue: 'มูลค่าปัจจุบัน',
+                totalCost: 'ต้นทุนทั้งหมด',
+                profitLoss: 'กำไร/ขาดทุน',
+                profit: 'กำไร',
+                loss: 'ขาดทุน',
+                comparePrice: 'เทียบราคา',
+                howItWorks: 'วิธีการคำนวณ',
+                backtestInfo: 'ระบบนี้ใช้ราคาทองจริงย้อนหลังตามจำนวนเดือนที่คุณเลือก เพื่อจำลองว่าถ้าคุณออมทองกับเรามาก่อนหน้านี้ จะได้ผลลัพธ์และกำไรเท่าไร',
+                futureNote: 'ผลตอบแทนในอนาคตขึ้นอยู่กับราคาทองคำตลาดโลก ซึ่งอาจเปลี่ยนแปลงได้',
                 disclaimer: 'ราคาทองอ้างอิงจากราคาตลาด อาจมีการเปลี่ยนแปลงได้ ผลการคำนวณเป็นเพียงการประมาณการ'
             },
             en: {
@@ -88,8 +95,15 @@ class GoldSavingCalculator2 {
                 savingTip: 'Try increasing amount or duration',
                 goldWeight: 'Estimated Gold Weight',
                 bahtGold: 'Baht Gold',
-                historicalPrices: 'Historical Prices (End of Month)',
-                weightedAvg: 'Weighted Average Price',
+                currentValue: 'Current Value',
+                totalCost: 'Total Cost',
+                profitLoss: 'Profit/Loss',
+                profit: 'Profit',
+                loss: 'Loss',
+                comparePrice: 'Price Comparison',
+                howItWorks: 'How It Works',
+                backtestInfo: 'This calculator uses historical gold prices based on the months you selected to simulate what would have happened if you saved gold with us in the past.',
+                futureNote: 'Future returns depend on global gold market prices, which may vary.',
                 disclaimer: 'Gold prices are based on market rates and may change. Calculations are estimates only.'
             },
             cn: {
@@ -117,8 +131,15 @@ class GoldSavingCalculator2 {
                 savingTip: '尝试增加金额或期限',
                 goldWeight: '预计黄金重量',
                 bahtGold: '泰铢黄金',
-                historicalPrices: '历史价格（月末）',
-                weightedAvg: '加权平均价格',
+                currentValue: '当前价值',
+                totalCost: '总成本',
+                profitLoss: '盈亏',
+                profit: '盈利',
+                loss: '亏损',
+                comparePrice: '价格对比',
+                howItWorks: '运作方式',
+                backtestInfo: '本系统使用您选择月份的真实历史金价，模拟如果您过去与我们储蓄黄金会获得的结果和利润。',
+                futureNote: '未来回报取决于全球黄金市场价格，可能会有变化。',
                 disclaimer: '金价基于市场行情，可能会有变化。计算结果仅供参考。'
             }
         };
@@ -144,6 +165,9 @@ class GoldSavingCalculator2 {
 
     /**
      * ดึงราคาทองสิ้นเดือนย้อนหลัง
+     * - หาวันที่ใกล้เคียงสิ้นเดือนมากที่สุดในแต่ละเดือน
+     * - ห้ามข้ามเดือน (ถ้าสิ้นเดือนเป็นเสาร์-อาทิตย์ ให้ย้อนหลังในเดือนเดียวกัน)
+     * - เอาเฉพาะเดือนที่ผ่านไปแล้ว (ไม่เอาเดือนปัจจุบันที่ยังไม่จบ)
      */
     async fetchEndOfMonthPrices() {
         try {
@@ -164,17 +188,57 @@ class GoldSavingCalculator2 {
                 };
             });
 
-            // หาวันสุดท้ายของแต่ละเดือน
-            const monthlyPrices = {};
+            // วันที่ปัจจุบัน
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth() + 1; // 1-12
+
+            // Group data by month
+            const monthlyData = {};
 
             allData.forEach(item => {
                 const date = new Date(item.date);
-                const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                const year = date.getFullYear();
+                const month = date.getMonth() + 1; // 1-12
+                const monthKey = `${year}-${String(month).padStart(2, '0')}`;
 
-                // เก็บเฉพาะวันสุดท้ายของเดือน
-                if (!monthlyPrices[monthKey] || new Date(item.date) > new Date(monthlyPrices[monthKey].date)) {
-                    monthlyPrices[monthKey] = item;
+                if (!monthlyData[monthKey]) {
+                    monthlyData[monthKey] = [];
                 }
+                monthlyData[monthKey].push(item);
+            });
+
+            // หาวันที่ใกล้เคียงสิ้นเดือนที่สุดในแต่ละเดือน (ห้ามข้ามเดือน)
+            const monthlyPrices = {};
+
+            Object.keys(monthlyData).forEach(monthKey => {
+                const [yearStr, monthStr] = monthKey.split('-');
+                const year = parseInt(yearStr);
+                const month = parseInt(monthStr);
+
+                // ข้ามเดือนปัจจุบันที่ยังไม่จบ
+                if (year === currentYear && month === currentMonth) {
+                    if (this.debugMode) {
+                        console.log(`⏭️ ข้าม ${monthKey}: เดือนปัจจุบันยังไม่จบ`);
+                    }
+                    return;
+                }
+
+                // ข้ามเดือนในอนาคต
+                if (year > currentYear || (year === currentYear && month > currentMonth)) {
+                    if (this.debugMode) {
+                        console.log(`⏭️ ข้าม ${monthKey}: เดือนในอนาคต`);
+                    }
+                    return;
+                }
+
+                const monthItems = monthlyData[monthKey];
+
+                // เรียงตามวันที่จากมากไปน้อย (วันที่มากสุดก่อน)
+                monthItems.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                // เอาวันแรก (วันที่มากที่สุด = ใกล้สิ้นเดือนที่สุด)
+                monthlyPrices[monthKey] = monthItems[0];
             });
 
             // แปลงเป็น array และเรียงจากเก่าไปใหม่
@@ -183,11 +247,54 @@ class GoldSavingCalculator2 {
 
             // Debug: console.log ราคาทุกสิ้นเดือน
             if (this.debugMode) {
-                console.log('=== ราคาทองสิ้นเดือนย้อนหลัง ===');
+                console.log('=== ราคาทองสิ้นเดือน (ใกล้เคียงที่สุด) - ทั้งหมด ===');
                 this.endOfMonthPrices.forEach(item => {
-                    console.log(`วันที่: ${item.date}, ราคาขายแท่ง: ${this.formatNumber(item.sellBar)} บาท`);
+                    const date = new Date(item.date);
+                    const dayOfWeek = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'][date.getDay()];
+                    console.log(`${item.date} (${dayOfWeek}): ${this.formatNumber(item.sellBar)} บาท`);
                 });
-                console.log('================================');
+                console.log('========================================================');
+
+                // แสดง 6 เดือนล่าสุดแบบละเอียด (ปี 2025)
+                console.log('\n=== ตรวจสอบ 6 เดือนล่าสุด (2025) - ละเอียด ===');
+                const recent6Months = this.endOfMonthPrices.slice(-6);
+
+                recent6Months.forEach((selectedItem, index) => {
+                    const date = new Date(selectedItem.date);
+                    const year = date.getFullYear();
+                    const month = date.getMonth() + 1;
+                    const day = date.getDate();
+                    const dayOfWeek = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'][date.getDay()];
+                    const monthName = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'][month - 1];
+
+                    // หาจำนวนวันในเดือนนั้น
+                    const daysInMonth = new Date(year, month, 0).getDate();
+
+                    console.log(`\n[${index + 1}] ${monthName} ${year}:`);
+                    console.log(`   ✓ วันที่เลือก: ${day} ${monthName} ${year} (${dayOfWeek})`);
+                    console.log(`   ✓ ราคา: ${this.formatNumber(selectedItem.sellBar)} บาท`);
+
+                    if (day === daysInMonth) {
+                        console.log(`   ✓ สถานะ: วันสุดท้ายของเดือน (${daysInMonth} วัน) ✅`);
+                    } else {
+                        console.log(`   ⚠ สถานะ: ไม่ใช่วันสุดท้าย (เดือนมี ${daysInMonth} วัน)`);
+                        console.log(`   → เหตุผล: วันที่ ${daysInMonth} ${monthName} อาจตกวันหยุด/สมาคมไม่ออกราคา`);
+                    }
+
+                    // แสดงข้อมูลในเดือนนั้นๆ จาก monthlyData
+                    const monthKey = `${year}-${String(month).padStart(2, '0')}`;
+                    if (monthlyData[monthKey]) {
+                        const monthDates = monthlyData[monthKey]
+                            .map(item => {
+                                const d = new Date(item.date);
+                                return d.getDate();
+                            })
+                            .sort((a, b) => b - a); // เรียงจากมากไปน้อย
+
+                        console.log(`   → วันที่มีข้อมูลใน API: ${monthDates.join(', ')}`);
+                    }
+                });
+                console.log('\n=====================================================');
             }
 
             // คำนวณราคาเฉลี่ยถ่วงน้ำหนัก
@@ -265,15 +372,22 @@ class GoldSavingCalculator2 {
     }
 
     render() {
-        // ดึง 6 เดือนล่าสุดสำหรับแสดง
-        const recent6Months = this.endOfMonthPrices.slice(-6);
-
         this.container.innerHTML = `
             <div class="gold-saving2-wrapper">
                 <!-- Header -->
                 <div class="saving2-header">
-                    <h1 class="saving2-title">${this.t('title')}</h1>
-                    <p class="saving2-subtitle">${this.t('subtitle')}</p>
+                    <!-- Info Box -->
+                    <div class="info-box2">
+                        <div class="info-icon2">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div class="info-content2">
+                            <h4>${this.t('howItWorks')}</h4>
+                            <p>${this.t('backtestInfo')}</p>
+                            <p class="info-note2"><i class="fas fa-info-circle"></i> ${this.t('futureNote')}</p>
+                        </div>
+                    </div>
+
                     <div class="price-badge-row">
                         <div class="price-badge2">
                             <i class="fas fa-chart-line"></i>
@@ -373,34 +487,24 @@ class GoldSavingCalculator2 {
                             <div class="result-sub">${this.t('bahtGold')}</div>
                         </div>
 
-                        <!-- Historical Prices Info -->
-                        <div class="avg-info-card2">
-                            <h4><i class="fas fa-history"></i> ${this.t('historicalPrices')}</h4>
-                            <div class="avg-list2" id="avgList2">
-                                ${recent6Months.map(item => `
-                                    <div class="avg-item2">
-                                        <span class="date">${this.formatDate(item.date)}</span>
-                                        <span class="price">${this.formatNumber(item.sellBar)}</span>
-                                    </div>
-                                `).join('')}
+                        <!-- Profit/Loss Card -->
+                        <div class="profit-card2" id="profitCard2">
+                            <div class="profit-header2">
+                                <i class="fas fa-chart-line"></i>
+                                <span>${this.t('profitLoss')}</span>
+                            </div>
+                            <div class="profit-body2">
+                                <div class="profit-item2">
+                                    <span class="profit-label2">${this.t('currentValue')}</span>
+                                    <span class="profit-value2" id="currentValue2">0</span>
+                                </div>
+                                <div class="profit-divider2"></div>
+                                <div class="profit-result2" id="profitResult2">
+                                    <div class="profit-amount2">+0</div>
+                                    <div class="profit-percent2">+0%</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Benefits -->
-                <div class="benefits2">
-                    <div class="benefit2">
-                        <div class="icon"><i class="fas fa-shield-alt"></i></div>
-                        <span>${this.t('benefit1')}</span>
-                    </div>
-                    <div class="benefit2">
-                        <div class="icon"><i class="fas fa-piggy-bank"></i></div>
-                        <span>${this.t('benefit2')}</span>
-                    </div>
-                    <div class="benefit2">
-                        <div class="icon"><i class="fas fa-gem"></i></div>
-                        <span>${this.t('benefit3')}</span>
                     </div>
                 </div>
 
@@ -515,7 +619,67 @@ class GoldSavingCalculator2 {
         );
         this.lastDcaAvgPrice = avgCostPrice;
 
+        // Debug: แสดงราคาทองสิ้นเดือนจาก API ที่ใช้คำนวณ
+        if (this.debugMode) {
+            console.log('=== ราคาทองสิ้นเดือนจาก API ที่ใช้คำนวณ DCA ===');
+            console.log(`ต้องการออม: ${this.months} เดือน`);
+
+            // ดึงราคาจำนวนเดือนที่ต้องการ
+            const selectedPrices = this.endOfMonthPrices.slice(-this.months);
+            console.log(`ราคาจาก API ที่ใช้ (${selectedPrices.length} เดือน):`);
+
+            selectedPrices.forEach((item, index) => {
+                console.log(`  [${index + 1}] วันที่: ${item.date} - ราคาขายแท่ง: ${this.formatNumber(item.sellBar)} บาท`);
+            });
+
+            // ถ้าไม่พอ แสดง fallback
+            if (selectedPrices.length < this.months) {
+                const missingMonths = this.months - selectedPrices.length;
+                console.log(`❗ ข้อมูลใน API ไม่พอ! ขาด ${missingMonths} เดือน`);
+                console.log(`ใช้ราคา fallback: ${this.formatNumber(fallbackPrice)} บาท สำหรับเดือนที่ขาด`);
+            }
+
+            console.log(`ราคาเฉลี่ยที่คำนวณได้: ${this.formatNumber(Math.round(avgCostPrice))} บาท/บาททอง`);
+            console.log('============================================');
+        }
+
+        // Update gold weight
         document.getElementById('goldWeight2').textContent = totalGoldBaht.toFixed(4);
+
+        // Calculate profit/loss
+        const currentGoldValue = totalGoldBaht * this.currentGoldPrice;
+        const profitAmount = currentGoldValue - total;
+        const profitPercent = total > 0 ? (profitAmount / total) * 100 : 0;
+
+        // Update current value
+        document.getElementById('currentValue2').textContent =
+            `${this.formatNumber(Math.round(currentGoldValue))} ${this.t('baht')}`;
+
+        // Update profit/loss display
+        const profitResult = document.getElementById('profitResult2');
+        const profitCard = document.getElementById('profitCard2');
+
+        if (profitAmount > 0) {
+            profitCard.classList.add('profit');
+            profitCard.classList.remove('loss');
+            profitResult.innerHTML = `
+                <div class="profit-amount2">+${this.formatNumber(Math.round(profitAmount))} ${this.t('baht')}</div>
+                <div class="profit-percent2">+${profitPercent.toFixed(2)}%</div>
+            `;
+        } else if (profitAmount < 0) {
+            profitCard.classList.add('loss');
+            profitCard.classList.remove('profit');
+            profitResult.innerHTML = `
+                <div class="profit-amount2">${this.formatNumber(Math.round(profitAmount))} ${this.t('baht')}</div>
+                <div class="profit-percent2">${profitPercent.toFixed(2)}%</div>
+            `;
+        } else {
+            profitCard.classList.remove('profit', 'loss');
+            profitResult.innerHTML = `
+                <div class="profit-amount2">0 ${this.t('baht')}</div>
+                <div class="profit-percent2">0%</div>
+            `;
+        }
 
         // Update products
         const estimatePrice = this.currentGoldPrice > 0 ? this.currentGoldPrice : fallbackPrice;
@@ -529,6 +693,8 @@ class GoldSavingCalculator2 {
             console.log(`ยอดรวม: ${this.formatNumber(total)} บาท`);
             console.log(`ต้นทุนเฉลี่ย (DCA): ${this.formatNumber(Math.round(avgCostPrice))} บาท/บาททอง`);
             console.log(`ทองสะสม: ${totalGoldBaht.toFixed(4)} บาททอง`);
+            console.log(`มูลค่าปัจจุบัน: ${this.formatNumber(Math.round(currentGoldValue))} บาท`);
+            console.log(`กำไร/ขาดทุน: ${this.formatNumber(Math.round(profitAmount))} บาท (${profitPercent.toFixed(2)}%)`);
         }
     }
 

@@ -8,34 +8,41 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
-    font-family: 'Prompt', sans-serif;
+    font-family: "Prompt", sans-serif;
 }
 
 /* Header - New Hero Style */
 .saving2-header {
     text-align: center;
     margin-bottom: 2rem;
-    padding: 3rem 2rem;
-    background: linear-gradient(to bottom, #045B96, #002E65);
+    padding: 2rem;
+    background: linear-gradient(to bottom, #045b96, #002e65);
     border-radius: 24px;
     position: relative;
     overflow: hidden;
 }
 
 .saving2-header::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -50%;
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    background: radial-gradient(circle,
+            rgba(255, 255, 255, 0.1) 0%,
+            transparent 60%);
     animation: shimmer 15s infinite linear;
 }
 
 @keyframes shimmer {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .saving2-title {
@@ -44,14 +51,77 @@
     color: white;
     margin-bottom: 0.5rem;
     position: relative;
-    text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
 }
 
 .saving2-subtitle {
     font-size: 1.2rem;
-    color: rgba(255,255,255,0.9);
+    color: rgba(255, 255, 255, 0.9);
     margin-bottom: 1.5rem;
     position: relative;
+}
+
+/* Info Box */
+.info-box2 {
+    background: rgba(255, 255, 255, 0.95);
+    border-left: 4px solid #045b96;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 1.5rem auto;
+    max-width: 800px;
+    display: flex;
+    gap: 1rem;
+    box-shadow: 0 8px 32px rgba(4, 91, 150, 0.15);
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.info-icon2 {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #ffd700, #ffb347);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+.info-content2 {
+    flex: 1;
+}
+
+.info-content2 h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #002e65;
+    margin-bottom: 0.5rem;
+}
+
+.info-content2 p {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+.info-note2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #045b96;
+    font-weight: 500;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(4, 91, 150, 0.2);
+}
+
+.info-note2 i {
+    font-size: 1rem;
 }
 
 /* Price Badge - Floating Style */
@@ -67,21 +137,21 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(255,255,255,0.95);
+    background: rgba(255, 255, 255, 0.95);
     padding: 0.75rem 1.25rem;
     border-radius: 50px;
-    color: #002E65;
+    color: #002e65;
     font-size: 0.95rem;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
     backdrop-filter: blur(10px);
 }
 
 .price-badge2 i {
-    color: #045B96;
+    color: #045b96;
 }
 
 .price-badge2 strong {
-    color: #002E65;
+    color: #002e65;
     font-size: 1.3rem;
 }
 
@@ -101,7 +171,7 @@
 /* Main Calculator Container - Card Style */
 .calculator2-container {
     display: grid;
-    grid-template-columns: 1fr 400px;
+    grid-template-columns: 1fr 1fr;
     gap: 2rem;
     align-items: start;
 }
@@ -111,7 +181,7 @@
     background: white;
     border-radius: 24px;
     padding: 2rem;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
 }
 
 /* Amount Section */
@@ -135,7 +205,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(to bottom, #045B96, #002E65);
+    background: linear-gradient(to bottom, #045b96, #002e65);
     border-radius: 12px;
     color: white;
     font-size: 1rem;
@@ -153,7 +223,7 @@
 .amount-value2 {
     font-size: 3.5rem;
     font-weight: 700;
-    background: linear-gradient(to right, #045B96, #002E65);
+    background: linear-gradient(to right, #045b96, #002e65);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -174,7 +244,7 @@
     width: 100%;
     height: 10px;
     border-radius: 5px;
-    background: linear-gradient(90deg, #045B96 0%, #002E65 100%);
+    background: linear-gradient(90deg, #045b96 0%, #002e65 100%);
     -webkit-appearance: none;
     appearance: none;
     cursor: pointer;
@@ -189,8 +259,10 @@
     background: white;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(4, 91, 150, 0.4);
-    border: 4px solid #002E65;
-    transition: transform 0.2s, box-shadow 0.2s;
+    border: 4px solid #002e65;
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
 }
 
 .amount-slider2::-webkit-slider-thumb:hover {
@@ -217,24 +289,24 @@
     flex: 1;
     min-width: 80px;
     padding: 0.75rem 1rem;
-    border: 2px solid #e0e0e0;
+    border: 1px solid #e0e0e0;
     border-radius: 12px;
     background: white;
-    font-size: 1rem;
-    font-weight: 500;
+    font-size: 1.5rem;
+    font-weight: 600;
     color: #555;
     cursor: pointer;
     transition: all 0.3s;
 }
 
 .quick-btn2:hover {
-    border-color: #045B96;
-    color: #045B96;
+    border-color: #045b96;
+    color: #045b96;
     background: rgba(4, 91, 150, 0.05);
 }
 
 .quick-btn2.active {
-    background: linear-gradient(to right, #045B96, #002E65);
+    background: linear-gradient(to right, #045b96, #002e65);
     border-color: transparent;
     color: white;
 }
@@ -252,7 +324,7 @@
 
 .duration-card2 {
     padding: 1.5rem 1rem;
-    border: 2px solid #e0e0e0;
+    border: 1px solid #e0e0e0;
     border-radius: 16px;
     background: white;
     text-align: center;
@@ -263,19 +335,19 @@
 }
 
 .duration-card2::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to bottom, #045B96, #002E65);
+    background: linear-gradient(to bottom, #045b96, #002e65);
     opacity: 0;
     transition: opacity 0.3s;
 }
 
 .duration-card2:hover {
-    border-color: #045B96;
+    border-color: #045b96;
     transform: translateY(-4px);
     box-shadow: 0 8px 25px rgba(4, 91, 150, 0.2);
 }
@@ -289,7 +361,7 @@
 }
 
 .duration-card2 .num {
-    font-size: 2rem;
+    font-size: 2.5rem;
     font-weight: 700;
     color: #333;
     position: relative;
@@ -331,7 +403,7 @@
     padding: 0.75rem 1rem;
     font-size: 1.2rem;
     font-weight: 600;
-    border: 2px solid #045B96;
+    border: 2px solid #045b96;
     border-radius: 10px;
     text-align: center;
     background: white;
@@ -347,28 +419,32 @@
 .calculator2-right {
     position: sticky;
     top: 2rem;
+    max-width: 100%;
 }
 
 /* Total Card - Glassmorphism */
 .total-card2 {
-    background: linear-gradient(to bottom, #045B96, #002E65);
+    background: linear-gradient(to bottom, #045b96, #002e65);
     border-radius: 24px;
     padding: 2.5rem;
     color: white;
     margin-bottom: 1.5rem;
+    text-align: center;
     position: relative;
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(4, 91, 150, 0.4);
 }
 
 .total-card2::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -50%;
     right: -50%;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+    background: radial-gradient(circle,
+            rgba(255, 255, 255, 0.2) 0%,
+            transparent 60%);
 }
 
 .total-label2 {
@@ -382,7 +458,7 @@
     font-size: 3.5rem;
     font-weight: 700;
     position: relative;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .total-unit2 {
@@ -394,10 +470,50 @@
 .total-formula2 {
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid rgba(255,255,255,0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
     font-size: 1rem;
     opacity: 0.9;
     position: relative;
+}
+
+/* DCA Average Price Card */
+.dca-card2 {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(4, 91, 150, 0.1);
+}
+
+.dca-label2 {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.dca-label2 i {
+    color: #045b96;
+}
+
+.dca-value2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #045b96, #002e65);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.dca-unit2 {
+    font-size: 0.85rem;
+    color: #666;
+    margin-left: 0.25rem;
 }
 
 /* Gold Weight Result */
@@ -414,58 +530,71 @@
     font-size: 3rem;
     color: white;
     margin-bottom: 0.5rem;
-    filter: drop-shadow(0 2px 10px rgba(0,0,0,0.3));
+    filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.3));
 }
 
 .gold-result2 .result-label {
     font-size: 0.95rem;
-    color: rgba(255,255,255,0.95);
+    color: rgba(255, 255, 255, 0.95);
     margin-bottom: 0.25rem;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .gold-result2 .result-value {
     font-size: 2.5rem;
     font-weight: 700;
     color: white;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
 .gold-result2 .result-sub {
     font-size: 0.85rem;
-    color: rgba(255,255,255,0.9);
+    color: rgba(255, 255, 255, 0.9);
     margin-top: 0.5rem;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* Historical Average Info */
-.avg-info-card2 {
+/* Profit/Loss Card */
+.profit-card2 {
     background: white;
-    border-radius: 16px;
+    border-radius: 20px;
     padding: 1.5rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s;
 }
 
-.avg-info-card2 h4 {
-    font-size: 1rem;
-    color: #666;
-    margin-bottom: 1rem;
+.profit-card2.profit {
+    border-color: #4caf50;
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.05), rgba(76, 175, 80, 0.02));
+}
+
+.profit-card2.loss {
+    border-color: #f44336;
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.05), rgba(244, 67, 54, 0.02));
+}
+
+.profit-header2 {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 1rem;
 }
 
-.avg-info-card2 h4 i {
-    color: #045B96;
+.profit-header2 i {
+    color: #045b96;
 }
 
-.avg-list2 {
+.profit-body2 {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
 }
 
-.avg-item2 {
+.profit-item2 {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -474,36 +603,55 @@
     border-radius: 10px;
 }
 
-.avg-item2 .date {
+.profit-label2 {
     font-size: 0.9rem;
     color: #666;
 }
 
-.avg-item2 .price {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #045B96;
-}
-
-.avg-total2 {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 2px dashed #e0e0e0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.avg-total2 .label {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #333;
-}
-
-.avg-total2 .value {
-    font-size: 1.3rem;
+.profit-value2 {
+    font-size: 1.1rem;
     font-weight: 700;
-    color: #045B96;
+    color: #045b96;
+}
+
+.profit-divider2 {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #e0e0e0, transparent);
+}
+
+.profit-result2 {
+    text-align: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f5f7fa, #e4e8ed);
+    border-radius: 12px;
+}
+
+.profit-amount2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.profit-card2.profit .profit-amount2 {
+    color: #4caf50;
+}
+
+.profit-card2.loss .profit-amount2 {
+    color: #f44336;
+}
+
+.profit-percent2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.profit-card2.profit .profit-percent2 {
+    color: #4caf50;
+}
+
+.profit-card2.loss .profit-percent2 {
+    color: #f44336;
 }
 
 /* Benefits Section */
@@ -522,7 +670,7 @@
     padding: 1.5rem;
     background: white;
     border-radius: 16px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
     transition: all 0.3s;
 }
 
@@ -537,7 +685,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(to bottom, #045B96, #002E65);
+    background: linear-gradient(to bottom, #045b96, #002e65);
     border-radius: 16px;
     color: white;
     font-size: 1.5rem;
@@ -554,7 +702,9 @@
 .products2-section {
     margin-top: 2rem;
     padding: 2.5rem;
-    background: linear-gradient(135deg, rgba(4, 91, 150, 0.05), rgba(0, 46, 101, 0.05));
+    background: linear-gradient(135deg,
+            rgba(4, 91, 150, 0.05),
+            rgba(0, 46, 101, 0.05));
     border-radius: 24px;
     border: 1px solid rgba(4, 91, 150, 0.1);
 }
@@ -570,7 +720,7 @@
 }
 
 .products2-title i {
-    color: #045B96;
+    color: #045b96;
 }
 
 .products2-grid {
@@ -585,7 +735,7 @@
     background: white;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     transition: all 0.4s ease;
     border: 2px solid transparent;
 }
@@ -647,13 +797,15 @@
 }
 
 .product-img2::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 30% 50%, rgba(4, 91, 150, 0.08), transparent 70%);
+    background: radial-gradient(circle at 30% 50%,
+            rgba(4, 91, 150, 0.08),
+            transparent 70%);
 }
 
 .product-img2 img {
@@ -662,7 +814,7 @@
     object-fit: contain;
     position: relative;
     z-index: 1;
-    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
     transition: transform 0.4s;
 }
 
@@ -691,7 +843,7 @@
 .product-price2 {
     font-size: 1.6rem;
     font-weight: 700;
-    background: linear-gradient(to right, #045B96, #002E65);
+    background: linear-gradient(to right, #045b96, #002e65);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -712,7 +864,7 @@
     width: calc(100% - 2rem);
     margin: 0 1rem 1rem;
     padding: 0.85rem;
-    background: linear-gradient(to right, #045B96, #002E65);
+    background: linear-gradient(to right, #045b96, #002e65);
     color: white;
     text-decoration: none;
     border-radius: 12px;
@@ -724,7 +876,7 @@
 }
 
 .product-btn2:hover {
-    background: linear-gradient(to right, #002E65, #045B96);
+    background: linear-gradient(to right, #002e65, #045b96);
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(4, 91, 150, 0.4);
 }
@@ -740,7 +892,9 @@
     grid-column: 1 / -1;
     text-align: center;
     padding: 3rem 2rem;
-    background: linear-gradient(135deg, rgba(4, 91, 150, 0.1), rgba(0, 46, 101, 0.1));
+    background: linear-gradient(135deg,
+            rgba(4, 91, 150, 0.1),
+            rgba(0, 46, 101, 0.1));
     border-radius: 20px;
     border: 2px dashed rgba(4, 91, 150, 0.3);
     margin-bottom: 1.5rem;
@@ -748,7 +902,7 @@
 
 .no-product2 i {
     font-size: 3rem;
-    color: #045B96;
+    color: #045b96;
     margin-bottom: 1rem;
     display: block;
 }
@@ -767,7 +921,7 @@
 .no-product2 .need-amount2 {
     margin-top: 1rem;
     font-size: 1.1rem;
-    color: #045B96;
+    color: #045b96;
 }
 
 .no-product2 .need-amount2 strong {
@@ -800,7 +954,7 @@
     padding: 1rem;
     background: #1a1a2e;
     border-radius: 12px;
-    font-family: 'Monaco', monospace;
+    font-family: "Monaco", monospace;
     font-size: 0.75rem;
     color: #4caf50;
     max-height: 200px;
@@ -814,7 +968,7 @@
 
 .debug-console .line {
     padding: 0.25rem 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .debug-console .date {
@@ -826,21 +980,102 @@
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+    .calculator2-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+}
+
 @media (max-width: 1024px) {
+    .gold-saving2-wrapper {
+        padding: 1.5rem 1rem;
+    }
+
     .calculator2-container {
         grid-template-columns: 1fr;
+        gap: 1.5rem;
     }
 
     .calculator2-right {
         position: static;
     }
 
+    .section-title2 {
+        font-size: 1.3rem;
+    }
+
     .duration-cards2 {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 1fr;
+    }
+
+    .duration-card2 {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 92px;
+        border: 1px solid #e0e0e0;
+    }
+
+    .duration-card2 .num {
+        font-size: 3rem;
+    }
+
+    .duration-card2 .label {
+        font-size: 1rem;
+    }
+
+    .amount-display2 {
+        padding: 1.75rem;
+    }
+
+    .amount-value2 {
+        font-size: 3rem;
+    }
+
+    .quick-amounts2 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
+    }
+
+    .quick-btn2 {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .custom-duration2 {
+        flex-wrap: wrap;
+    }
+
+    .custom-input2 {
+        width: 120px;
+        max-width: 100%;
+    }
+
+    .total-card2 {
+        padding: 2rem;
+    }
+
+    .total-value2 {
+        font-size: 3rem;
     }
 
     .products2-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 900px) and (max-width: 1024px) {
+    .calculator2-container {
+        grid-template-columns: 1.1fr 0.9fr;
+        align-items: start;
+    }
+
+    .calculator2-right {
+        position: sticky;
+        top: 1rem;
     }
 }
 
@@ -850,21 +1085,33 @@
     }
 
     .saving2-header {
-        padding: 2rem 1.5rem;
+        padding: 1.5rem;
         border-radius: 20px;
-    }
-
-    .saving2-title {
-        font-size: 2rem;
-    }
-
-    .saving2-subtitle {
-        font-size: 1rem;
     }
 
     .price-badge-row {
         flex-direction: column;
         align-items: center;
+    }
+
+    .info-box2 {
+        flex-direction: column;
+        padding: 1.25rem;
+        margin: 1.25rem auto;
+    }
+
+    .info-icon2 {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+
+    .info-content2 h4 {
+        font-size: 1rem;
+    }
+
+    .info-content2 p {
+        font-size: 0.9rem;
     }
 
     .price-badge2 {
@@ -885,16 +1132,21 @@
         font-size: 2.5rem;
     }
 
+    .quick-amounts2 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
     .duration-cards2 {
         grid-template-columns: repeat(2, 1fr);
     }
 
     .duration-card2 {
         padding: 1.25rem 0.75rem;
+        border: 1px solid #e0e0e0;
     }
 
     .duration-card2 .num {
-        font-size: 1.5rem;
+        font-size: 2.7rem;
     }
 
     .total-card2 {
@@ -903,6 +1155,26 @@
 
     .total-value2 {
         font-size: 2.5rem;
+    }
+
+    .dca-card2 {
+        padding: 1.25rem;
+    }
+
+    .dca-value2 {
+        font-size: 1.5rem;
+    }
+
+    .profit-card2 {
+        padding: 1.25rem;
+    }
+
+    .profit-amount2 {
+        font-size: 1.6rem;
+    }
+
+    .profit-percent2 {
+        font-size: 1.1rem;
     }
 
     .gold-result2 {
@@ -943,15 +1215,39 @@
 
 @media (max-width: 480px) {
     .saving2-header {
-        padding: 1.5rem 1rem;
+        padding: 1.25rem 1rem;
     }
 
-    .saving2-title {
-        font-size: 1.5rem;
+    .info-box2 {
+        flex-direction: column;
+        padding: 1rem;
+        margin: 1rem auto;
+        gap: 0.75rem;
     }
 
-    .saving2-subtitle {
+    .info-icon2 {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+        margin: 0 auto;
+    }
+
+    .info-content2 h4 {
         font-size: 0.9rem;
+        text-align: center;
+    }
+
+    .info-content2 p {
+        font-size: 0.8rem;
+        text-align: center;
+    }
+
+    .info-note2 {
+        font-size: 0.8rem;
+        justify-content: center;
+        text-align: center;
+        flex-direction: column;
+        gap: 0.25rem;
     }
 
     .calculator2-left {
@@ -959,13 +1255,13 @@
     }
 
     .section-title2 {
-        font-size: 1rem;
+        font-size: 1.15rem;
     }
 
     .section-title2 .icon-circle {
-        width: 32px;
-        height: 32px;
-        font-size: 0.85rem;
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
     }
 
     .amount-display2 {
@@ -973,29 +1269,31 @@
     }
 
     .amount-value2 {
-        font-size: 2rem;
+        font-size: 2.5rem;
     }
 
     .quick-amounts2 {
         gap: 0.5rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .quick-btn2 {
         padding: 0.6rem 0.75rem;
-        font-size: 0.85rem;
+        font-size: 1.5rem;
         min-width: 60px;
     }
 
     .duration-card2 {
         padding: 1rem 0.5rem;
+        border: 1px solid #e0e0e0;
     }
 
     .duration-card2 .num {
-        font-size: 1.3rem;
+        font-size: 2.5rem;
     }
 
     .duration-card2 .label {
-        font-size: 0.75rem;
+        font-size: 0.9rem;
     }
 
     .total-card2 {
@@ -1011,6 +1309,34 @@
         font-size: 1rem;
     }
 
+    .dca-card2 {
+        padding: 1rem;
+    }
+
+    .dca-value2 {
+        font-size: 1.4rem;
+    }
+
+    .profit-card2 {
+        padding: 1rem;
+    }
+
+    .profit-header2 {
+        font-size: 0.9rem;
+    }
+
+    .profit-amount2 {
+        font-size: 1.5rem;
+    }
+
+    .profit-percent2 {
+        font-size: 1rem;
+    }
+
+    .profit-value2 {
+        font-size: 1rem;
+    }
+
     .gold-result2 {
         padding: 1.25rem;
         border-radius: 16px;
@@ -1022,10 +1348,6 @@
 
     .gold-result2 .result-value {
         font-size: 1.75rem;
-    }
-
-    .avg-info-card2 {
-        padding: 1.25rem;
     }
 
     .products2-section {
@@ -1081,6 +1403,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1091,9 +1414,26 @@
     animation: fadeInUp 0.5s ease forwards;
 }
 
-.product-card2:nth-child(1) { animation-delay: 0.1s; }
-.product-card2:nth-child(2) { animation-delay: 0.15s; }
-.product-card2:nth-child(3) { animation-delay: 0.2s; }
-.product-card2:nth-child(4) { animation-delay: 0.25s; }
-.product-card2:nth-child(5) { animation-delay: 0.3s; }
-.product-card2:nth-child(6) { animation-delay: 0.35s; }
+.product-card2:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.product-card2:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.product-card2:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.product-card2:nth-child(4) {
+    animation-delay: 0.25s;
+}
+
+.product-card2:nth-child(5) {
+    animation-delay: 0.3s;
+}
+
+.product-card2:nth-child(6) {
+    animation-delay: 0.35s;
+}
