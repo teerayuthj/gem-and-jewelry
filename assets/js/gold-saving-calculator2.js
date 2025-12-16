@@ -29,6 +29,10 @@ class GoldSavingCalculator2 {
         this.weightedAvgPrice = 0;
         this.lastDcaAvgPrice = 0;
 
+        // Max months limit (จะอัปเดตจาก API)
+        // ข้อมูลราคาทองเริ่มตั้งแต่ 2018-01-31
+        this.maxMonths = 84; // ค่าเริ่มต้น 7 ปี
+
         // Debug mode
         this.debugMode = true;
 
@@ -41,7 +45,7 @@ class GoldSavingCalculator2 {
                 monthsLabel: 'ระยะเวลาออม',
                 monthUnit: 'เดือน',
                 customMonths: 'กำหนดเอง',
-                totalSaving: 'ยอดรวมที่ออมได้',
+                totalSaving: 'ยอดเงินรวมทั้งหมด',
                 baht: 'บาท',
                 recommendTitle: 'เป้าหมายทองคำแท่ง',
                 noProduct: 'ออมเพิ่มอีกนิด เพื่อเป็นเจ้าของทองคำแท่ง',
@@ -297,6 +301,12 @@ class GoldSavingCalculator2 {
                 console.log('\n=====================================================');
             }
 
+            // อัปเดต maxMonths จากข้อมูลจริงที่มี
+            this.maxMonths = this.endOfMonthPrices.length;
+            if (this.debugMode) {
+                console.log(`📊 อัปเดต maxMonths = ${this.maxMonths} เดือน (จากข้อมูล API)`);
+            }
+
             // คำนวณราคาเฉลี่ยถ่วงน้ำหนัก
             this.calculateWeightedAverage();
 
@@ -400,35 +410,35 @@ class GoldSavingCalculator2 {
                 <div class="calculator2-container">
                     <!-- Left Panel - Inputs -->
                     <div class="calculator2-left">
-                        <!-- Amount Section -->
-                        <div class="amount-section2">
-                            <div class="section-title2">
-                                <div class="icon-circle"><i class="fas fa-wallet"></i></div>
-                                <span>${this.t('monthlyLabel')}</span>
+                        <!-- Amount Section - Liquid Glass -->
+                        <div class="liquid-glass-card lg-amount-card">
+                            <div class="card-header">
+                                <div class="card-icon"><i class="fas fa-wallet"></i></div>
+                                <h3 class="card-title">${this.t('monthlyLabel')}</h3>
                             </div>
 
-                            <div class="amount-display2">
-                                <span class="amount-value2" id="amountDisplay2">${this.formatNumber(this.monthlyAmount)}</span>
-                                <span class="amount-unit2">${this.t('baht')}</span>
+                            <div class="amount-display">
+                                <span class="amount-value" id="amountDisplay2">${this.formatNumber(this.monthlyAmount)}</span>
+                                <span class="amount-unit">${this.t('baht')}</span>
                             </div>
 
-                            <div class="slider-container2">
+                            <div class="slider-wrapper">
                                 <input type="range"
                                        id="amountSlider2"
-                                       class="amount-slider2"
+                                       class="glass-slider"
                                        min="${this.minAmount}"
                                        max="${this.maxAmount}"
                                        step="500"
                                        value="${this.monthlyAmount}">
-                                <div class="slider-marks2">
+                                <div class="slider-labels">
                                     <span>${this.formatNumber(this.minAmount)}</span>
                                     <span>${this.formatNumber(this.maxAmount)}</span>
                                 </div>
                             </div>
 
-                            <div class="quick-amounts2">
+                            <div class="quick-btns">
                                 ${this.quickAmounts.map(amt => `
-                                    <button class="quick-btn2 ${amt === this.monthlyAmount ? 'active' : ''}"
+                                    <button class="quick-btn ${amt === this.monthlyAmount ? 'active' : ''}"
                                             data-amount="${amt}">
                                         ${this.formatNumber(amt)}
                                     </button>
@@ -436,73 +446,71 @@ class GoldSavingCalculator2 {
                             </div>
                         </div>
 
-                        <!-- Duration Section -->
-                        <div class="duration-section2">
-                            <div class="section-title2">
-                                <div class="icon-circle"><i class="fas fa-calendar-alt"></i></div>
-                                <span>${this.t('monthsLabel')}</span>
+                        <!-- Duration Section - Liquid Glass -->
+                        <div class="liquid-glass-card lg-duration-card" style="margin-top: 1.5rem;">
+                            <div class="card-header">
+                                <div class="card-icon"><i class="fas fa-calendar-alt"></i></div>
+                                <h3 class="card-title">${this.t('monthsLabel')}</h3>
                             </div>
 
-                            <div class="duration-cards2">
+                            <div class="duration-options">
                                 ${this.presetMonths.map(m => `
-                                    <div class="duration-card2 ${m === this.months ? 'active' : ''}" data-months="${m}">
+                                    <div class="duration-chip ${m === this.months ? 'active' : ''}" data-months="${m}">
                                         <div class="num">${m}</div>
                                         <div class="label">${this.t('monthUnit')}</div>
                                     </div>
                                 `).join('')}
                             </div>
 
-                            <div class="custom-duration2">
+                            <div class="custom-input-wrapper">
                                 <label>${this.t('customMonths')}:</label>
                                 <input type="number"
                                        id="customMonths2"
-                                       class="custom-input2"
+                                       class="custom-input"
                                        min="1"
-                                       max="120"
+                                       max="${this.maxMonths}"
                                        value="${this.months}">
                                 <span>${this.t('monthUnit')}</span>
+                                <span class="max-hint">(สูงสุด ${this.maxMonths})</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Right Panel - Results -->
                     <div class="calculator2-right">
-                        <!-- Total Card -->
-                        <div class="total-card2">
-                            <div class="total-label2">${this.t('totalSaving')}</div>
-                            <div class="total-value2">
+                        <!-- Total Card - Liquid Glass -->
+                        <div class="liquid-glass-card lg-total-card">
+                            <div class="total-label">${this.t('totalSaving')}</div>
+                            <div class="total-value">
                                 <span id="totalAmount2">${this.formatNumber(this.monthlyAmount * this.months)}</span>
-                                <span class="total-unit2">${this.t('baht')}</span>
+                                <span class="total-unit">${this.t('baht')}</span>
                             </div>
-                            <div class="total-formula2">
+                            <div class="total-formula">
                                 <span id="formula2">${this.formatNumber(this.monthlyAmount)} x ${this.months} ${this.t('monthUnit')}</span>
                             </div>
                         </div>
 
-                        <!-- Gold Weight Result -->
-                        <div class="gold-result2">
-                            <i class="fas fa-coins icon-big"></i>
-                            <div class="result-label">${this.t('goldWeight')}</div>
-                            <div class="result-value" id="goldWeight2">0.00</div>
-                            <div class="result-sub">${this.t('bahtGold')}</div>
+                        <!-- Gold Weight Result - Liquid Glass -->
+                        <div class="liquid-glass-card lg-gold-card" style="margin-top: 1.5rem;">
+                            <i class="fas fa-coins gold-icon"></i>
+                            <div class="gold-label">${this.t('goldWeight')}</div>
+                            <div class="gold-value" id="goldWeight2">0.00</div>
+                            <div class="gold-unit">${this.t('bahtGold')}</div>
                         </div>
 
-                        <!-- Profit/Loss Card -->
-                        <div class="profit-card2" id="profitCard2">
-                            <div class="profit-header2">
+                        <!-- Profit/Loss Card - Liquid Glass -->
+                        <div class="liquid-glass-card lg-profit-card" id="profitCard2" style="margin-top: 1.5rem;">
+                            <div class="card-header">
                                 <i class="fas fa-chart-line"></i>
                                 <span>${this.t('profitLoss')}</span>
                             </div>
-                            <div class="profit-body2">
-                                <div class="profit-item2">
-                                    <span class="profit-label2">${this.t('currentValue')}</span>
-                                    <span class="profit-value2" id="currentValue2">0</span>
-                                </div>
-                                <div class="profit-divider2"></div>
-                                <div class="profit-result2" id="profitResult2">
-                                    <div class="profit-amount2">+0</div>
-                                    <div class="profit-percent2">+0%</div>
-                                </div>
+                            <div class="value-row">
+                                <span class="value-label">${this.t('currentValue')}</span>
+                                <span class="value-amount" id="currentValue2">0</span>
+                            </div>
+                            <div class="profit-result" id="profitResult2">
+                                <div class="profit-amount">+0</div>
+                                <div class="profit-percent">+0%</div>
                             </div>
                         </div>
                     </div>
@@ -550,8 +558,8 @@ class GoldSavingCalculator2 {
             this.updateCalculation();
         });
 
-        // Quick amount buttons
-        const quickBtns = document.querySelectorAll('.quick-btn2');
+        // Quick amount buttons (Liquid Glass)
+        const quickBtns = document.querySelectorAll('.lg-amount-card .quick-btn');
         quickBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 this.monthlyAmount = parseInt(btn.dataset.amount);
@@ -562,15 +570,15 @@ class GoldSavingCalculator2 {
             });
         });
 
-        // Duration cards
-        const durationCards = document.querySelectorAll('.duration-card2');
+        // Duration chips (Liquid Glass)
+        const durationChips = document.querySelectorAll('.lg-duration-card .duration-chip');
         const customInput = document.getElementById('customMonths2');
 
-        durationCards.forEach(card => {
-            card.addEventListener('click', () => {
-                durationCards.forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
-                this.months = parseInt(card.dataset.months);
+        durationChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                durationChips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                this.months = parseInt(chip.dataset.months);
                 customInput.value = this.months;
                 this.updateCalculation();
             });
@@ -579,13 +587,16 @@ class GoldSavingCalculator2 {
         // Custom months input
         customInput.addEventListener('input', (e) => {
             const value = parseInt(e.target.value) || 1;
-            this.months = Math.max(1, Math.min(120, value));
-            durationCards.forEach(c => {
+            this.months = Math.max(1, Math.min(this.maxMonths, value));
+            durationChips.forEach(c => {
                 c.classList.toggle('active', parseInt(c.dataset.months) === this.months);
             });
         });
 
         customInput.addEventListener('blur', () => {
+            // Ensure value doesn't exceed maxMonths
+            customInput.value = Math.min(parseInt(customInput.value) || 1, this.maxMonths);
+            this.months = parseInt(customInput.value);
             this.updateCalculation();
         });
 
@@ -597,7 +608,7 @@ class GoldSavingCalculator2 {
     }
 
     updateQuickButtons() {
-        const quickBtns = document.querySelectorAll('.quick-btn2');
+        const quickBtns = document.querySelectorAll('.lg-amount-card .quick-btn');
         quickBtns.forEach(btn => {
             btn.classList.toggle('active', parseInt(btn.dataset.amount) === this.monthlyAmount);
         });
@@ -655,7 +666,7 @@ class GoldSavingCalculator2 {
         document.getElementById('currentValue2').textContent =
             `${this.formatNumber(Math.round(currentGoldValue))} ${this.t('baht')}`;
 
-        // Update profit/loss display
+        // Update profit/loss display (Liquid Glass)
         const profitResult = document.getElementById('profitResult2');
         const profitCard = document.getElementById('profitCard2');
 
@@ -663,21 +674,21 @@ class GoldSavingCalculator2 {
             profitCard.classList.add('profit');
             profitCard.classList.remove('loss');
             profitResult.innerHTML = `
-                <div class="profit-amount2">+${this.formatNumber(Math.round(profitAmount))} ${this.t('baht')}</div>
-                <div class="profit-percent2">+${profitPercent.toFixed(2)}%</div>
+                <div class="profit-amount">+${this.formatNumber(Math.round(profitAmount))} ${this.t('baht')}</div>
+                <div class="profit-percent">+${profitPercent.toFixed(2)}%</div>
             `;
         } else if (profitAmount < 0) {
             profitCard.classList.add('loss');
             profitCard.classList.remove('profit');
             profitResult.innerHTML = `
-                <div class="profit-amount2">${this.formatNumber(Math.round(profitAmount))} ${this.t('baht')}</div>
-                <div class="profit-percent2">${profitPercent.toFixed(2)}%</div>
+                <div class="profit-amount">${this.formatNumber(Math.round(profitAmount))} ${this.t('baht')}</div>
+                <div class="profit-percent">${profitPercent.toFixed(2)}%</div>
             `;
         } else {
             profitCard.classList.remove('profit', 'loss');
             profitResult.innerHTML = `
-                <div class="profit-amount2">0 ${this.t('baht')}</div>
-                <div class="profit-percent2">0%</div>
+                <div class="profit-amount">0 ${this.t('baht')}</div>
+                <div class="profit-percent">0%</div>
             `;
         }
 
