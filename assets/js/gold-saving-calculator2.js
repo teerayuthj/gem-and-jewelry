@@ -152,6 +152,13 @@ class GoldSavingCalculator2 {
     }
 
     async init() {
+        // รอให้ GoldProducts โหลดข้อมูลจาก API ก่อน
+        if (typeof GoldProducts !== 'undefined' && !GoldProducts.isLoaded) {
+            console.log('⏳ รอ GoldProducts โหลดข้อมูลจาก API...');
+            await GoldProducts.init();
+            console.log('✅ GoldProducts โหลดเสร็จแล้ว');
+        }
+
         await this.fetchEndOfMonthPrices();
         this.render();
         this.bindEvents();
@@ -717,20 +724,57 @@ class GoldSavingCalculator2 {
             (a, b) => a.multiplier - b.multiplier
         );
 
+        // Debug: แสดงราคาสินค้าที่ใช้
+        if (this.debugMode) {
+            console.log('=== ราคาสินค้าในส่วนเป้าหมายทองคำแท่ง ===');
+            allProducts.forEach(p => {
+                const source = p.apiPrice ? '✅ API' : '⚙️ คำนวณ';
+                console.log(`${p.name} (${p.weight}): ${this.formatNumber(p.price)} บาท [${source}]`);
+            });
+            console.log('==========================================');
+        }
+
         let html = '';
 
         allProducts.forEach(product => {
             const canAfford = goldBaht >= product.multiplier;
             const missingGold = Math.max(0, product.multiplier - goldBaht);
-            const missingBahtEstimate = Math.ceil(missingGold * priceForProductDisplay);
+            // ใช้ราคาสินค้าจริง (apiPrice) สำหรับคำนวณเงินที่ต้องออมเพิ่ม
+            const missingBahtEstimate = Math.ceil(missingGold * (product.apiPrice || priceForProductDisplay));
+
+            // คำนวณ % ที่ออมได้แล้ว
+            const progressPercent = Math.min(100, (goldBaht / product.multiplier) * 100);
+            const isAlmostThere = !canAfford && progressPercent >= 70;
+
+            // สร้าง badge
+            let badgeHtml = '';
+            if (canAfford) {
+                badgeHtml = `<div class="product-badge2 can-buy"><i class="fas fa-check"></i> ${this.t('canBuy')}</div>`;
+            } else if (isAlmostThere) {
+                badgeHtml = `<div class="product-badge2 almost"><i class="fas fa-clock"></i> ${this.t('almostThere')}</div>`;
+            } else {
+                badgeHtml = `<div class="product-badge2 not-reached"><i class="fas fa-lock"></i> ยังไม่ถึงเป้า</div>`;
+            }
+
+            // สร้าง progress bar สำหรับสินค้าที่ยังไม่ถึงเป้าหมาย
+            let progressHtml = '';
+            if (!canAfford) {
+                progressHtml = `
+                    <div class="product-progress2">
+                        <div class="progress-bar" style="width: ${progressPercent.toFixed(1)}%"></div>
+                    </div>
+                    <p class="product-diff2">
+                        <i class="fas fa-chart-line"></i> ออมได้แล้ว <strong>${progressPercent.toFixed(1)}%</strong>
+                        <br>
+                        <span style="color: #e53935;">ต้องการอีก: +${missingGold.toFixed(4)} ${this.t('bahtGold')}
+                        (~${this.formatNumber(missingBahtEstimate)} ${this.t('baht')})</span>
+                    </p>
+                `;
+            }
 
             html += `
                 <div class="product-card2 ${canAfford ? 'affordable' : 'not-affordable'}">
-                    ${canAfford ?
-                        `<div class="product-badge2 can-buy"><i class="fas fa-check"></i> ${this.t('canBuy')}</div>` :
-                        (!canAfford && missingGold > 0 && missingGold <= product.multiplier * 0.3 ?
-                            `<div class="product-badge2 almost"><i class="fas fa-clock"></i> ${this.t('almostThere')}</div>` :
-                            '')}
+                    ${badgeHtml}
 
                     <div class="product-img2">
                         <img src="${product.image}" alt="${product.name}" loading="lazy"
@@ -741,18 +785,12 @@ class GoldSavingCalculator2 {
                         <h3 class="product-name2">${this.currentLang === 'en' ? product.nameEn : product.name}</h3>
                         <p class="product-weight2">${product.weight}</p>
                         <p class="product-price2">${this.formatNumber(product.price)} ${this.t('baht')}</p>
-
-                        ${!canAfford ? `
-                            <p class="product-diff2">
-                                ${this.t('needMore')}: +${missingGold.toFixed(4)} ${this.t('bahtGold')}
-                                (~${this.formatNumber(missingBahtEstimate)} ${this.t('baht')})
-                            </p>
-                        ` : ''}
+                        ${progressHtml}
                     </div>
 
                     <a href="${product.link}" target="_blank" class="product-btn2 ${canAfford ? '' : 'disabled'}">
-                        ${this.t('buyNow')}
-                        <i class="fas fa-external-link-alt"></i>
+                        ${canAfford ? this.t('buyNow') : 'ออมต่อไป'}
+                        <i class="fas ${canAfford ? 'fa-external-link-alt' : 'fa-piggy-bank'}"></i>
                     </a>
                 </div>
             `;

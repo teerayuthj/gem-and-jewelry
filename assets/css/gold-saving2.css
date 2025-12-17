@@ -754,11 +754,90 @@
 }
 
 .product-card2.not-affordable {
-    opacity: 0.7;
+    opacity: 1;
+    border-color: #e0e0e0;
+    background: linear-gradient(180deg, #f5f5f5 0%, #e8e8e8 100%);
 }
 
 .product-card2.not-affordable:hover {
     opacity: 1;
+    border-color: #ccc;
+}
+
+/* รูปภาพสินค้าที่ยังไม่ถึงเป้าหมาย - grayscale + overlay */
+.product-card2.not-affordable .product-img2 {
+    position: relative;
+    background: linear-gradient(135deg, #e0e0e0, #d0d0d0);
+}
+
+.product-card2.not-affordable .product-img2 img {
+    filter: grayscale(100%) opacity(0.5);
+    transition: filter 0.3s;
+}
+
+.product-card2.not-affordable:hover .product-img2 img {
+    filter: grayscale(50%) opacity(0.7);
+}
+
+/* Lock overlay บนรูปภาพ */
+.product-card2.not-affordable .product-img2::after {
+    content: "\f023"; /* Font Awesome lock icon */
+    font-family: "Font Awesome 5 Free", "Font Awesome 6 Free", FontAwesome;
+    font-weight: 900;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    color: rgba(0, 0, 0, 0.3);
+    z-index: 10;
+    text-shadow: 0 2px 8px rgba(255, 255, 255, 0.5);
+}
+
+/* Badge "ยังไม่ถึงเป้าหมาย" */
+.product-badge2.not-reached {
+    background: linear-gradient(135deg, #9e9e9e, #757575);
+    color: white;
+}
+
+/* ข้อมูลสินค้าที่ยังไม่ถึงเป้าหมาย */
+.product-card2.not-affordable .product-name2 {
+    color: #888;
+}
+
+.product-card2.not-affordable .product-price2 {
+    background: linear-gradient(to right, #9e9e9e, #757575);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Progress bar แสดง % ที่ออมได้ */
+.product-progress2 {
+    margin-top: 0.75rem;
+    background: #e0e0e0;
+    border-radius: 10px;
+    height: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.product-progress2 .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #ff9800, #ffc107);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.product-progress2 .progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #333;
+    text-shadow: 0 0 2px white;
 }
 
 /* Badge */
