@@ -1547,3 +1547,991 @@
 .product-card2:nth-child(6) {
     animation-delay: 0.35s;
 }
+
+/* ============================================
+   V2: Smart Recommendation Styles
+   Hero + Supporting + Modal
+   ============================================ */
+
+/* Smart image loading (placeholder -> real image) */
+#productsGrid2 .lazy-img,
+.variant-modal .lazy-img {
+    filter: blur(12px);
+    transform: scale(1.02);
+    transition: filter 0.25s ease, transform 0.25s ease;
+}
+
+#productsGrid2 .lazy-img.is-loaded,
+.variant-modal .lazy-img.is-loaded {
+    filter: none;
+    transform: none;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Image count badge */
+#productsGrid2 .hero-image,
+#productsGrid2 .supporting-img,
+.variant-modal .variant-img {
+    position: relative;
+}
+
+.img-count-badge {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    min-width: 26px;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+/* Reset buttons used as image wrappers */
+#productsGrid2 button.hero-image,
+#productsGrid2 button.supporting-img,
+.variant-modal button.variant-img {
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+#productsGrid2 .hero-card.is-clickable {
+    cursor: pointer;
+}
+
+#productsGrid2 .hero-card.is-clickable:focus-visible {
+    outline: 3px solid rgba(4, 91, 150, 0.35);
+    outline-offset: 4px;
+}
+
+/* Lightbox (responsive: mobile/ipad/desktop) */
+.img-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.img-lightbox.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.img-lightbox-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+}
+
+.img-lightbox-content {
+    position: relative;
+    width: min(980px, 100%);
+    max-height: 90vh;
+    background: #0b0f14;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.45);
+    display: flex;
+    flex-direction: column;
+}
+
+.img-lightbox-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.img-lightbox-title {
+    flex: 1;
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.img-lightbox-count {
+    font-size: 0.85rem;
+    opacity: 0.85;
+}
+
+.img-lightbox-close {
+    border: none;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    font-size: 1.4rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.img-lightbox-stage {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    user-select: none;
+}
+
+.img-lightbox-img {
+    max-width: 100%;
+    max-height: calc(90vh - 120px);
+    object-fit: contain;
+    background: #fff;
+    border-radius: 14px;
+}
+
+.img-lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    border: none;
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+}
+
+.img-lightbox-nav.prev {
+    left: 12px;
+}
+
+.img-lightbox-nav.next {
+    right: 12px;
+}
+
+.img-lightbox-dots {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    padding: 0.75rem 0 1rem;
+}
+
+.img-lightbox-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    border: none;
+    background: rgba(255, 255, 255, 0.35);
+    cursor: pointer;
+}
+
+.img-lightbox-dot.active {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+@media (max-width: 768px) {
+    .img-lightbox {
+        padding: 0.75rem;
+    }
+
+    .img-lightbox-content {
+        border-radius: 16px;
+        max-height: 92vh;
+    }
+
+    .img-lightbox-nav {
+        display: none;
+    }
+
+    .img-lightbox-img {
+        max-height: calc(92vh - 120px);
+    }
+}
+
+/* Hero Card - Main Target */
+#productsGrid2 .hero-card {
+    position: relative;
+    background: white;
+    border-radius: 24px;
+    padding: 2rem;
+    margin-bottom: 0;
+    box-shadow: 0 15px 40px rgba(4, 91, 150, 0.15);
+    border: 3px solid transparent;
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease forwards;
+    /* Ensure it doesn't become a side-by-side grid item */
+    grid-column: 1 / -1;
+}
+
+#productsGrid2 .hero-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #045b96, #002e65);
+}
+
+#productsGrid2 .hero-card.affordable {
+    border-color: #4caf50;
+}
+
+#productsGrid2 .hero-card.affordable::before {
+    background: linear-gradient(90deg, #4caf50, #81c784);
+}
+
+#productsGrid2 .hero-card.almost {
+    border-color: #ff9800;
+}
+
+#productsGrid2 .hero-card.almost::before {
+    background: linear-gradient(90deg, #ff9800, #ffb74d);
+}
+
+#productsGrid2 .hero-card.next-goal {
+    border-color: #045b96;
+}
+
+/* Hero Badge */
+#productsGrid2 .hero-badge {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 2;
+}
+
+#productsGrid2 .hero-badge.can-buy {
+    background: linear-gradient(135deg, #4caf50, #81c784);
+    color: white;
+}
+
+#productsGrid2 .hero-badge.almost {
+    background: linear-gradient(135deg, #ff9800, #ffb74d);
+    color: white;
+}
+
+#productsGrid2 .hero-badge.next-goal {
+    background: linear-gradient(135deg, #045b96, #002e65);
+    color: white;
+}
+
+/* Hero Content */
+#productsGrid2 .hero-content {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+#productsGrid2 .hero-image {
+    flex-shrink: 0;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 20px;
+    padding: 1.5rem;
+}
+
+#productsGrid2 .hero-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+}
+
+#productsGrid2 .hero-info {
+    flex: 1;
+    min-width: 0;
+}
+
+#productsGrid2 .hero-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+#productsGrid2 .hero-weight {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+#productsGrid2 .variant-count-badge {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #045b96;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+#productsGrid2 .hero-price {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #045b96, #002e65);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+}
+
+/* Hero Progress */
+#productsGrid2 .hero-progress {
+    position: relative;
+    height: 12px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+#productsGrid2 .hero-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #ff9800, #ffc107);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+#productsGrid2 .hero-progress-text {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #333;
+}
+
+#productsGrid2 .hero-card.affordable .hero-progress-bar {
+    background: linear-gradient(90deg, #4caf50, #81c784);
+}
+
+#productsGrid2 .hero-diff {
+    font-size: 0.95rem;
+    color: #e53935;
+    margin-bottom: 1rem;
+}
+
+#productsGrid2 .hero-diff strong {
+    font-size: 1.1rem;
+}
+
+#productsGrid2 .hero-diff span {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+/* Hero Actions */
+#productsGrid2 .hero-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+#productsGrid2 .hero-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    background: linear-gradient(to right, #045b96, #002e65);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#productsGrid2 .hero-btn:hover {
+    background: linear-gradient(to right, #002e65, #045b96);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(4, 91, 150, 0.4);
+}
+
+#productsGrid2 .hero-btn.disabled {
+    background: #e0e0e0;
+    color: #999;
+    cursor: default;
+}
+
+#productsGrid2 .hero-btn.disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Supporting Grid */
+#productsGrid2 .smart-supporting-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    /* Ensure it doesn't become a side-by-side grid item */
+    grid-column: 1 / -1;
+}
+
+/* Supporting Card */
+#productsGrid2 .supporting-card {
+    position: relative;
+    background: white;
+    border-radius: 16px;
+    padding: 1rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border: 2px solid #e0e0e0;
+    cursor: pointer;
+    transition: all 0.3s;
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+#productsGrid2 .supporting-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(4, 91, 150, 0.15);
+    border-color: #045b96;
+}
+
+#productsGrid2 .supporting-card.affordable {
+    border-color: #4caf50;
+    background: linear-gradient(180deg, white 0%, rgba(76, 175, 80, 0.05) 100%);
+}
+
+#productsGrid2 .supporting-card.almost {
+    border-color: #ff9800;
+    background: linear-gradient(180deg, white 0%, rgba(255, 152, 0, 0.05) 100%);
+}
+
+#productsGrid2 .supporting-card.locked {
+    border-color: #e0e0e0;
+    background: linear-gradient(180deg, #fafafa 0%, #f0f0f0 100%);
+    cursor: default;
+}
+
+#productsGrid2 .supporting-card.locked:hover {
+    transform: none;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border-color: #e0e0e0;
+}
+
+/* Status Icon */
+#productsGrid2 .status-icon {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    font-size: 1rem;
+    padding: 0.35rem;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 5;
+    pointer-events: none;
+}
+
+#productsGrid2 .status-icon.affordable {
+    color: #4caf50;
+}
+
+#productsGrid2 .status-icon.almost {
+    color: #ff9800;
+}
+
+#productsGrid2 .status-icon.locked {
+    color: #999;
+}
+
+/* Supporting Image */
+#productsGrid2 .supporting-img {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+}
+
+#productsGrid2 .supporting-img img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+#productsGrid2 .supporting-card.locked .supporting-img img {
+    filter: grayscale(100%) opacity(0.5);
+}
+
+/* Supporting Info */
+#productsGrid2 .supporting-info {
+    text-align: center;
+}
+
+#productsGrid2 .supporting-weight {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+#productsGrid2 .supporting-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #045b96;
+    margin-bottom: 0.25rem;
+}
+
+#productsGrid2 .supporting-price .currency {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #888;
+}
+
+#productsGrid2 .variant-hint {
+    display: inline-block;
+    background: #e3f2fd;
+    color: #045b96;
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* Supporting Progress */
+#productsGrid2 .supporting-progress {
+    height: 6px;
+    background: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 0.35rem;
+}
+
+#productsGrid2 .supporting-progress .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff9800, #ffc107);
+    border-radius: 5px;
+    transition: width 0.5s ease;
+}
+
+#productsGrid2 .supporting-card.affordable .supporting-progress .progress-fill {
+    background: linear-gradient(90deg, #4caf50, #81c784);
+}
+
+#productsGrid2 .supporting-percent {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #666;
+}
+
+/* Tap Hint */
+#productsGrid2 .tap-hint {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to right, #045b96, #002e65);
+    color: white;
+    text-align: center;
+    padding: 0.35rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    border-radius: 0 0 14px 14px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.3s;
+}
+
+#productsGrid2 .supporting-card:hover .tap-hint {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============================================
+   Variant Modal
+   ============================================ */
+.variant-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.variant-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.variant-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+}
+
+.variant-modal-content {
+    position: relative;
+    background: white;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s;
+}
+
+.variant-modal.active .variant-modal-content {
+    transform: scale(1) translateY(0);
+}
+
+.variant-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(to right, #045b96, #002e65);
+    color: white;
+}
+
+.variant-modal-header h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.variant-modal-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.variant-modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.variant-modal-body {
+    padding: 1.5rem;
+    max-height: calc(80vh - 70px);
+    overflow-y: auto;
+}
+
+.variant-count-info {
+    text-align: center;
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.variant-locked-note {
+    color: #999;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.variant-modal.locked .variant-item {
+    opacity: 0.7;
+    cursor: default;
+}
+
+.variant-modal.locked .variant-item:hover {
+    border-color: transparent;
+    background: #f8f9fa;
+    box-shadow: none;
+}
+
+.variant-modal.locked .variant-img {
+    filter: grayscale(70%);
+}
+
+.variant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.variant-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 16px;
+    border: 2px solid transparent;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.variant-item:focus-visible {
+    outline: 3px solid rgba(4, 91, 150, 0.35);
+    outline-offset: 2px;
+}
+
+.variant-item:hover {
+    border-color: #045b96;
+    background: white;
+    box-shadow: 0 8px 25px rgba(4, 91, 150, 0.15);
+}
+
+.variant-img {
+    flex-shrink: 0;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 12px;
+    padding: 0.5rem;
+}
+
+.variant-img img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.variant-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.variant-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.variant-price {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #045b96;
+}
+
+.variant-btn {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, #045b96, #002e65);
+    color: white;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.variant-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(4, 91, 150, 0.4);
+}
+
+/* ============================================
+   Responsive - Smart Recommendation
+   ============================================ */
+@media (max-width: 768px) {
+    #productsGrid2 .hero-card {
+        padding: 1.5rem;
+    }
+
+    #productsGrid2 .hero-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    #productsGrid2 .hero-image {
+        width: 150px;
+        height: 150px;
+    }
+
+    #productsGrid2 .hero-badge {
+        top: 1rem;
+        right: 1rem;
+        font-size: 0.8rem;
+        padding: 0.4rem 0.75rem;
+    }
+
+    #productsGrid2 .hero-name {
+        font-size: 1.3rem;
+    }
+
+    #productsGrid2 .hero-price {
+        font-size: 1.6rem;
+    }
+
+    #productsGrid2 .hero-weight {
+        justify-content: center;
+    }
+
+    #productsGrid2 .hero-actions {
+        justify-content: center;
+    }
+
+    #productsGrid2 .smart-supporting-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .variant-modal-content {
+        width: 95%;
+        max-height: 85vh;
+    }
+
+    .variant-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .variant-item {
+        padding: 0.75rem;
+    }
+
+    .variant-img {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    #productsGrid2 .hero-card {
+        padding: 1.25rem;
+        border-radius: 20px;
+    }
+
+    #productsGrid2 .hero-image {
+        width: 120px;
+        height: 120px;
+    }
+
+    #productsGrid2 .hero-name {
+        font-size: 1.1rem;
+    }
+
+    #productsGrid2 .hero-price {
+        font-size: 1.4rem;
+    }
+
+    #productsGrid2 .hero-btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9rem;
+    }
+
+    #productsGrid2 .smart-supporting-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    #productsGrid2 .supporting-card {
+        padding: 0.75rem;
+        border-radius: 12px;
+    }
+
+    #productsGrid2 .supporting-img {
+        height: 80px;
+    }
+
+    #productsGrid2 .supporting-weight {
+        font-size: 0.85rem;
+    }
+
+    #productsGrid2 .supporting-price {
+        font-size: 0.95rem;
+    }
+
+    .variant-modal-header {
+        padding: 1rem;
+    }
+
+    .variant-modal-header h3 {
+        font-size: 1rem;
+    }
+
+    .variant-modal-body {
+        padding: 1rem;
+    }
+
+    .variant-img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .variant-name {
+        font-size: 0.8rem;
+    }
+
+    .variant-price {
+        font-size: 0.9rem;
+    }
+}

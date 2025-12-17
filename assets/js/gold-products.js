@@ -2,6 +2,8 @@
  * Gold Products Data
  * ดึงข้อมูลสินค้าทองคำจาก API โดยตรง
  * ใช้ final_price, goldpricefilter_label, product_name, image_1
+ *
+ * V2: เก็บ variants ทั้งหมดในแต่ละน้ำหนัก สำหรับ Modal เลือกลาย
  */
 
 const GoldProducts = {
@@ -58,8 +60,26 @@ const GoldProducts = {
         '1 กิโลกรัม': 65.599       // 1000g / 15.244
     },
 
-    // สินค้าทองคำแท่ง (จะถูกสร้างจาก API)
+    // สินค้าทองคำแท่ง (จะถูกสร้างจาก API) - ตัวแทนแต่ละน้ำหนัก
     products: [],
+
+    // V2: เก็บ variants ทั้งหมดในแต่ละน้ำหนัก { weightLabel: [variant1, variant2, ...] }
+    variantsByWeight: {},
+
+    resolveImageUrl: function(productId, imageRef) {
+        if (!imageRef) return '';
+        const ref = String(imageRef);
+        if (
+            ref.startsWith('http://') ||
+            ref.startsWith('https://') ||
+            ref.startsWith('data:') ||
+            ref.startsWith('//') ||
+            ref.startsWith('/')
+        ) {
+            return ref;
+        }
+        return `${this.imageBaseUrl}${productId}/${ref}`;
+    },
 
     // Fallback products ถ้า API ไม่ทำงาน
     fallbackProducts: [
@@ -72,6 +92,7 @@ const GoldProducts = {
             premium: 500,
             price: 924,
             image: 'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/01-ausiris.png',
+            images: ['http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/01-ausiris.png'],
             link: 'https://express.ausiris.co.th/0-1-gram-gold/01gram-logo.html',
             popular: false
         },
@@ -84,6 +105,7 @@ const GoldProducts = {
             premium: 400,
             price: 1670,
             image: 'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/03-ausiris.png',
+            images: ['http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/03-ausiris.png'],
             link: 'https://express.ausiris.co.th/0-3-gram-gold/03gram-logo.html',
             popular: false
         },
@@ -96,6 +118,7 @@ const GoldProducts = {
             premium: 100,
             price: 2641,
             image: 'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/06-ausiris.jpeg',
+            images: ['http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/06-ausiris.jpeg'],
             link: 'https://express.ausiris.co.th/0-6-gram-gold/0-6gram-logo.html',
             popular: false
         },
@@ -108,6 +131,7 @@ const GoldProducts = {
             premium: 150,
             price: 4384,
             image: 'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/1grams-ausiris.jpeg',
+            images: ['http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/1grams-ausiris.jpeg'],
             link: 'https://express.ausiris.co.th/gold1gram/1gram-default.html',
             popular: true
         },
@@ -120,6 +144,7 @@ const GoldProducts = {
             premium: 200,
             price: 8269,
             image: 'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/0125grams-ausiris.jpeg',
+            images: ['http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/0125grams-ausiris.jpeg'],
             link: 'https://express.ausiris.co.th/0125baht/0125baht-default.html',
             popular: true
         },
@@ -132,6 +157,7 @@ const GoldProducts = {
             premium: 150,
             price: 64700,
             image: 'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/1baht-ausiris.jpeg',
+            images: ['http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/1baht-ausiris.jpeg'],
             link: 'https://express.ausiris.co.th/1baht/1baht-default.html',
             popular: true
         },
@@ -144,6 +170,7 @@ const GoldProducts = {
             premium: 150,
             price: 322900,
             image: 'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/5baht-ausiris.jpeg',
+            images: ['http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/5baht-ausiris.jpeg'],
             link: 'https://express.ausiris.co.th/cast-gold/5baht-cast.html',
             popular: false
         },
@@ -156,6 +183,7 @@ const GoldProducts = {
             premium: 200,
             price: 645700,
             image: 'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/5baht-ausiris.jpeg',
+            images: ['http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/5baht-ausiris.jpeg'],
             link: 'https://express.ausiris.co.th/cast-gold/10baht-cast.html',
             popular: true
         }
@@ -163,6 +191,7 @@ const GoldProducts = {
 
     /**
      * ดึงข้อมูลสินค้าจาก API และสร้าง products array ใหม่
+     * V2: เก็บ variants ทั้งหมดในแต่ละน้ำหนัก
      */
     fetchFromAPI: async function() {
         try {
@@ -173,6 +202,7 @@ const GoldProducts = {
             if (!result.data || !Array.isArray(result.data)) {
                 console.warn('⚠️ ไม่พบข้อมูลสินค้าจาก API, ใช้ fallback');
                 this.products = [...this.fallbackProducts];
+                this.variantsByWeight = {};
                 this.isLoaded = true;
                 return;
             }
@@ -207,9 +237,12 @@ const GoldProducts = {
                 }
             });
 
-            // Group by goldpricefilter_label และเลือกสินค้า
-            // ถ้ามี preferredSKU ให้ใช้ SKU นั้น ถ้าไม่มีให้เลือกราคาต่ำสุด
+            // V2: เก็บ variants ทั้งหมดในแต่ละน้ำหนัก
+            this.variantsByWeight = {};
+
+            // Group by goldpricefilter_label และเลือกสินค้าตัวแทน
             const productsByWeight = {};
+
             goldProducts.forEach(item => {
                 // สร้าง groupKey สำหรับจัดหมวดหมู่
                 const groupKey = item.goldpricefilter_option_id != null
@@ -227,39 +260,72 @@ const GoldProducts = {
                     return;
                 }
 
-                // ตรวจสอบว่ามี preferred SKU สำหรับ label นี้หรือไม่
+                const multiplier = this.labelToMultiplier[groupLabel];
+                if (!multiplier) {
+                    console.warn(`⚠️ ไม่พบ multiplier สำหรับ: ${groupLabel}`);
+                    return;
+                }
+
+                // สร้าง variant object (รองรับหลายรูป: item.images หรือ image_1..image_4)
+                const rawImages = Array.isArray(item.images) && item.images.length > 0
+                    ? item.images
+                    : ['image_1', 'image_2', 'image_3', 'image_4']
+                        .map(k => item[k])
+                        .filter(Boolean);
+
+                const resolvedImages = rawImages
+                    .map(img => this.resolveImageUrl(item.product_id, img))
+                    .filter(Boolean);
+
+                const imageUrl = resolvedImages[0] ||
+                    (item.image_1 ? this.resolveImageUrl(item.product_id, item.image_1) : '') ||
+                    'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/01-ausiris.png';
+                const productLink = `https://express.ausiris.co.th/product/${item.sku || item.product_id}.html`;
+
+                const variantObj = {
+                    id: `api-${item.product_id}`,
+                    productId: item.product_id,
+                    sku: item.sku,
+                    name: item.product_name,
+                    nameEn: item.product_name,
+                    weight: groupLabel,
+                    weightGroupKey: groupKey,
+                    multiplier: multiplier,
+                    price: item.final_price,
+                    apiPrice: item.final_price,
+                    goldWeight: item.goldweight,
+                    goldpricefilter_option_id: item.goldpricefilter_option_id,
+                    image: imageUrl,
+                    images: resolvedImages.length > 0 ? resolvedImages : [imageUrl],
+                    link: productLink,
+                    popular: ['1 กรัม', '0.125 บาท', '1 บาท', '10 บาท'].includes(groupLabel)
+                };
+
+                // V2: เก็บทุก variant ลง variantsByWeight
+                if (!this.variantsByWeight[groupLabel]) {
+                    this.variantsByWeight[groupLabel] = [];
+                }
+                this.variantsByWeight[groupLabel].push(variantObj);
+
+                // เลือกตัวแทนสำหรับ products array
                 const preferredSKU = this.preferredSKUs[groupLabel];
                 const preferredProduct = preferredSKU ? productsBySKU[preferredSKU] : null;
 
                 // ถ้ามี preferred SKU และตรงกับ item นี้ ให้ใช้เลย
                 if (preferredProduct && item.sku === preferredSKU) {
-                    productsByWeight[groupKey] = {
-                        ...item,
-                        groupKey,
-                        groupLabel
-                    };
+                    productsByWeight[groupKey] = variantObj;
                     console.log(`   ⭐ ใช้ preferred SKU: ${item.sku} สำหรับ ${groupLabel}`);
                     return;
                 }
 
-                // ถ้าไม่มี preferred หรือยังไม่ได้ set ให้เลือกราคาต่ำสุด (แต่ไม่ทับ preferred)
+                // ถ้าไม่มี preferred หรือยังไม่ได้ set ให้เลือกราคาต่ำสุด
                 if (!productsByWeight[groupKey]) {
-                    // ถ้ามี preferred SKU แต่ยังไม่เจอ ให้รอก่อน
                     if (preferredProduct) {
                         return; // รอให้เจอ preferred SKU
                     }
-                    productsByWeight[groupKey] = {
-                        ...item,
-                        groupKey,
-                        groupLabel
-                    };
-                } else if (!preferredProduct && item.final_price < productsByWeight[groupKey].final_price) {
-                    // อัพเดตเฉพาะเมื่อไม่มี preferred และราคาต่ำกว่า
-                    productsByWeight[groupKey] = {
-                        ...item,
-                        groupKey,
-                        groupLabel
-                    };
+                    productsByWeight[groupKey] = variantObj;
+                } else if (!preferredProduct && item.final_price < productsByWeight[groupKey].price) {
+                    productsByWeight[groupKey] = variantObj;
                 }
             });
 
@@ -271,64 +337,34 @@ const GoldProducts = {
                         ? `gpf:${preferredProduct.goldpricefilter_option_id}`
                         : `label:${label}`;
 
-                    productsByWeight[groupKey] = {
-                        ...preferredProduct,
-                        groupKey,
-                        groupLabel: label
-                    };
-                    console.log(`   ⭐ เพิ่ม preferred SKU: ${sku} สำหรับ ${label}`);
+                    // หา variant ที่ตรงกับ preferred SKU
+                    const variants = this.variantsByWeight[label] || [];
+                    const matchingVariant = variants.find(v => v.sku === sku);
+                    if (matchingVariant) {
+                        productsByWeight[groupKey] = matchingVariant;
+                        console.log(`   ⭐ เพิ่ม preferred SKU: ${sku} สำหรับ ${label}`);
+                    }
                 } else {
                     console.warn(`   ⚠️ ไม่พบ preferred SKU: ${sku} สำหรับ ${label}`);
                 }
             });
 
-            // สร้าง products array จาก API data
-            this.products = [];
-
-            Object.entries(productsByWeight).forEach(([groupKey, item]) => {
-                const weightLabel = item.groupLabel; // ใช้ groupLabel ที่เตรียมไว้
-                const multiplier = this.labelToMultiplier[weightLabel];
-
-                if (!multiplier) {
-                    console.warn(`⚠️ ไม่พบ multiplier สำหรับ: ${weightLabel} (groupKey: ${groupKey})`);
-                    return;
-                }
-
-                // สร้าง image URL - format: /api/product-images/{product_id}/{filename}
-                const imageUrl = item.image_1
-                    ? `${this.imageBaseUrl}${item.product_id}/${item.image_1}`
-                    : 'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/01-ausiris.png';
-
-                // สร้าง link ไปหน้าสินค้า
-                const productLink = `https://express.ausiris.co.th/product/${item.sku || item.product_id}.html`;
-
-                this.products.push({
-                    id: `api-${item.product_id}`,
-                    sku: item.sku,
-                    name: item.product_name,
-                    nameEn: item.product_name, // ใช้ชื่อเดียวกันถ้าไม่มี EN
-                    weight: weightLabel,
-                    weightGroupKey: groupKey,
-                    multiplier: multiplier,
-                    price: item.final_price,
-                    apiPrice: item.final_price,
-                    goldWeight: item.goldweight,
-                    goldpricefilter_option_id: item.goldpricefilter_option_id,
-                    image: imageUrl,
-                    link: productLink,
-                    popular: ['1 กรัม', '0.125 บาท', '1 บาท', '10 บาท'].includes(weightLabel)
-                });
-
-                console.log(`   ✅ [${weightLabel}] ${item.product_name}: ${item.final_price.toLocaleString()} บาท`);
-            });
+            // สร้าง products array จาก productsByWeight
+            this.products = Object.values(productsByWeight);
 
             // เรียงตามราคา
             this.products.sort((a, b) => a.price - b.price);
 
-            console.log(`✨ โหลดสินค้าจาก API สำเร็จ ${this.products.length} รายการ`);
-            console.log('💰 รายการสินค้า:');
+            // เรียง variants ในแต่ละน้ำหนักตามราคา
+            Object.keys(this.variantsByWeight).forEach(weight => {
+                this.variantsByWeight[weight].sort((a, b) => a.price - b.price);
+            });
+
+            console.log(`✨ โหลดสินค้าจาก API สำเร็จ ${this.products.length} น้ำหนัก`);
+            console.log('💰 รายการสินค้า (ตัวแทน):');
             this.products.forEach(p => {
-                console.log(`   ${p.weight}: ${p.name} - ${p.price.toLocaleString()} บาท`);
+                const variantCount = this.variantsByWeight[p.weight]?.length || 0;
+                console.log(`   ${p.weight}: ${p.name} - ${p.price.toLocaleString()} บาท (${variantCount} ลาย)`);
             });
 
             this.isLoaded = true;
@@ -337,6 +373,7 @@ const GoldProducts = {
             console.error('❌ Error fetching products from API:', error);
             console.log('⚠️ ใช้ fallback products');
             this.products = [...this.fallbackProducts];
+            this.variantsByWeight = {};
             this.isLoaded = true;
         }
     },
@@ -391,6 +428,40 @@ const GoldProducts = {
      */
     updateBasePrice: function(newPrice) {
         this.baseGoldPrice = newPrice;
+    },
+
+    /**
+     * V2: ดึง variants ทั้งหมดของน้ำหนักที่ระบุ
+     * @param {string} weightLabel - เช่น "0.3 กรัม", "1 บาท"
+     * @returns {Array} array ของ variants เรียงตามราคา
+     */
+    getVariantsByWeight: function(weightLabel) {
+        return this.variantsByWeight[weightLabel] || [];
+    },
+
+    /**
+     * V2: ดึงจำนวน variants ของน้ำหนักที่ระบุ
+     * @param {string} weightLabel
+     * @returns {number}
+     */
+    getVariantCount: function(weightLabel) {
+        return (this.variantsByWeight[weightLabel] || []).length;
+    },
+
+    /**
+     * V2: ดึงช่วงราคาของน้ำหนักที่ระบุ
+     * @param {string} weightLabel
+     * @returns {{ min: number, max: number } | null}
+     */
+    getPriceRange: function(weightLabel) {
+        const variants = this.variantsByWeight[weightLabel];
+        if (!variants || variants.length === 0) return null;
+
+        const prices = variants.map(v => v.price);
+        return {
+            min: Math.min(...prices),
+            max: Math.max(...prices)
+        };
     },
 
     /**

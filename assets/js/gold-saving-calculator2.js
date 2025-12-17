@@ -7,6 +7,11 @@ class GoldSavingCalculator2 {
     constructor(containerId) {
         this.container = document.getElementById(containerId);
         this.currentLang = 'th';
+        this.lazyImageObserver = null;
+        this.imagePlaceholder =
+            'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 10 10%22><rect width=%2210%22 height=%2210%22 fill=%22%23f0f0f0%22/></svg>';
+        this._productsGridClickHandler = null;
+        this._productsGridKeyHandler = null;
 
         // ค่าเริ่มต้น
         this.minAmount = 1000;
@@ -168,6 +173,265 @@ class GoldSavingCalculator2 {
 
     t(key) {
         return this.translations[this.currentLang][key] || key;
+    }
+
+    getNoImageFallbackDataUri() {
+        return "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23f0f0f0%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23999%22 font-size=%2212%22>No Image</text></svg>";
+    }
+
+    disconnectLazyImageObserver() {
+        if (!this.lazyImageObserver) return;
+        this.lazyImageObserver.disconnect();
+        this.lazyImageObserver = null;
+    }
+
+    loadLazyImage(img) {
+        const src = img.getAttribute('data-src');
+        if (!src) return;
+
+        img.classList.remove('is-loaded');
+        img.addEventListener(
+            'load',
+            () => {
+                img.classList.add('is-loaded');
+            },
+            { once: true }
+        );
+
+        img.setAttribute('src', src);
+        img.removeAttribute('data-src');
+    }
+
+    initGridLazyImages(gridEl) {
+        this.disconnectLazyImageObserver();
+        if (!gridEl) return;
+
+        const imgs = Array.from(gridEl.querySelectorAll('img[data-src]'));
+        if (imgs.length === 0) return;
+
+        if (typeof IntersectionObserver === 'undefined') {
+            imgs.forEach(img => this.loadLazyImage(img));
+            return;
+        }
+
+        this.lazyImageObserver = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    const img = entry.target;
+                    this.lazyImageObserver?.unobserve(img);
+                    this.loadLazyImage(img);
+                });
+            },
+            { root: null, rootMargin: '250px 0px', threshold: 0.01 }
+        );
+
+        imgs.forEach(img => this.lazyImageObserver.observe(img));
+    }
+
+    bindProductsGridEvents(gridEl, productsByKey) {
+        if (!gridEl) return;
+
+        if (this._productsGridClickHandler) {
+            gridEl.removeEventListener('click', this._productsGridClickHandler);
+        }
+        if (this._productsGridKeyHandler) {
+            gridEl.removeEventListener('keydown', this._productsGridKeyHandler);
+        }
+
+        this._productsGridClickHandler = (e) => {
+            const previewBtn = e.target.closest('.js-img-preview');
+            if (previewBtn && gridEl.contains(previewBtn)) {
+                const affEl = previewBtn.closest('[data-affordable]');
+                const isLocked = affEl && affEl.dataset.affordable !== '1';
+                if (isLocked) return; // let card click open locked modal preview instead
+
+                e.preventDefault();
+                e.stopPropagation();
+
+                const key = previewBtn.dataset.imagesKey;
+                const product = key ? productsByKey?.get(key) : null;
+                const images = Array.isArray(product?.images) && product.images.length > 0
+                    ? product.images
+                    : product?.image
+                        ? [product.image]
+                        : [];
+                if (images.length === 0) return;
+
+                const title = product
+                    ? (this.currentLang === 'en' ? product.nameEn : product.name)
+                    : '';
+                this.openImageLightbox({ title, images, startIndex: 0 });
+                return;
+            }
+
+            const clickableHero = e.target.closest('.hero-card.is-clickable');
+            if (clickableHero && gridEl.contains(clickableHero)) {
+                const link = clickableHero.dataset.link;
+                if (link) window.open(link, '_blank');
+            }
+        };
+
+        this._productsGridKeyHandler = (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            const previewBtn = e.target.closest('.js-img-preview');
+            if (previewBtn && gridEl.contains(previewBtn)) {
+                const affEl = previewBtn.closest('[data-affordable]');
+                const isLocked = affEl && affEl.dataset.affordable !== '1';
+                if (isLocked) return;
+                e.preventDefault();
+                previewBtn.click();
+                return;
+            }
+            const clickableHero = e.target.closest('.hero-card.is-clickable');
+            if (clickableHero && gridEl.contains(clickableHero)) {
+                e.preventDefault();
+                const link = clickableHero.dataset.link;
+                if (link) window.open(link, '_blank');
+            }
+        };
+
+        gridEl.addEventListener('click', this._productsGridClickHandler);
+        gridEl.addEventListener('keydown', this._productsGridKeyHandler);
+    }
+
+    openImageLightbox({ title, images, startIndex = 0 }) {
+        if (!Array.isArray(images) || images.length === 0) return;
+
+        // Remove existing lightbox
+        const existing = document.getElementById('imageLightbox');
+        if (existing) {
+            try {
+                if (typeof existing._cleanup === 'function') existing._cleanup();
+            } catch (_) {
+                // ignore
+            }
+            existing.remove();
+        }
+
+        const lightbox = document.createElement('div');
+        lightbox.id = 'imageLightbox';
+        lightbox.className = 'img-lightbox';
+
+        const safeIndex = Math.max(0, Math.min(images.length - 1, startIndex));
+        let index = safeIndex;
+
+        const renderDots = () => {
+            if (images.length <= 1) return '';
+            return images.map((_, i) => `
+                <button type="button" class="img-lightbox-dot ${i === index ? 'active' : ''}" data-index="${i}" aria-label="Image ${i + 1}"></button>
+            `).join('');
+        };
+
+        lightbox.innerHTML = `
+            <div class="img-lightbox-backdrop"></div>
+            <div class="img-lightbox-content" role="dialog" aria-modal="true">
+                <div class="img-lightbox-header">
+                    <div class="img-lightbox-title">${title || ''}</div>
+                    <div class="img-lightbox-count">${index + 1}/${images.length}</div>
+                    <button type="button" class="img-lightbox-close" aria-label="Close">×</button>
+                </div>
+                <div class="img-lightbox-stage">
+                    <button type="button" class="img-lightbox-nav prev" aria-label="Previous">‹</button>
+                    <img class="img-lightbox-img" alt="${title || 'Image'}" decoding="async">
+                    <button type="button" class="img-lightbox-nav next" aria-label="Next">›</button>
+                </div>
+                <div class="img-lightbox-dots">${renderDots()}</div>
+            </div>
+        `;
+
+        document.body.appendChild(lightbox);
+        document.body.classList.add('modal-open');
+
+        const imgEl = lightbox.querySelector('.img-lightbox-img');
+        const countEl = lightbox.querySelector('.img-lightbox-count');
+        const dotsEl = lightbox.querySelector('.img-lightbox-dots');
+        const prevBtn = lightbox.querySelector('.img-lightbox-nav.prev');
+        const nextBtn = lightbox.querySelector('.img-lightbox-nav.next');
+        const stageEl = lightbox.querySelector('.img-lightbox-stage');
+
+        const preloadNeighbor = () => {
+            if (images.length <= 1) return;
+            const next = images[(index + 1) % images.length];
+            const prev = images[(index - 1 + images.length) % images.length];
+            [next, prev].forEach(src => {
+                const i = new Image();
+                i.src = src;
+            });
+        };
+
+        const update = () => {
+            imgEl.src = images[index];
+            countEl.textContent = `${index + 1}/${images.length}`;
+            if (images.length <= 1) {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                dotsEl.style.display = 'none';
+            } else {
+                prevBtn.style.display = '';
+                nextBtn.style.display = '';
+                dotsEl.style.display = '';
+                dotsEl.innerHTML = renderDots();
+            }
+            preloadNeighbor();
+        };
+
+        const go = (nextIndex) => {
+            index = (nextIndex + images.length) % images.length;
+            update();
+        };
+
+        const close = () => {
+            if (typeof lightbox._cleanup === 'function') lightbox._cleanup();
+            lightbox.classList.remove('active');
+            setTimeout(() => {
+                document.body.classList.remove('modal-open');
+                lightbox.remove();
+            }, 200);
+        };
+
+        const keyHandler = (e) => {
+            if (e.key === 'Escape') return close();
+            if (images.length <= 1) return;
+            if (e.key === 'ArrowLeft') return go(index - 1);
+            if (e.key === 'ArrowRight') return go(index + 1);
+        };
+
+        // Touch swipe
+        let touchStartX = null;
+        const touchStart = (e) => {
+            touchStartX = e.touches?.[0]?.clientX ?? null;
+        };
+        const touchEnd = (e) => {
+            const endX = e.changedTouches?.[0]?.clientX ?? null;
+            if (touchStartX == null || endX == null || images.length <= 1) return;
+            const dx = endX - touchStartX;
+            if (Math.abs(dx) < 40) return;
+            go(dx > 0 ? index - 1 : index + 1);
+            touchStartX = null;
+        };
+
+        lightbox.querySelector('.img-lightbox-close').addEventListener('click', close);
+        lightbox.querySelector('.img-lightbox-backdrop').addEventListener('click', close);
+        prevBtn.addEventListener('click', () => go(index - 1));
+        nextBtn.addEventListener('click', () => go(index + 1));
+        dotsEl.addEventListener('click', (e) => {
+            const dot = e.target.closest('.img-lightbox-dot');
+            if (!dot) return;
+            const i = parseInt(dot.dataset.index, 10);
+            if (Number.isFinite(i)) go(i);
+        });
+
+        stageEl.addEventListener('touchstart', touchStart, { passive: true });
+        stageEl.addEventListener('touchend', touchEnd, { passive: true });
+        document.addEventListener('keydown', keyHandler);
+
+        lightbox._cleanup = () => {
+            document.removeEventListener('keydown', keyHandler);
+        };
+
+        requestAnimationFrame(() => lightbox.classList.add('active'));
+        update();
     }
 
     formatNumber(num) {
@@ -716,6 +980,10 @@ class GoldSavingCalculator2 {
         }
     }
 
+    /**
+     * V2: Smart Recommendation - แสดง 3-5 สินค้าที่เกี่ยวข้องกับเงินออม
+     * แบบ Hero + Supporting พร้อม Modal สำหรับดู variants
+     */
     renderProducts({ goldBaht, estimatePrice }) {
         const grid = document.getElementById('productsGrid2');
         const priceForProductDisplay =
@@ -729,76 +997,42 @@ class GoldSavingCalculator2 {
             console.log('=== ราคาสินค้าในส่วนเป้าหมายทองคำแท่ง ===');
             allProducts.forEach(p => {
                 const source = p.apiPrice ? '✅ API' : '⚙️ คำนวณ';
-                console.log(`${p.name} (${p.weight}): ${this.formatNumber(p.price)} บาท [${source}]`);
+                const variantCount = GoldProducts.getVariantCount(p.weight);
+                console.log(`${p.name} (${p.weight}): ${this.formatNumber(p.price)} บาท [${source}] - ${variantCount} ลาย`);
             });
             console.log('==========================================');
         }
 
+        // แสดง Recommendation ทั้งหมด (ตามหมวด/น้ำหนักเหมือนเดิม)
+        // หมายเหตุ: ยังใช้ UI แบบ Hero + Supporting + Modal เหมือน V2
+        const recommendedProducts = allProducts;
+        const productsByKey = new Map(
+            recommendedProducts.map(p => [String(p.sku || p.id), p])
+        );
+
+        // หา Hero product (เป้าหมายถัดไปที่ใกล้ที่สุด)
+        const heroProduct = this.findHeroProduct(recommendedProducts, goldBaht);
+
         let html = '';
 
-        allProducts.forEach(product => {
-            const canAfford = goldBaht >= product.multiplier;
-            const missingGold = Math.max(0, product.multiplier - goldBaht);
-            // ใช้ราคาสินค้าจริง (apiPrice) สำหรับคำนวณเงินที่ต้องออมเพิ่ม
-            const missingBahtEstimate = Math.ceil(missingGold * (product.apiPrice || priceForProductDisplay));
+        // Hero Section - สินค้าที่เป็นเป้าหมายถัดไป
+        if (heroProduct) {
+            html += this.renderHeroCard(heroProduct, goldBaht, priceForProductDisplay);
+        }
 
-            // คำนวณ % ที่ออมได้แล้ว
-            const progressPercent = Math.min(100, (goldBaht / product.multiplier) * 100);
-            const isAlmostThere = !canAfford && progressPercent >= 70;
-
-            // สร้าง badge
-            let badgeHtml = '';
-            if (canAfford) {
-                badgeHtml = `<div class="product-badge2 can-buy"><i class="fas fa-check"></i> ${this.t('canBuy')}</div>`;
-            } else if (isAlmostThere) {
-                badgeHtml = `<div class="product-badge2 almost"><i class="fas fa-clock"></i> ${this.t('almostThere')}</div>`;
-            } else {
-                badgeHtml = `<div class="product-badge2 not-reached"><i class="fas fa-lock"></i> ยังไม่ถึงเป้า</div>`;
-            }
-
-            // สร้าง progress bar สำหรับสินค้าที่ยังไม่ถึงเป้าหมาย
-            let progressHtml = '';
-            if (!canAfford) {
-                progressHtml = `
-                    <div class="product-progress2">
-                        <div class="progress-bar" style="width: ${progressPercent.toFixed(1)}%"></div>
-                    </div>
-                    <p class="product-diff2">
-                        <i class="fas fa-chart-line"></i> ออมได้แล้ว <strong>${progressPercent.toFixed(1)}%</strong>
-                        <br>
-                        <span style="color: #e53935;">ต้องการอีก: +${missingGold.toFixed(4)} ${this.t('bahtGold')}
-                        (~${this.formatNumber(missingBahtEstimate)} ${this.t('baht')})</span>
-                    </p>
-                `;
-            }
-
-            html += `
-                <div class="product-card2 ${canAfford ? 'affordable' : 'not-affordable'}">
-                    ${badgeHtml}
-
-                    <div class="product-img2">
-                        <img src="${product.image}" alt="${product.name}" loading="lazy"
-                             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23f0f0f0%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23999%22 font-size=%2212%22>No Image</text></svg>'">
-                    </div>
-
-                    <div class="product-info2">
-                        <h3 class="product-name2">${this.currentLang === 'en' ? product.nameEn : product.name}</h3>
-                        <p class="product-weight2">${product.weight}</p>
-                        <p class="product-price2">${this.formatNumber(product.price)} ${this.t('baht')}</p>
-                        ${progressHtml}
-                    </div>
-
-                    <a href="${product.link}" target="_blank" class="product-btn2 ${canAfford ? '' : 'disabled'}">
-                        ${canAfford ? this.t('buyNow') : 'ออมต่อไป'}
-                        <i class="fas ${canAfford ? 'fa-external-link-alt' : 'fa-piggy-bank'}"></i>
-                    </a>
-                </div>
-            `;
-        });
+        // Supporting Products
+        const supportingProducts = recommendedProducts.filter(p => p !== heroProduct);
+        if (supportingProducts.length > 0) {
+            html += `<div class="smart-supporting-grid">`;
+            supportingProducts.forEach(product => {
+                html += this.renderSupportingCard(product, goldBaht, priceForProductDisplay);
+            });
+            html += `</div>`;
+        }
 
         // ถ้าไม่มีสินค้าที่ซื้อได้เลย
-        const anyAffordable = allProducts.some(p => goldBaht >= p.multiplier);
-        if (!anyAffordable) {
+        const anyAffordable = recommendedProducts.some(p => goldBaht >= p.multiplier);
+        if (!anyAffordable && allProducts.length > 0) {
             const cheapest = allProducts[0];
             const needMoreGold = Math.max(0, cheapest.multiplier - goldBaht);
             const needMoreBaht = Math.ceil(needMoreGold * priceForProductDisplay);
@@ -815,6 +1049,461 @@ class GoldSavingCalculator2 {
         }
 
         grid.innerHTML = html;
+
+        // Smart image loading: load only near-viewport images, hero stays eager
+        this.initGridLazyImages(grid);
+        this.bindProductsGridEvents(grid, productsByKey);
+
+        // Bind modal events
+        this.bindModalEvents();
+    }
+
+    /**
+     * Smart Recommendation: เลือก 3-5 สินค้าที่เกี่ยวข้อง
+     */
+    getSmartRecommendation(allProducts, goldBaht) {
+        const result = [];
+
+        // แบ่งกลุ่มสินค้า
+        const affordable = []; // ซื้อได้แล้ว
+        const almostThere = []; // ใกล้ถึง (70-99%)
+        const nextGoals = []; // เป้าหมายถัดไป (< 70%)
+
+        allProducts.forEach(product => {
+            const progressPercent = (goldBaht / product.multiplier) * 100;
+
+            if (progressPercent >= 100) {
+                affordable.push({ ...product, progressPercent });
+            } else if (progressPercent >= 70) {
+                almostThere.push({ ...product, progressPercent });
+            } else {
+                nextGoals.push({ ...product, progressPercent });
+            }
+        });
+
+        // เลือกสินค้า: 1-2 ซื้อได้ + 1-2 ใกล้ถึง + 1-2 เป้าหมาย
+        // รวมไม่เกิน 5 ตัว
+
+        // 1. สินค้าที่ซื้อได้ (เอา 2 ตัวล่าสุดที่ซื้อได้)
+        const affordableToShow = affordable.slice(-2);
+        result.push(...affordableToShow);
+
+        // 2. สินค้าที่ใกล้ถึง (เอา 2 ตัวแรก)
+        const almostToShow = almostThere.slice(0, 2);
+        result.push(...almostToShow);
+
+        // 3. เป้าหมายถัดไป (เอาให้ครบ 5 ตัว)
+        const remaining = 5 - result.length;
+        const nextToShow = nextGoals.slice(0, remaining);
+        result.push(...nextToShow);
+
+        // ถ้ายังไม่ครบ 3 ตัว ให้เพิ่มจาก nextGoals
+        if (result.length < 3 && nextGoals.length > nextToShow.length) {
+            const moreNeeded = 3 - result.length;
+            const moreGoals = nextGoals.slice(nextToShow.length, nextToShow.length + moreNeeded);
+            result.push(...moreGoals);
+        }
+
+        // เรียงตาม multiplier
+        result.sort((a, b) => a.multiplier - b.multiplier);
+
+        return result;
+    }
+
+    /**
+     * หา Hero product - เป้าหมายถัดไปที่ใกล้ที่สุด
+     */
+    findHeroProduct(products, goldBaht) {
+        // หาสินค้าที่ยังไม่ถึงเป้าแต่ใกล้ที่สุด (progress สูงสุดที่ < 100%)
+        const notYetReached = products.filter(p => {
+            const progress = (goldBaht / p.multiplier) * 100;
+            return progress < 100;
+        });
+
+        if (notYetReached.length === 0) {
+            // ถ้าซื้อได้หมดแล้ว ให้เอาตัวที่ราคาสูงสุดที่ซื้อได้
+            return products[products.length - 1];
+        }
+
+        // เอาตัวที่ progress สูงสุด (ใกล้ถึงที่สุด)
+        return notYetReached.reduce((best, current) => {
+            const bestProgress = (goldBaht / best.multiplier) * 100;
+            const currentProgress = (goldBaht / current.multiplier) * 100;
+            return currentProgress > bestProgress ? current : best;
+        });
+    }
+
+    /**
+     * Render Hero Card - การ์ดใหญ่สำหรับเป้าหมายถัดไป
+     */
+    renderHeroCard(product, goldBaht, priceForProductDisplay) {
+        const canAfford = goldBaht >= product.multiplier;
+        const missingGold = Math.max(0, product.multiplier - goldBaht);
+        const missingBahtEstimate = Math.ceil(missingGold * (product.apiPrice || priceForProductDisplay));
+        const progressPercent = Math.min(100, (goldBaht / product.multiplier) * 100);
+        const isAlmostThere = !canAfford && progressPercent >= 70;
+
+        // ข้อมูล variants
+        const variantCount = GoldProducts.getVariantCount(product.weight);
+        const priceRange = GoldProducts.getPriceRange(product.weight);
+        const hasManyVariants = variantCount > 1;
+
+        // Badge
+        let badgeHtml = '';
+        let statusClass = '';
+        if (canAfford) {
+            badgeHtml = `<div class="hero-badge can-buy"><i class="fas fa-check-circle"></i> ${this.t('canBuy')}</div>`;
+            statusClass = 'affordable';
+        } else if (isAlmostThere) {
+            badgeHtml = `<div class="hero-badge almost"><i class="fas fa-fire"></i> ${this.t('almostThere')}</div>`;
+            statusClass = 'almost';
+        } else {
+            badgeHtml = `<div class="hero-badge next-goal"><i class="fas fa-bullseye"></i> เป้าหมายถัดไป</div>`;
+            statusClass = 'next-goal';
+        }
+
+        // Progress bar
+        let progressHtml = '';
+        if (!canAfford) {
+            progressHtml = `
+                <div class="hero-progress">
+                    <div class="hero-progress-bar" style="width: ${progressPercent.toFixed(1)}%"></div>
+                    <span class="hero-progress-text">${progressPercent.toFixed(1)}%</span>
+                </div>
+                <p class="hero-diff">
+                    ต้องออมเพิ่ม <strong>+${missingGold.toFixed(4)}</strong> ${this.t('bahtGold')}
+                    <span>(~${this.formatNumber(missingBahtEstimate)} ${this.t('baht')})</span>
+                </p>
+            `;
+        }
+
+        // Price display
+        let priceHtml = '';
+        if (hasManyVariants && priceRange) {
+            if (priceRange.min === priceRange.max) {
+                priceHtml = `${this.formatNumber(priceRange.min)} ${this.t('baht')}`;
+            } else {
+                priceHtml = `${this.formatNumber(priceRange.min)} - ${this.formatNumber(priceRange.max)} ${this.t('baht')}`;
+            }
+        } else {
+            priceHtml = `${this.formatNumber(product.price)} ${this.t('baht')}`;
+        }
+
+        // Variant badge
+        const variantBadge = hasManyVariants
+            ? `<span class="variant-count-badge">${variantCount} ลายให้เลือก</span>`
+            : '';
+
+        const productKey = String(product.sku || product.id);
+        const imageCount = Array.isArray(product.images) ? product.images.length : 0;
+        const imageCountBadge = imageCount > 1 ? `<span class="img-count-badge">${imageCount}</span>` : '';
+        const heroClickableClass = !hasManyVariants && canAfford && product.link ? 'is-clickable' : '';
+        const heroClickableAttrs = !hasManyVariants && canAfford && product.link
+            ? `data-link="${product.link}" tabindex="0" role="link"`
+            : '';
+        const actionsHtml = hasManyVariants
+            ? `
+                <div class="hero-actions">
+                    <button class="hero-btn select-variant" type="button" data-weight="${product.weight}" data-affordable="${canAfford ? 1 : 0}">
+                        <i class="fas ${canAfford ? 'fa-th' : 'fa-lock'}"></i> ${canAfford ? 'เลือกลาย' : 'ดูตัวอย่างลาย'}
+                    </button>
+                </div>
+            `
+            : '';
+
+        return `
+            <div class="hero-card ${statusClass} ${heroClickableClass}" ${heroClickableAttrs} data-affordable="${canAfford ? 1 : 0}" data-weight="${product.weight}">
+	                ${badgeHtml}
+	                <div class="hero-content">
+	                    <button type="button" class="hero-image js-img-preview" data-images-key="${productKey}" aria-label="ดูรูปภาพ">
+	                        <img src="${product.image}" alt="${product.name}" loading="eager" decoding="async" fetchpriority="high"
+	                             onerror="this.src='${this.getNoImageFallbackDataUri()}';">
+	                        ${imageCountBadge}
+	                    </button>
+	                    <div class="hero-info">
+	                        <h3 class="hero-name">${this.currentLang === 'en' ? product.nameEn : product.name}</h3>
+	                        <p class="hero-weight">${product.weight} ${variantBadge}</p>
+	                        <p class="hero-price">${priceHtml}</p>
+	                        ${progressHtml}
+                            ${actionsHtml}
+	                    </div>
+	                </div>
+	            </div>
+        `;
+    }
+
+    /**
+     * Render Supporting Card - การ์ดเล็กสำหรับสินค้าอื่นๆ
+     */
+    renderSupportingCard(product, goldBaht, priceForProductDisplay) {
+        const canAfford = goldBaht >= product.multiplier;
+        const progressPercent = Math.min(100, (goldBaht / product.multiplier) * 100);
+        const isAlmostThere = !canAfford && progressPercent >= 70;
+
+        // ข้อมูล variants
+        const variantCount = GoldProducts.getVariantCount(product.weight);
+        const priceRange = GoldProducts.getPriceRange(product.weight);
+        const hasManyVariants = variantCount > 1;
+
+        // Status class
+        let statusClass = '';
+        let statusIcon = '';
+        if (canAfford) {
+            statusClass = 'affordable';
+            statusIcon = '<i class="fas fa-check status-icon affordable"></i>';
+        } else if (isAlmostThere) {
+            statusClass = 'almost';
+            statusIcon = '<i class="fas fa-clock status-icon almost"></i>';
+        } else {
+            statusClass = 'locked';
+            statusIcon = '<i class="fas fa-lock status-icon locked"></i>';
+        }
+
+        // Price display
+        let priceHtml = '';
+        if (hasManyVariants && priceRange) {
+            priceHtml = `เริ่มต้น ${this.formatNumber(priceRange.min)}`;
+        } else {
+            priceHtml = `${this.formatNumber(product.price)}`;
+        }
+
+        // Variant info
+        const variantInfo = hasManyVariants
+            ? `<span class="variant-hint">${variantCount} ลาย</span>`
+            : '';
+
+        const productKey = String(product.sku || product.id);
+        const imageCount = Array.isArray(product.images) ? product.images.length : 0;
+        const imageCountBadge = imageCount > 1 ? `<span class="img-count-badge">${imageCount}</span>` : '';
+
+        return `
+            <div class="supporting-card ${statusClass}" data-weight="${product.weight}" data-affordable="${canAfford ? 1 : 0}">
+                ${statusIcon}
+                <button type="button" class="supporting-img js-img-preview" data-images-key="${productKey}" aria-label="ดูรูปภาพ">
+                    <img class="lazy-img" src="${this.imagePlaceholder}" data-src="${product.image}" alt="${product.name}"
+                         loading="lazy" decoding="async" fetchpriority="low"
+                         onerror="this.src='${this.getNoImageFallbackDataUri()}'; this.classList.add('is-loaded'); this.removeAttribute('data-src');">
+                    ${imageCountBadge}
+                </button>
+                <div class="supporting-info">
+                    <p class="supporting-weight">${product.weight}</p>
+                    <p class="supporting-price">${priceHtml} <span class="currency">${this.t('baht')}</span></p>
+                    ${variantInfo}
+                    <div class="supporting-progress">
+                        <div class="progress-fill" style="width: ${progressPercent.toFixed(1)}%"></div>
+                    </div>
+                    <p class="supporting-percent">${progressPercent.toFixed(0)}%</p>
+                </div>
+                ${hasManyVariants ? `<div class="tap-hint">${canAfford ? 'แตะเพื่อเลือกลาย' : 'แตะเพื่อดูตัวอย่าง (ล็อก)'}</div>` : ''}
+            </div>
+        `;
+    }
+
+    /**
+     * Bind Modal Events
+     */
+    bindModalEvents() {
+        // Hero button - เลือกลาย (locked -> preview only)
+        const selectVariantBtns = document.querySelectorAll('.select-variant');
+        selectVariantBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const weight = btn.dataset.weight;
+                const locked = btn.dataset.affordable !== '1';
+                this.openVariantModal(weight, { locked });
+            });
+        });
+
+        // Supporting cards - tap to open modal (ignore image preview clicks)
+        const supportingCards = document.querySelectorAll('.supporting-card');
+        supportingCards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('.js-img-preview')) return;
+                const weight = card.dataset.weight;
+                const variantCount = GoldProducts.getVariantCount(weight);
+                if (variantCount > 1) {
+                    const locked = card.dataset.affordable !== '1';
+                    this.openVariantModal(weight, { locked });
+                } else {
+                    // ถ้ามีแค่ตัวเดียว ให้เปิด link โดยตรง
+                    if (card.dataset.affordable === '1') {
+                        const variants = GoldProducts.getVariantsByWeight(weight);
+                        if (variants.length > 0) {
+                            window.open(variants[0].link, '_blank');
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    /**
+     * Open Variant Modal
+     */
+    openVariantModal(weightLabel, options = {}) {
+        const variants = GoldProducts.getVariantsByWeight(weightLabel);
+        if (variants.length === 0) return;
+        const isLocked = !!options.locked;
+        const variantsByKey = new Map(variants.map(v => [String(v.sku || v.id), v]));
+
+        // Remove existing modal
+        const existingModal = document.getElementById('variantModal');
+        if (existingModal) {
+            try {
+                if (typeof existingModal._cleanup === 'function') existingModal._cleanup();
+            } catch (_) {
+                // ignore
+            }
+            existingModal.remove();
+        }
+
+        // Create modal
+        const modal = document.createElement('div');
+        modal.id = 'variantModal';
+        modal.className = `variant-modal${isLocked ? ' locked' : ''}`;
+
+        const noImageFallback = this.getNoImageFallbackDataUri();
+        let variantsHtml = variants.map(variant => {
+            const variantKey = String(variant.sku || variant.id);
+            const imageCount = Array.isArray(variant.images) ? variant.images.length : 0;
+            const imageCountBadge = imageCount > 1 ? `<span class="img-count-badge">${imageCount}</span>` : '';
+            return `
+                <div class="variant-item" data-variant-key="${variantKey}" tabindex="0" role="link">
+                    <button type="button" class="variant-img js-img-preview" data-variant-key="${variantKey}" aria-label="ดูรูปภาพ">
+                        <img class="lazy-img" src="${this.imagePlaceholder}" data-src="${variant.image}" alt="${variant.name}"
+                             loading="lazy" decoding="async" fetchpriority="low"
+                             onerror="this.src='${noImageFallback}'; this.classList.add('is-loaded'); this.removeAttribute('data-src');">
+                        ${imageCountBadge}
+                    </button>
+                    <div class="variant-info">
+                        <h4 class="variant-name">${variant.name}</h4>
+                        <p class="variant-price">${this.formatNumber(variant.price)} ${this.t('baht')}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        modal.innerHTML = `
+            <div class="variant-modal-backdrop"></div>
+            <div class="variant-modal-content">
+                <div class="variant-modal-header">
+                    <h3><i class="fas fa-th"></i> ทองแท่ง ${weightLabel} - เลือกลายที่ชอบ</h3>
+                    <button class="variant-modal-close"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="variant-modal-body">
+                    <p class="variant-count-info">
+                        มีทั้งหมด ${variants.length} ลายให้เลือก
+                        ${isLocked ? '<span class="variant-locked-note"> (โหมดตัวอย่าง - ออมถึงเป้าหมายก่อนเพื่อกดเลือก)</span>' : ''}
+                    </p>
+                    <div class="variant-grid">
+                        ${variantsHtml}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        const variantGrid = modal.querySelector('.variant-grid');
+        const variantClickHandler = (e) => {
+            if (isLocked) {
+                e.preventDefault();
+                return;
+            }
+            const previewBtn = e.target.closest('.js-img-preview');
+            if (previewBtn && modal.contains(previewBtn)) {
+                e.preventDefault();
+                e.stopPropagation();
+                const key = previewBtn.dataset.variantKey;
+                const variant = key ? variantsByKey.get(String(key)) : null;
+                const images = Array.isArray(variant?.images) && variant.images.length > 0
+                    ? variant.images
+                    : variant?.image
+                        ? [variant.image]
+                        : [];
+                if (images.length === 0) return;
+                this.openImageLightbox({ title: variant?.name || '', images, startIndex: 0 });
+                return;
+            }
+
+            const item = e.target.closest('.variant-item');
+            if (!item || !modal.contains(item)) return;
+            const key = item.dataset.variantKey;
+            const variant = key ? variantsByKey.get(String(key)) : null;
+            if (variant?.link) window.open(variant.link, '_blank');
+        };
+
+        const variantKeyHandler = (e) => {
+            if (isLocked) return;
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            const item = e.target.closest('.variant-item');
+            if (!item || !modal.contains(item)) return;
+            e.preventDefault();
+            const key = item.dataset.variantKey;
+            const variant = key ? variantsByKey.get(String(key)) : null;
+            if (variant?.link) window.open(variant.link, '_blank');
+        };
+
+        variantGrid?.addEventListener('click', variantClickHandler);
+        variantGrid?.addEventListener('keydown', variantKeyHandler);
+
+        // Progressive image loading within the modal scroll container
+        const modalBody = modal.querySelector('.variant-modal-body');
+        const modalImgs = Array.from(modal.querySelectorAll('img[data-src]'));
+        let modalObserver = null;
+        if (modalImgs.length > 0) {
+            if (typeof IntersectionObserver === 'undefined') {
+                modalImgs.forEach(img => this.loadLazyImage(img));
+            } else {
+                modalObserver = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach(entry => {
+                            if (!entry.isIntersecting) return;
+                            const img = entry.target;
+                            modalObserver?.unobserve(img);
+                            this.loadLazyImage(img);
+                        });
+                    },
+                    { root: modalBody, rootMargin: '200px 0px', threshold: 0.01 }
+                );
+                modalImgs.forEach(img => modalObserver.observe(img));
+            }
+        }
+
+        // Animate in
+        requestAnimationFrame(() => {
+            modal.classList.add('active');
+        });
+
+        // Close events
+        const closeBtn = modal.querySelector('.variant-modal-close');
+        const backdrop = modal.querySelector('.variant-modal-backdrop');
+
+        const closeModal = () => {
+            if (modalObserver) modalObserver.disconnect();
+            variantGrid?.removeEventListener('click', variantClickHandler);
+            variantGrid?.removeEventListener('keydown', variantKeyHandler);
+            document.removeEventListener('keydown', escHandler);
+            modal.classList.remove('active');
+            setTimeout(() => modal.remove(), 300);
+        };
+
+        closeBtn.addEventListener('click', closeModal);
+        backdrop.addEventListener('click', closeModal);
+
+        // ESC key
+        const escHandler = (e) => {
+            if (e.key === 'Escape') closeModal();
+        };
+        document.addEventListener('keydown', escHandler);
+
+        // Expose cleanup for any forced removal
+        modal._cleanup = () => {
+            if (modalObserver) modalObserver.disconnect();
+            variantGrid?.removeEventListener('click', variantClickHandler);
+            variantGrid?.removeEventListener('keydown', variantKeyHandler);
+            document.removeEventListener('keydown', escHandler);
+        };
     }
 
     async fetchCurrentGoldPrice() {
