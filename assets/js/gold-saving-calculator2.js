@@ -44,7 +44,7 @@ class GoldSavingCalculator2 {
         // Translations
         this.translations = {
             th: {
-                title: 'ออมทอง สร้างอนาคต',
+                title: 'ออมเดือนละเท่าไหร่ ได้ทองกี่บาท?',
                 subtitle: 'คำนวณว่าออมทองกี่เดือน จะได้ทองแท่งเท่าไร',
                 monthlyLabel: 'เงินออมต่อเดือน',
                 monthsLabel: 'ระยะเวลาออม',
@@ -80,7 +80,7 @@ class GoldSavingCalculator2 {
                 disclaimer: 'ราคาทองอ้างอิงจากราคาตลาด อาจมีการเปลี่ยนแปลงได้ ผลการคำนวณเป็นเพียงการประมาณการและยังไม่รวมค่าจัดส่งการแบบมีประกันของทองคำแท่ง'
             },
             en: {
-                title: 'Save Gold, Build Future',
+                title: 'How Much Gold Can You Get?',
                 subtitle: 'Calculate how much gold you can own by saving monthly',
                 monthlyLabel: 'Monthly Saving',
                 monthsLabel: 'Duration',
@@ -116,7 +116,7 @@ class GoldSavingCalculator2 {
                 disclaimer: 'Gold prices are based on market rates and may change. Calculations are estimates only and do not include insured shipping costs for gold bars.'
             },
             cn: {
-                title: '储蓄黄金，创造未来',
+                title: '每月存多少能买多少黄金?',
                 subtitle: '计算每月储蓄可获得多少黄金',
                 monthlyLabel: '每月储蓄',
                 monthsLabel: '储蓄期限',
@@ -657,23 +657,10 @@ class GoldSavingCalculator2 {
             <div class="gold-saving2-wrapper">
                 <!-- Header -->
                 <div class="saving2-header">
-                    <!-- Info Box -->
-                    <div class="info-box2">
-                        <div class="info-icon2">
-                            <i class="fas fa-lightbulb"></i>
-                        </div>
-                        <div class="info-content2">
-                            <h4>${this.t('howItWorks')}</h4>
-                            <p>${this.t('backtestInfo')}</p>
-                            <p class="info-note2"><i class="fas fa-info-circle"></i> ${this.t('futureNote')}</p>
-                        </div>
-                    </div>
-
-                    <div class="price-badge-row">
-                        <div class="price-badge2">
-                            <i class="fas fa-chart-line"></i>
-                            <span>${this.t('goldPrice')}: <strong id="currentPrice2">${this.formatNumber(this.currentGoldPrice)}</strong> ${this.t('perBaht')}</span>
-                        </div>
+                    <h1 class="saving2-title-simple">${this.t('title')}</h1>
+                    <div class="info-box2-simple">
+                        <i class="fas fa-info-circle"></i>
+                        <span>${this.t('backtestInfo')}</span>
                     </div>
                 </div>
 
