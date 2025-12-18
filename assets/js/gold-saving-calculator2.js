@@ -44,6 +44,24 @@ class GoldSavingCalculator2 {
         // Debug mode
         this.debugMode = true;
 
+        // Local persistence (simple lead capture, stored only in this browser)
+        this.localStorageKey = 'goldSavingCalculator2.local.v1';
+        this.localLead = {
+            name: '',
+            email: '',
+            phone: '',
+            lineId: ''
+        };
+        this.localUi = {
+            contactOpen: false
+        };
+        this.localMeta = {
+            lastSavedHash: '',
+            lastSavedAt: null
+        };
+        this._persistTimer = null;
+        this._saveInProgress = false;
+
         // Translations
         this.translations = {
             th: {
@@ -83,7 +101,24 @@ class GoldSavingCalculator2 {
                 disclaimer: 'ราคาทองอ้างอิงจากราคาตลาด อาจมีการเปลี่ยนแปลงได้ ผลการคำนวณเป็นเพียงการประมาณการและยังไม่รวมค่าจัดส่งการแบบมีประกันของทองคำแท่ง',
                 dailyBuyInfo: 'ซื้อทุกวันจันทร์-ศุกร์',
                 perDay: 'บาท/วัน',
-                workingDays: 'วันทำการ'
+                workingDays: 'วันทำการ',
+
+                contactTitle: 'บันทึกแผน & ให้เราติดต่อกลับ',
+                contactSubtitle: 'ไม่บังคับ — กรอกเมื่อพร้อม',
+                localOnly: 'ข้อมูลนี้เก็บไว้ในเครื่องของคุณเท่านั้น (ยังไม่ส่งไปที่ไหน)',
+                planSummary: 'แผนตอนนี้',
+                nameLabel: 'ชื่อ',
+                emailLabel: 'อีเมล',
+                phoneLabel: 'เบอร์โทร',
+                lineIdLabel: 'LINE ID',
+                optionalLabel: 'ไม่บังคับ',
+                clearLocal: 'ล้างข้อมูลที่กรอก',
+                savePlan: 'บันทึก',
+                copySummary: 'คัดลอกสรุป',
+                saved: 'บันทึกข้อมูลแล้ว',
+                cleared: 'ล้างข้อมูลแล้ว',
+                noChanges: 'ไม่มีการเปลี่ยนแปลง',
+                copied: 'คัดลอกแล้ว'
             },
             en: {
                 title: 'How Much Gold Can You Get?',
@@ -122,7 +157,24 @@ class GoldSavingCalculator2 {
                 disclaimer: 'Gold prices are based on market rates and may change. Calculations are estimates only and do not include insured shipping costs for gold bars.',
                 dailyBuyInfo: 'Buy every Mon-Fri',
                 perDay: 'THB/day',
-                workingDays: 'working days'
+                workingDays: 'working days',
+
+                contactTitle: 'Save Plan & Contact Info',
+                contactSubtitle: 'Optional — fill when ready',
+                localOnly: 'Stored only in this browser (not sent anywhere yet)',
+                planSummary: 'Current plan',
+                nameLabel: 'Name',
+                emailLabel: 'Email',
+                phoneLabel: 'Phone',
+                lineIdLabel: 'LINE ID',
+                optionalLabel: 'Optional',
+                clearLocal: 'Clear fields',
+                savePlan: 'Save',
+                copySummary: 'Copy summary',
+                saved: 'Saved',
+                cleared: 'Cleared',
+                noChanges: 'No changes',
+                copied: 'Copied'
             },
             cn: {
                 title: '每月存多少能买多少黄金?',
@@ -161,10 +213,28 @@ class GoldSavingCalculator2 {
                 disclaimer: '金价基于市场行情，可能会有变化。计算结果仅供参考，不包括金条的保险运费。',
                 dailyBuyInfo: '每周一至周五购买',
                 perDay: '泰铢/天',
-                workingDays: '工作日'
+                workingDays: '工作日',
+
+                contactTitle: '保存计划与联系方式',
+                contactSubtitle: '非必填 — 准备好再填写',
+                localOnly: '仅保存在此浏览器中（尚未发送到任何地方）',
+                planSummary: '当前计划',
+                nameLabel: '姓名',
+                emailLabel: '邮箱',
+                phoneLabel: '电话',
+                lineIdLabel: 'LINE ID',
+                optionalLabel: '非必填',
+                clearLocal: '清除已填写信息',
+                savePlan: '保存',
+                copySummary: '复制摘要',
+                saved: '已保存',
+                cleared: '已清除',
+                noChanges: '无变化',
+                copied: '已复制'
             }
         };
 
+        this.restoreLocalState();
         this.init();
     }
 
@@ -185,6 +255,181 @@ class GoldSavingCalculator2 {
 
     t(key) {
         return this.translations[this.currentLang][key] || key;
+    }
+
+    escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, (ch) => {
+            switch (ch) {
+                case '&': return '&amp;';
+                case '<': return '&lt;';
+                case '>': return '&gt;';
+                case '"': return '&quot;';
+                case "'": return '&#39;';
+                default: return ch;
+            }
+        });
+    }
+
+    readLocalState() {
+        try {
+            if (typeof localStorage === 'undefined') return null;
+            const raw = localStorage.getItem(this.localStorageKey);
+            if (!raw) return null;
+            const parsed = JSON.parse(raw);
+            return parsed && typeof parsed === 'object' ? parsed : null;
+        } catch (_) {
+            return null;
+        }
+    }
+
+    writeLocalState(state) {
+        try {
+            if (typeof localStorage === 'undefined') return;
+            localStorage.setItem(this.localStorageKey, JSON.stringify(state));
+        } catch (_) {
+            // ignore
+        }
+    }
+
+    getLocalStateSnapshot() {
+        return {
+            monthlyAmount: this.monthlyAmount,
+            months: this.months,
+            lead: { ...this.localLead },
+            ui: { ...this.localUi },
+            meta: { ...this.localMeta },
+            updatedAt: new Date().toISOString()
+        };
+    }
+
+    queuePersistLocalState() {
+        if (this._persistTimer) clearTimeout(this._persistTimer);
+        this._persistTimer = setTimeout(() => {
+            this.writeLocalState(this.getLocalStateSnapshot());
+            this._persistTimer = null;
+        }, 250);
+    }
+
+    restoreLocalState() {
+        const state = this.readLocalState();
+        if (!state) return;
+
+        const monthlyAmount = Number(state.monthlyAmount);
+        if (Number.isFinite(monthlyAmount) && monthlyAmount > 0) {
+            this.monthlyAmount = Math.max(this.minAmount, Math.min(this.maxAmount, Math.round(monthlyAmount)));
+        }
+
+        const months = Number(state.months);
+        if (Number.isFinite(months) && months > 0) {
+            this.months = Math.max(1, Math.min(this.maxMonths, Math.round(months)));
+        }
+
+        const lead = state.lead && typeof state.lead === 'object' ? state.lead : {};
+        this.localLead = {
+            name: typeof lead.name === 'string' ? lead.name : '',
+            email: typeof lead.email === 'string' ? lead.email : '',
+            phone: typeof lead.phone === 'string' ? lead.phone : '',
+            lineId: typeof lead.lineId === 'string' ? lead.lineId : ''
+        };
+
+        const ui = state.ui && typeof state.ui === 'object' ? state.ui : {};
+        this.localUi = {
+            contactOpen: Boolean(ui.contactOpen)
+        };
+
+        const meta = state.meta && typeof state.meta === 'object' ? state.meta : {};
+        this.localMeta = {
+            lastSavedHash: typeof meta.lastSavedHash === 'string' ? meta.lastSavedHash : '',
+            lastSavedAt: typeof meta.lastSavedAt === 'string' ? meta.lastSavedAt : null
+        };
+    }
+
+    clearLocalLead() {
+        this.localLead = { name: '', email: '', phone: '', lineId: '' };
+        this.localUi = { ...this.localUi, contactOpen: false };
+        this.queuePersistLocalState();
+    }
+
+    setLeadStatus(messageKey, variant = 'success') {
+        const el = document.getElementById('leadStatus2');
+        if (!el) return;
+        el.classList.remove('success', 'info');
+        el.classList.add(variant);
+        el.textContent = this.t(messageKey);
+        el.classList.add('show');
+        window.clearTimeout(el._t);
+        el._t = window.setTimeout(() => {
+            el.classList.remove('show');
+        }, 3000);
+    }
+
+    hashString(input) {
+        // Simple stable hash for dedupe (non-cryptographic)
+        const str = String(input ?? '');
+        let h = 5381;
+        for (let i = 0; i < str.length; i++) {
+            h = ((h << 5) + h) ^ str.charCodeAt(i); // djb2 xor
+        }
+        return (h >>> 0).toString(16);
+    }
+
+    getLeadPayloadHash() {
+        const payload = {
+            monthlyAmount: Math.round(Number(this.monthlyAmount) || 0),
+            months: Math.round(Number(this.months) || 0),
+            lead: {
+                name: String(this.localLead.name || '').trim(),
+                email: String(this.localLead.email || '').trim(),
+                phone: String(this.localLead.phone || '').trim(),
+                lineId: String(this.localLead.lineId || '').trim()
+            }
+        };
+        return this.hashString(JSON.stringify(payload));
+    }
+
+    updateSaveButtonState() {
+        const saveBtn = document.getElementById('leadSave2');
+        if (!saveBtn) return;
+        const currentHash = this.getLeadPayloadHash();
+        const isUnchanged = currentHash && currentHash === this.localMeta.lastSavedHash;
+        const disabled = this._saveInProgress || isUnchanged;
+        saveBtn.disabled = disabled;
+        saveBtn.classList.toggle('is-disabled', disabled);
+    }
+
+    async copyToClipboard(text) {
+        try {
+            if (navigator?.clipboard?.writeText) {
+                await navigator.clipboard.writeText(text);
+                return true;
+            }
+        } catch (_) {
+            // fallback
+        }
+        try {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            const ok = document.execCommand('copy');
+            ta.remove();
+            return ok;
+        } catch (_) {
+            return false;
+        }
+    }
+
+    getLeadSummaryText() {
+        const parts = [];
+        parts.push(`${this.t('planSummary')}: ${this.formatNumber(this.monthlyAmount)} ${this.t('baht')}, ${this.months} ${this.t('monthUnit')}`);
+        if (this.localLead.name) parts.push(`${this.t('nameLabel')}: ${this.localLead.name}`);
+        if (this.localLead.email) parts.push(`${this.t('emailLabel')}: ${this.localLead.email}`);
+        if (this.localLead.phone) parts.push(`${this.t('phoneLabel')}: ${this.localLead.phone}`);
+        if (this.localLead.lineId) parts.push(`${this.t('lineIdLabel')}: ${this.localLead.lineId}`);
+        return parts.join('\n');
     }
 
     getNoImageFallbackDataUri() {
@@ -801,22 +1046,76 @@ class GoldSavingCalculator2 {
                                 `).join('')}
                             </div>
 
-                            <div class="custom-input-wrapper">
-                                <label>${this.t('customMonths')}:</label>
-                                <input type="number"
-                                       id="customMonths2"
-                                       class="custom-input"
-                                       min="1"
-                                       max="${this.maxMonths}"
-                                       value="${this.months}">
-                                <span>${this.t('monthUnit')}</span>
-                                <span class="max-hint">(สูงสุด ${this.maxMonths})</span>
-                            </div>
-                        </div>
-                    </div>
+	                            <div class="custom-input-wrapper">
+	                                <label>${this.t('customMonths')}:</label>
+	                                <input type="number"
+	                                       id="customMonths2"
+	                                       class="custom-input"
+	                                       min="1"
+	                                       max="${this.maxMonths}"
+	                                       value="${this.months}">
+	                                <span>${this.t('monthUnit')}</span>
+	                                <span class="max-hint">(สูงสุด ${this.maxMonths})</span>
+	                            </div>
+	                        </div>
 
-                    <!-- Right Panel - Results -->
-                    <div class="calculator2-right">
+	                        <!-- Optional Contact Info (stored locally) -->
+	                        <div class="liquid-glass-card lg-lead-card" style="margin-top: 1.5rem;">
+	                            <details id="leadDetails2" class="lead-details" ${this.localUi.contactOpen ? 'open' : ''}>
+	                                <summary class="lead-summary">
+	                                    <div class="lead-summary-left">
+	                                        <i class="fas fa-address-card"></i>
+	                                        <div class="lead-summary-text">
+	                                            <div class="lead-summary-title">${this.t('contactTitle')}</div>
+	                                            <div class="lead-summary-subtitle">${this.t('contactSubtitle')}</div>
+	                                        </div>
+	                                    </div>
+	                                    <i class="fas fa-chevron-right lead-chevron" aria-hidden="true"></i>
+	                                </summary>
+
+	                                <div class="lead-content">
+	                                    <div class="lead-privacy">
+	                                        <i class="fas fa-lock"></i>
+	                                        <span>${this.t('localOnly')}</span>
+	                                    </div>
+
+	                                    <div class="lead-plan-pill">
+	                                        <i class="fas fa-coins"></i>
+	                                        <span id="leadPlanSummary2">${this.t('planSummary')}: <strong>${this.formatNumber(this.monthlyAmount)}</strong> ${this.t('baht')}, <strong>${this.months}</strong> ${this.t('monthUnit')}</span>
+	                                    </div>
+
+	                                    <div class="lead-grid">
+	                                        <div class="lead-field">
+	                                            <label for="leadName2">${this.t('nameLabel')} <span class="lead-optional">(${this.t('optionalLabel')})</span></label>
+	                                            <input id="leadName2" class="lead-input" type="text" autocomplete="name" inputmode="text" value="${this.escapeHtml(this.localLead.name)}" />
+	                                        </div>
+	                                        <div class="lead-field">
+	                                            <label for="leadEmail2">${this.t('emailLabel')} <span class="lead-optional">(${this.t('optionalLabel')})</span></label>
+	                                            <input id="leadEmail2" class="lead-input" type="email" autocomplete="email" inputmode="email" value="${this.escapeHtml(this.localLead.email)}" />
+	                                        </div>
+	                                        <div class="lead-field">
+	                                            <label for="leadPhone2">${this.t('phoneLabel')} <span class="lead-optional">(${this.t('optionalLabel')})</span></label>
+	                                            <input id="leadPhone2" class="lead-input" type="tel" autocomplete="tel" inputmode="tel" value="${this.escapeHtml(this.localLead.phone)}" />
+	                                        </div>
+	                                        <div class="lead-field">
+	                                            <label for="leadLineId2">${this.t('lineIdLabel')} <span class="lead-optional">(${this.t('optionalLabel')})</span></label>
+	                                            <input id="leadLineId2" class="lead-input" type="text" autocomplete="off" inputmode="text" value="${this.escapeHtml(this.localLead.lineId)}" />
+	                                        </div>
+	                                    </div>
+
+	                                    <div class="lead-actions">
+	                                        <button type="button" class="lead-btn" id="leadSave2">${this.t('savePlan')}</button>
+	                                        <button type="button" class="lead-btn secondary" id="leadCopy2">${this.t('copySummary')}</button>
+	                                        <button type="button" class="lead-btn secondary" id="leadClear2">${this.t('clearLocal')}</button>
+	                                        <span class="lead-status" id="leadStatus2" aria-live="polite"></span>
+	                                    </div>
+	                                </div>
+	                            </details>
+	                        </div>
+	                    </div>
+
+	                    <!-- Right Panel - Results -->
+	                    <div class="calculator2-right">
                         <!-- Total Card - Liquid Glass -->
                         <div class="liquid-glass-card lg-total-card">
                             <div class="total-label">${this.t('totalSaving')}</div>
@@ -948,6 +1247,87 @@ class GoldSavingCalculator2 {
                 customInput.blur();
             }
         });
+
+        // Optional contact info (stored locally)
+        const leadDetails = document.getElementById('leadDetails2');
+        if (leadDetails) {
+            leadDetails.addEventListener('toggle', () => {
+                this.localUi.contactOpen = Boolean(leadDetails.open);
+                this.queuePersistLocalState();
+            });
+        }
+
+        const nameEl = document.getElementById('leadName2');
+        const emailEl = document.getElementById('leadEmail2');
+        const phoneEl = document.getElementById('leadPhone2');
+        const lineIdEl = document.getElementById('leadLineId2');
+
+        const syncLead = () => {
+            if (nameEl) this.localLead.name = nameEl.value.trim();
+            if (emailEl) this.localLead.email = emailEl.value.trim();
+            if (phoneEl) this.localLead.phone = phoneEl.value.trim();
+            if (lineIdEl) this.localLead.lineId = lineIdEl.value.trim();
+            this.queuePersistLocalState();
+            this.updateSaveButtonState();
+        };
+
+        [nameEl, emailEl, phoneEl, lineIdEl].filter(Boolean).forEach((input) => {
+            input.addEventListener('input', () => syncLead());
+            // Save silently on blur; show status only when user clicks "บันทึก"
+            input.addEventListener('blur', () => syncLead());
+        });
+
+        const clearBtn = document.getElementById('leadClear2');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                if (nameEl) nameEl.value = '';
+                if (emailEl) emailEl.value = '';
+                if (phoneEl) phoneEl.value = '';
+                if (lineIdEl) lineIdEl.value = '';
+                this.clearLocalLead();
+                syncLead();
+                this.setLeadStatus('cleared', 'info');
+                if (leadDetails) leadDetails.open = false;
+                this.updateSaveButtonState();
+            });
+        }
+
+        const saveBtn = document.getElementById('leadSave2');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', () => {
+                if (this._saveInProgress) return;
+                syncLead();
+
+                const currentHash = this.getLeadPayloadHash();
+                if (currentHash && currentHash === this.localMeta.lastSavedHash) {
+                    this.setLeadStatus('noChanges', 'info');
+                    this.updateSaveButtonState();
+                    return;
+                }
+
+                this._saveInProgress = true;
+                this.updateSaveButtonState();
+
+                // Local-only "save" (for future: replace with API call, and keep hash to dedupe requests)
+                this.localMeta.lastSavedHash = currentHash;
+                this.localMeta.lastSavedAt = new Date().toISOString();
+                this.queuePersistLocalState();
+                this.setLeadStatus('saved', 'success');
+
+                this._saveInProgress = false;
+                this.updateSaveButtonState();
+            });
+        }
+
+        const copyBtn = document.getElementById('leadCopy2');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', async () => {
+                const ok = await this.copyToClipboard(this.getLeadSummaryText());
+                if (ok) this.setLeadStatus('copied', 'info');
+            });
+        }
+
+        this.updateSaveButtonState();
     }
 
     updateQuickButtons() {
@@ -964,6 +1344,16 @@ class GoldSavingCalculator2 {
         document.getElementById('totalAmount2').textContent = this.formatNumber(total);
         document.getElementById('formula2').textContent =
             `${this.formatNumber(this.monthlyAmount)} x ${this.months} ${this.t('monthUnit')}`;
+
+        // Keep local "plan pill" in sync
+        const leadPlanEl = document.getElementById('leadPlanSummary2');
+        if (leadPlanEl) {
+            leadPlanEl.innerHTML = `${this.t('planSummary')}: <strong>${this.formatNumber(this.monthlyAmount)}</strong> ${this.t('baht')}, <strong>${this.months}</strong> ${this.t('monthUnit')}`;
+        }
+
+        // Persist latest plan locally
+        this.queuePersistLocalState();
+        this.updateSaveButtonState();
 
         const fallbackPrice = this.weightedAvgPrice > 0 ? this.weightedAvgPrice : this.currentGoldPrice;
         const dcaResult = this.calculateDcaGold(

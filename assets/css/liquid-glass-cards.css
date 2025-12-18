@@ -627,6 +627,232 @@
 }
 
 /* ============================================
+   Optional Contact Info (Local Only)
+   ============================================ */
+.lg-lead-card {
+    padding: 0;
+}
+
+.lead-details {
+    padding: 0;
+}
+
+.lead-details>summary {
+    list-style: none;
+}
+
+.lead-details>summary::-webkit-details-marker {
+    display: none;
+}
+
+.lead-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.lead-summary-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.lead-summary-left>i {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg,
+            rgba(212, 175, 55, 0.95),
+            rgba(184, 134, 11, 0.9));
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(184, 134, 11, 0.25);
+    flex-shrink: 0;
+}
+
+.lead-summary-text {
+    min-width: 0;
+}
+
+.lead-summary-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    line-height: 1.25;
+}
+
+.lead-summary-subtitle {
+    font-size: 1.05rem;
+    color: #666;
+    margin-top: 0.15rem;
+    line-height: 1.25;
+}
+
+.lead-chevron {
+    color: #045b96;
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+}
+
+.lead-details[open] .lead-chevron {
+    transform: rotate(90deg);
+}
+
+.lead-content {
+    padding: 0 1.5rem 1.5rem;
+}
+
+.lead-privacy {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 14px;
+    background: linear-gradient(135deg,
+            rgba(4, 91, 150, 0.06),
+            rgba(0, 46, 101, 0.03));
+    border: 1px solid rgba(4, 91, 150, 0.12);
+    color: #445;
+    font-size: 1.05rem;
+    margin-bottom: 0.9rem;
+}
+
+.lead-privacy i {
+    color: #045b96;
+}
+
+.lead-plan-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    color: #333;
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+}
+
+.lead-plan-pill i {
+    color: #b8860b;
+}
+
+.lead-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+}
+
+.lead-field label {
+    display: block;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #444;
+    margin: 0 0 0.4rem;
+}
+
+.lead-optional {
+    font-weight: 500;
+    color: #888;
+    font-size: 0.95em;
+}
+
+.lead-input {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border-radius: 12px;
+    border: 1px solid rgba(4, 91, 150, 0.18);
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 1.05rem;
+    color: #1a1a2e;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lead-input:focus {
+    outline: none;
+    border-color: rgba(4, 91, 150, 0.5);
+    box-shadow: 0 0 0 3px rgba(4, 91, 150, 0.12);
+}
+
+.lead-actions {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.lead-btn {
+    border: 0;
+    border-radius: 12px;
+    padding: 0.7rem 0.9rem;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #fff;
+    background: linear-gradient(135deg, #045b96, #002e65);
+    box-shadow: 0 10px 26px rgba(4, 91, 150, 0.18);
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.lead-btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.03);
+}
+
+.lead-btn:disabled,
+.lead-btn.is-disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    filter: none;
+    box-shadow: none;
+}
+
+.lead-btn:disabled:hover,
+.lead-btn.is-disabled:hover {
+    transform: none;
+    filter: none;
+}
+
+.lead-btn.secondary {
+    background: rgba(255, 255, 255, 0.9);
+    color: #045b96;
+    border: 1px solid rgba(4, 91, 150, 0.25);
+    box-shadow: none;
+}
+
+.lead-status {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-left: auto;
+    opacity: 0;
+    transform: translateY(2px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.lead-status.success {
+    color: #15803d;
+}
+
+.lead-status.info {
+    color: #045b96;
+}
+
+.lead-status.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============================================
    Responsive Styles
    ============================================ */
 
@@ -753,6 +979,10 @@
 @media (max-width: 768px) {
     .liquid-glass-card {
         border-radius: 20px;
+    }
+
+    .lead-grid {
+        grid-template-columns: 1fr;
     }
 
     .lg-amount-card,
