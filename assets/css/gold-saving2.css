@@ -1580,20 +1580,37 @@ body.modal-open {
 
 .img-count-badge {
     position: absolute;
-    right: 10px;
-    bottom: 10px;
-    min-width: 26px;
-    height: 22px;
-    padding: 0 8px;
+    right: 8px;
+    bottom: 8px;
+    min-width: 34px;
+    height: 26px;
+    padding: 0 10px;
     border-radius: 999px;
-    background: rgba(0, 0, 0, 0.6);
+    background: linear-gradient(135deg, rgba(4, 91, 150, 0.92), rgba(0, 46, 101, 0.92));
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(6px);
     color: #fff;
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     font-weight: 700;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 6px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
     pointer-events: none;
+}
+
+.img-count-badge::before {
+    content: "";
+    width: 14px;
+    height: 10px;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.14);
+    box-shadow: -3px -3px 0 -1px rgba(255, 255, 255, 0.35);
+    flex: none;
 }
 
 /* Reset buttons used as image wrappers */
