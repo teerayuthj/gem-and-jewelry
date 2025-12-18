@@ -237,6 +237,55 @@
     margin-left: 0.5rem;
 }
 
+/* Daily Info - ข้อมูลการซื้อรายวัน */
+.daily-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin: 0.75rem 0;
+    background: linear-gradient(135deg, rgba(4, 91, 150, 0.08), rgba(0, 46, 101, 0.05));
+    border-radius: 12px;
+    border: 1px solid rgba(4, 91, 150, 0.15);
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.daily-info i {
+    color: #045b96;
+    font-size: 1rem;
+}
+
+.daily-info strong {
+    color: #045b96;
+    font-weight: 600;
+}
+
+/* Total Days Info - จำนวนวันทำการทั้งหมด */
+.total-days-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    margin-top: 0.75rem;
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.total-days-info i {
+    color: #d4a000;
+    font-size: 0.9rem;
+}
+
+.total-days-info strong {
+    color: #b8860b;
+    font-weight: 600;
+}
+
 /* Slider 2 */
 .slider-container2 {
     padding: 0 0.5rem;
@@ -728,9 +777,10 @@
     color: #045b96;
 }
 
-.products2-grid {
+.products2-grid,
+#productsGrid2 {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(4, 1fr) !important;
     gap: 1.5rem;
 }
 
@@ -1974,7 +2024,7 @@ body.modal-open {
     top: 50%;
     right: 10px;
     transform: translateY(-50%);
-    font-size: 0.7rem;
+    font-size: 1rem;
     font-weight: 700;
     color: #333;
 }

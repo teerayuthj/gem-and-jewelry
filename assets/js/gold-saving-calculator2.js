@@ -29,10 +29,13 @@ class GoldSavingCalculator2 {
         // ราคาทอง (จะดึงจาก API หรือใช้ค่าเริ่มต้น)
         this.currentGoldPrice = GoldProducts.baseGoldPrice;
 
-        // ราคาทองสิ้นเดือนย้อนหลัง
-        this.endOfMonthPrices = [];
+        // ราคาทองรายวัน (จันทร์-ศุกร์)
+        this.dailyPrices = [];
         this.weightedAvgPrice = 0;
         this.lastDcaAvgPrice = 0;
+
+        // จำนวนวันทำการต่อเดือน (จันทร์-ศุกร์)
+        this.workingDaysPerMonth = 20;
 
         // Max months limit (จะอัปเดตจาก API)
         // ข้อมูลราคาทองเริ่มตั้งแต่ 2018-01-31
@@ -62,7 +65,7 @@ class GoldSavingCalculator2 {
                 perBaht: 'บาท/บาททอง',
                 costByWeight: 'ต้นทุนตามน้ำหนัก',
                 benefit1: 'ทองคำรักษามูลค่าดีกว่าเงินสด',
-                benefit2: 'ออมทุกเดือน สร้างวินัยทางการเงิน',
+                benefit2: 'ออมทุกวัน สร้างวินัยทางการเงิน',
                 benefit3: 'เป็นเจ้าของทองคำแท่งได้ง่ายๆ',
                 almostThere: 'อีกนิดเดียว!',
                 savingTip: 'ลองเพิ่มจำนวนเงินหรือระยะเวลาออม',
@@ -75,9 +78,12 @@ class GoldSavingCalculator2 {
                 loss: 'ขาดทุน',
                 comparePrice: 'เทียบราคา',
                 howItWorks: 'วิธีการคำนวณ',
-                backtestInfo: 'ระบบนี้ใช้ราคาทองจริงย้อนหลังตามจำนวนเดือนที่คุณเลือก เพื่อจำลองว่าถ้าคุณออมทองกับเรามาก่อนหน้านี้ จะได้ผลลัพธ์และกำไรเท่าไร',
+                backtestInfo: 'ระบบนี้ซื้อทองทุกวันจันทร์-ศุกร์ โดยนำเงินออมต่อเดือนมาเฉลี่ยซื้อทุกวัน (~20 วันทำการ/เดือน) ใช้ราคาทองจริงย้อนหลังเพื่อจำลองผลลัพธ์',
                 futureNote: 'ผลตอบแทนในอนาคตขึ้นอยู่กับราคาทองคำตลาดโลก ซึ่งอาจเปลี่ยนแปลงได้',
-                disclaimer: 'ราคาทองอ้างอิงจากราคาตลาด อาจมีการเปลี่ยนแปลงได้ ผลการคำนวณเป็นเพียงการประมาณการและยังไม่รวมค่าจัดส่งการแบบมีประกันของทองคำแท่ง'
+                disclaimer: 'ราคาทองอ้างอิงจากราคาตลาด อาจมีการเปลี่ยนแปลงได้ ผลการคำนวณเป็นเพียงการประมาณการและยังไม่รวมค่าจัดส่งการแบบมีประกันของทองคำแท่ง',
+                dailyBuyInfo: 'ซื้อทุกวันจันทร์-ศุกร์',
+                perDay: 'บาท/วัน',
+                workingDays: 'วันทำการ'
             },
             en: {
                 title: 'How Much Gold Can You Get?',
@@ -98,7 +104,7 @@ class GoldSavingCalculator2 {
                 perBaht: 'THB/Baht Gold',
                 costByWeight: 'Cost for your weight',
                 benefit1: 'Gold preserves value better than cash',
-                benefit2: 'Monthly savings build financial discipline',
+                benefit2: 'Daily savings build financial discipline',
                 benefit3: 'Own gold bars easily',
                 almostThere: 'Almost there!',
                 savingTip: 'Try increasing amount or duration',
@@ -111,9 +117,12 @@ class GoldSavingCalculator2 {
                 loss: 'Loss',
                 comparePrice: 'Price Comparison',
                 howItWorks: 'How It Works',
-                backtestInfo: 'This calculator uses historical gold prices based on the months you selected to simulate what would have happened if you saved gold with us in the past.',
+                backtestInfo: 'This system buys gold every Mon-Fri by averaging your monthly savings (~20 working days/month) using historical prices to simulate results.',
                 futureNote: 'Future returns depend on global gold market prices, which may vary.',
-                disclaimer: 'Gold prices are based on market rates and may change. Calculations are estimates only and do not include insured shipping costs for gold bars.'
+                disclaimer: 'Gold prices are based on market rates and may change. Calculations are estimates only and do not include insured shipping costs for gold bars.',
+                dailyBuyInfo: 'Buy every Mon-Fri',
+                perDay: 'THB/day',
+                workingDays: 'working days'
             },
             cn: {
                 title: '每月存多少能买多少黄金?',
@@ -134,7 +143,7 @@ class GoldSavingCalculator2 {
                 perBaht: '泰铢/泰铢黄金',
                 costByWeight: '按重量成本',
                 benefit1: '黄金比现金更保值',
-                benefit2: '每月储蓄培养财务纪律',
+                benefit2: '每日储蓄培养财务纪律',
                 benefit3: '轻松拥有金条',
                 almostThere: '快要达到了!',
                 savingTip: '尝试增加金额或期限',
@@ -147,9 +156,12 @@ class GoldSavingCalculator2 {
                 loss: '亏损',
                 comparePrice: '价格对比',
                 howItWorks: '运作方式',
-                backtestInfo: '本系统使用您选择月份的真实历史金价，模拟如果您过去与我们储蓄黄金会获得的结果和利润。',
+                backtestInfo: '本系统每周一至周五购买黄金，将月储蓄平均到每天（约20个工作日/月），使用历史价格模拟结果。',
                 futureNote: '未来回报取决于全球黄金市场价格，可能会有变化。',
-                disclaimer: '金价基于市场行情，可能会有变化。计算结果仅供参考，不包括金条的保险运费。'
+                disclaimer: '金价基于市场行情，可能会有变化。计算结果仅供参考，不包括金条的保险运费。',
+                dailyBuyInfo: '每周一至周五购买',
+                perDay: '泰铢/天',
+                workingDays: '工作日'
             }
         };
 
@@ -439,12 +451,12 @@ class GoldSavingCalculator2 {
     }
 
     /**
-     * ดึงราคาทองสิ้นเดือนย้อนหลัง
-     * - หาวันที่ใกล้เคียงสิ้นเดือนมากที่สุดในแต่ละเดือน
-     * - ห้ามข้ามเดือน (ถ้าสิ้นเดือนเป็นเสาร์-อาทิตย์ ให้ย้อนหลังในเดือนเดียวกัน)
-     * - เอาเฉพาะเดือนที่ผ่านไปแล้ว (ไม่เอาเดือนปัจจุบันที่ยังไม่จบ)
+     * ดึงราคาทองรายวัน (จันทร์-ศุกร์)
+     * - เก็บราคาทุกวันทำการ (ไม่รวมเสาร์-อาทิตย์)
+     * - เก็บข้อมูลวันทำการต่อเดือนจริง
+     * - ข้ามเดือนปัจจุบันที่ยังไม่จบ
      */
-    async fetchEndOfMonthPrices() {
+    async fetchDailyPrices() {
         try {
             const response = await fetch('http://27.254.3.14:8000/api/datagraph');
             const text = await response.text();
@@ -452,7 +464,7 @@ class GoldSavingCalculator2 {
 
             // Parse all data
             const allData = lines.map(line => {
-                const parts = line.split(',');
+                const parts = line.split(',').map(p => p.trim());
                 return {
                     date: parts[0],
                     time: parts[1],
@@ -468,143 +480,117 @@ class GoldSavingCalculator2 {
             const currentYear = today.getFullYear();
             const currentMonth = today.getMonth() + 1; // 1-12
 
-            // Group data by month
-            const monthlyData = {};
+            // กรองเฉพาะวันจันทร์-ศุกร์ (day 1-5) และไม่เกินวันปัจจุบัน
+            // หมายเหตุ: API อาจส่งหลาย record ต่อวัน (หลายเวลา) → เลือก "ราคาล่าสุดของวันนั้น" เพื่อให้เป็นการซื้อวันละ 1 ครั้ง
+            const latestByDate = new Map(); // key = YYYY-MM-DD
+            const toSeconds = (timeStr) => {
+                const [h, m, s] = String(timeStr || '').split(':').map(v => parseInt(v, 10));
+                return (Number.isFinite(h) ? h : 0) * 3600 + (Number.isFinite(m) ? m : 0) * 60 + (Number.isFinite(s) ? s : 0);
+            };
 
             allData.forEach(item => {
                 const date = new Date(item.date);
+                const dayOfWeek = date.getDay(); // 0=อาทิตย์, 1-5=จันทร์-ศุกร์, 6=เสาร์
                 const year = date.getFullYear();
-                const month = date.getMonth() + 1; // 1-12
+                const month = date.getMonth() + 1;
                 const monthKey = `${year}-${String(month).padStart(2, '0')}`;
 
-                if (!monthlyData[monthKey]) {
-                    monthlyData[monthKey] = [];
+                // ข้ามเสาร์-อาทิตย์
+                if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    return;
                 }
-                monthlyData[monthKey].push(item);
-            });
-
-            // หาวันที่ใกล้เคียงสิ้นเดือนที่สุดในแต่ละเดือน (ห้ามข้ามเดือน)
-            const monthlyPrices = {};
-
-            Object.keys(monthlyData).forEach(monthKey => {
-                const [yearStr, monthStr] = monthKey.split('-');
-                const year = parseInt(yearStr);
-                const month = parseInt(monthStr);
 
                 // ข้ามเดือนปัจจุบันที่ยังไม่จบ
                 if (year === currentYear && month === currentMonth) {
-                    if (this.debugMode) {
-                        console.log(`⏭️ ข้าม ${monthKey}: เดือนปัจจุบันยังไม่จบ`);
-                    }
                     return;
                 }
 
                 // ข้ามเดือนในอนาคต
                 if (year > currentYear || (year === currentYear && month > currentMonth)) {
-                    if (this.debugMode) {
-                        console.log(`⏭️ ข้าม ${monthKey}: เดือนในอนาคต`);
-                    }
                     return;
                 }
 
-                const monthItems = monthlyData[monthKey];
+                // ตรวจสอบว่าราคาถูกต้อง
+                if (!Number.isFinite(item.sellBar) || item.sellBar <= 0) {
+                    return;
+                }
 
-                // เรียงตามวันที่จากมากไปน้อย (วันที่มากสุดก่อน)
-                monthItems.sort((a, b) => new Date(b.date) - new Date(a.date));
+                const candidate = {
+                    ...item,
+                    monthKey
+                };
 
-                // เอาวันแรก (วันที่มากที่สุด = ใกล้สิ้นเดือนที่สุด)
-                monthlyPrices[monthKey] = monthItems[0];
+                const existing = latestByDate.get(candidate.date);
+                if (!existing || toSeconds(candidate.time) >= toSeconds(existing.time)) {
+                    latestByDate.set(candidate.date, candidate);
+                }
             });
 
-            // แปลงเป็น array และเรียงจากเก่าไปใหม่
-            this.endOfMonthPrices = Object.values(monthlyPrices)
-                .sort((a, b) => new Date(a.date) - new Date(b.date));
+            const weekdayPrices = Array.from(latestByDate.values());
+            const monthlyWorkingDays = {}; // เก็บจำนวนวันทำการในแต่ละเดือน
+            weekdayPrices.forEach(p => {
+                monthlyWorkingDays[p.monthKey] = (monthlyWorkingDays[p.monthKey] || 0) + 1;
+            });
 
-            // Debug: console.log ราคาทุกสิ้นเดือน
+            // เรียงจากเก่าไปใหม่
+            weekdayPrices.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            this.dailyPrices = weekdayPrices;
+            this.monthlyWorkingDays = monthlyWorkingDays;
+
+            // หาจำนวนเดือนที่มีข้อมูล
+            const uniqueMonths = [...new Set(weekdayPrices.map(p => p.monthKey))];
+            this.maxMonths = uniqueMonths.length;
+
+            // Debug
             if (this.debugMode) {
-                console.log('=== ราคาทองสิ้นเดือน (ใกล้เคียงที่สุด) - ทั้งหมด ===');
-                this.endOfMonthPrices.forEach(item => {
-                    const date = new Date(item.date);
-                    const dayOfWeek = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'][date.getDay()];
-                    console.log(`${item.date} (${dayOfWeek}): ${this.formatNumber(item.sellBar)} บาท`);
+                console.log('=== ราคาทองรายวัน (จันทร์-ศุกร์) ===');
+                console.log(`📊 จำนวนวันทั้งหมด: ${this.dailyPrices.length} วัน`);
+                console.log(`📊 จำนวนเดือน: ${this.maxMonths} เดือน`);
+
+                // แสดงจำนวนวันทำการในแต่ละเดือน (6 เดือนล่าสุด)
+                const recentMonthKeys = uniqueMonths.slice(-6);
+                console.log('\n=== จำนวนวันทำการจริงในแต่ละเดือน (6 เดือนล่าสุด) ===');
+                recentMonthKeys.forEach(monthKey => {
+                    const workingDays = monthlyWorkingDays[monthKey];
+                    console.log(`${monthKey}: ${workingDays} วันทำการ`);
                 });
-                console.log('========================================================');
-
-                // แสดง 6 เดือนล่าสุดแบบละเอียด (ปี 2025)
-                console.log('\n=== ตรวจสอบ 6 เดือนล่าสุด (2025) - ละเอียด ===');
-                const recent6Months = this.endOfMonthPrices.slice(-6);
-
-                recent6Months.forEach((selectedItem, index) => {
-                    const date = new Date(selectedItem.date);
-                    const year = date.getFullYear();
-                    const month = date.getMonth() + 1;
-                    const day = date.getDate();
-                    const dayOfWeek = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'][date.getDay()];
-                    const monthName = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'][month - 1];
-
-                    // หาจำนวนวันในเดือนนั้น
-                    const daysInMonth = new Date(year, month, 0).getDate();
-
-                    console.log(`\n[${index + 1}] ${monthName} ${year}:`);
-                    console.log(`   ✓ วันที่เลือก: ${day} ${monthName} ${year} (${dayOfWeek})`);
-                    console.log(`   ✓ ราคา: ${this.formatNumber(selectedItem.sellBar)} บาท`);
-
-                    if (day === daysInMonth) {
-                        console.log(`   ✓ สถานะ: วันสุดท้ายของเดือน (${daysInMonth} วัน) ✅`);
-                    } else {
-                        console.log(`   ⚠ สถานะ: ไม่ใช่วันสุดท้าย (เดือนมี ${daysInMonth} วัน)`);
-                        console.log(`   → เหตุผล: วันที่ ${daysInMonth} ${monthName} อาจตกวันหยุด/สมาคมไม่ออกราคา`);
-                    }
-
-                    // แสดงข้อมูลในเดือนนั้นๆ จาก monthlyData
-                    const monthKey = `${year}-${String(month).padStart(2, '0')}`;
-                    if (monthlyData[monthKey]) {
-                        const monthDates = monthlyData[monthKey]
-                            .map(item => {
-                                const d = new Date(item.date);
-                                return d.getDate();
-                            })
-                            .sort((a, b) => b - a); // เรียงจากมากไปน้อย
-
-                        console.log(`   → วันที่มีข้อมูลใน API: ${monthDates.join(', ')}`);
-                    }
-                });
-                console.log('\n=====================================================');
-            }
-
-            // อัปเดต maxMonths จากข้อมูลจริงที่มี
-            this.maxMonths = this.endOfMonthPrices.length;
-            if (this.debugMode) {
-                console.log(`📊 อัปเดต maxMonths = ${this.maxMonths} เดือน (จากข้อมูล API)`);
+                console.log('==========================================');
             }
 
             // คำนวณราคาเฉลี่ยถ่วงน้ำหนัก
             this.calculateWeightedAverage();
 
         } catch (error) {
-            console.error('Error fetching end of month prices:', error);
-            this.endOfMonthPrices = [];
+            console.error('Error fetching daily prices:', error);
+            this.dailyPrices = [];
+            this.monthlyWorkingDays = {};
         }
     }
 
+    // Alias สำหรับ backward compatibility
+    async fetchEndOfMonthPrices() {
+        return this.fetchDailyPrices();
+    }
+
     /**
-     * คำนวณราคาเฉลี่ยถ่วงน้ำหนัก (ให้น้ำหนักมากกว่ากับเดือนล่าสุด)
+     * คำนวณราคาเฉลี่ยถ่วงน้ำหนัก (ใช้ราคารายวัน 60 วันล่าสุด)
      */
     calculateWeightedAverage() {
-        if (this.endOfMonthPrices.length === 0) {
+        if (this.dailyPrices.length === 0) {
             this.weightedAvgPrice = this.currentGoldPrice;
             return;
         }
 
-        // ใช้ราคา 12 เดือนล่าสุด
-        const recentPrices = this.endOfMonthPrices.slice(-12);
+        // ใช้ราคา 60 วันทำการล่าสุด (~3 เดือน)
+        const recentPrices = this.dailyPrices.slice(-60);
 
         let totalWeight = 0;
         let weightedSum = 0;
 
-        // ให้น้ำหนักมากขึ้นกับเดือนล่าสุด (เดือนล่าสุด = weight 12, เดือนก่อนหน้า = 11, ...)
+        // ให้น้ำหนักมากขึ้นกับวันล่าสุด
         recentPrices.forEach((item, index) => {
-            const weight = index + 1; // 1 ถึง 12
+            const weight = index + 1;
             weightedSum += item.sellBar * weight;
             totalWeight += weight;
         });
@@ -613,43 +599,134 @@ class GoldSavingCalculator2 {
 
         if (this.debugMode) {
             console.log('=== คำนวณราคาเฉลี่ยถ่วงน้ำหนัก ===');
-            console.log(`จำนวนเดือนที่ใช้คำนวณ: ${recentPrices.length}`);
+            console.log(`จำนวนวันที่ใช้คำนวณ: ${recentPrices.length}`);
             console.log(`ราคาเฉลี่ยถ่วงน้ำหนัก: ${this.formatNumber(this.weightedAvgPrice)} บาท`);
             console.log('==================================');
         }
     }
 
-    getPurchasePricesForMonths(monthCount, fallbackPrice) {
+    /**
+     * ดึงราคารายวันสำหรับจำนวนเดือนที่เลือก
+     * คืน array ของราคารายวันพร้อมข้อมูลเดือน
+     */
+    getDailyPricesForMonths(monthCount, fallbackPrice) {
         const safeCount = Math.max(1, Math.floor(Number(monthCount) || 1));
         const safeFallback =
             Number.isFinite(fallbackPrice) && fallbackPrice > 0 ? fallbackPrice : this.currentGoldPrice;
 
-        const fromHistory = this.endOfMonthPrices
-            .slice(-safeCount)
-            .map(item => Number(item.sellBar))
-            .filter(price => Number.isFinite(price) && price > 0);
-
-        const missingCount = safeCount - fromHistory.length;
-        return missingCount > 0 ? Array(missingCount).fill(safeFallback).concat(fromHistory) : fromHistory;
-    }
-
-    calculateDcaGold(monthlyAmount, months, fallbackPrice) {
-        const prices = this.getPurchasePricesForMonths(months, fallbackPrice);
-        const safeMonthlyAmount = Math.max(0, Number(monthlyAmount) || 0);
-
-        let totalGoldBaht = 0;
-        for (const price of prices) {
-            const safePrice = Number.isFinite(price) && price > 0 ? price : fallbackPrice;
-            if (Number.isFinite(safePrice) && safePrice > 0) {
-                totalGoldBaht += safeMonthlyAmount / safePrice;
-            }
+        if (this.dailyPrices.length === 0) {
+            // ถ้าไม่มีข้อมูล สร้าง fallback array
+            return {
+                prices: Array(safeCount * 20).fill({ sellBar: safeFallback, monthKey: 'fallback' }),
+                monthsData: {}
+            };
         }
 
-        const totalSpent = safeMonthlyAmount * prices.length;
-        const avgCostPrice =
-            totalGoldBaht > 0 ? totalSpent / totalGoldBaht : (Number(fallbackPrice) || this.currentGoldPrice);
+        // หา unique months จากข้อมูล
+        const uniqueMonths = [...new Set(this.dailyPrices.map(p => p.monthKey))];
 
-        return { totalGoldBaht, avgCostPrice, pricesUsed: prices };
+        // เลือกเดือนที่ต้องการ (N เดือนล่าสุด)
+        const selectedMonthKeys = uniqueMonths.slice(-safeCount);
+
+        // กรองราคาเฉพาะเดือนที่เลือก
+        const selectedPrices = this.dailyPrices.filter(p => selectedMonthKeys.includes(p.monthKey));
+
+        // สร้างข้อมูลเดือน
+        const monthsData = {};
+        selectedMonthKeys.forEach(monthKey => {
+            const monthPrices = selectedPrices.filter(p => p.monthKey === monthKey);
+            monthsData[monthKey] = {
+                workingDays: monthPrices.length,
+                prices: monthPrices
+            };
+        });
+
+        return {
+            prices: selectedPrices,
+            monthsData,
+            selectedMonthKeys
+        };
+    }
+
+    // Backward compatibility
+    getPurchasePricesForMonths(monthCount, fallbackPrice) {
+        const { prices } = this.getDailyPricesForMonths(monthCount, fallbackPrice);
+        return prices.map(p => p.sellBar);
+    }
+
+    /**
+     * คำนวณ DCA แบบรายวัน (จันทร์-ศุกร์)
+     * - แบ่งเงินรายเดือนเป็นรายวันตามจำนวนวันทำการจริงในแต่ละเดือน
+     * - เช่น มกราคม มี 22 วันทำการ → เงินต่อวัน = monthlyAmount / 22
+     * - Loop ซื้อทองทุกวันทำการตามราคาวันนั้น
+     */
+    calculateDcaGold(monthlyAmount, months, fallbackPrice) {
+        const safeMonthlyAmount = Math.max(0, Number(monthlyAmount) || 0);
+        const safeFallback = Number.isFinite(fallbackPrice) && fallbackPrice > 0 ? fallbackPrice : this.currentGoldPrice;
+
+        const { monthsData, selectedMonthKeys, prices } = this.getDailyPricesForMonths(months, fallbackPrice);
+
+        let totalGoldBaht = 0;
+        let totalSpent = 0;
+        let totalWorkingDays = 0;
+
+        // Debug info
+        const debugInfo = [];
+
+        // คำนวณแต่ละเดือน
+        if (selectedMonthKeys && selectedMonthKeys.length > 0) {
+            selectedMonthKeys.forEach(monthKey => {
+                const monthData = monthsData[monthKey];
+                if (!monthData || monthData.workingDays === 0) return;
+
+                // เงินต่อวันในเดือนนี้ = เงินต่อเดือน / จำนวนวันทำการจริง
+                const dailyAmount = safeMonthlyAmount / monthData.workingDays;
+                let monthGold = 0;
+
+                // ซื้อทองทุกวันในเดือนนี้
+                monthData.prices.forEach(priceData => {
+                    const price = Number.isFinite(priceData.sellBar) && priceData.sellBar > 0
+                        ? priceData.sellBar
+                        : safeFallback;
+
+                    const goldBought = dailyAmount / price;
+                    totalGoldBaht += goldBought;
+                    monthGold += goldBought;
+                });
+
+                totalSpent += safeMonthlyAmount;
+                totalWorkingDays += monthData.workingDays;
+
+                debugInfo.push({
+                    month: monthKey,
+                    workingDays: monthData.workingDays,
+                    dailyAmount: Math.round(dailyAmount),
+                    goldBought: monthGold.toFixed(6)
+                });
+            });
+        } else {
+            // Fallback ถ้าไม่มีข้อมูล
+            const estimatedDays = months * 20;
+            const dailyAmount = safeMonthlyAmount / 20;
+
+            for (let i = 0; i < estimatedDays; i++) {
+                totalGoldBaht += dailyAmount / safeFallback;
+            }
+
+            totalSpent = safeMonthlyAmount * months;
+            totalWorkingDays = estimatedDays;
+        }
+
+        const avgCostPrice = totalGoldBaht > 0 ? totalSpent / totalGoldBaht : safeFallback;
+
+        return {
+            totalGoldBaht,
+            avgCostPrice,
+            totalSpent,
+            totalWorkingDays,
+            pricesUsed: prices,
+            debugInfo
+        };
     }
 
     render() {
@@ -678,6 +755,11 @@ class GoldSavingCalculator2 {
                             <div class="amount-display">
                                 <span class="amount-value" id="amountDisplay2">${this.formatNumber(this.monthlyAmount)}</span>
                                 <span class="amount-unit">${this.t('baht')}</span>
+                            </div>
+
+                            <div class="daily-info" id="dailyInfo2">
+                                <i class="fas fa-calendar-check"></i>
+                                <span>${this.t('dailyBuyInfo')}: ~<strong id="dailyAmount2">${this.formatNumber(Math.round(this.monthlyAmount / 20))}</strong> ${this.t('perDay')}</span>
                             </div>
 
                             <div class="slider-wrapper">
@@ -744,6 +826,10 @@ class GoldSavingCalculator2 {
                             </div>
                             <div class="total-formula">
                                 <span id="formula2">${this.formatNumber(this.monthlyAmount)} x ${this.months} ${this.t('monthUnit')}</span>
+                            </div>
+                            <div class="total-days-info" id="totalDaysInfo2">
+                                <i class="fas fa-calendar-day"></i>
+                                <span>ซื้อทั้งหมด <strong id="totalDays2">0</strong> วัน (จันทร์-ศุกร์)</span>
                             </div>
                         </div>
 
@@ -880,35 +966,46 @@ class GoldSavingCalculator2 {
             `${this.formatNumber(this.monthlyAmount)} x ${this.months} ${this.t('monthUnit')}`;
 
         const fallbackPrice = this.weightedAvgPrice > 0 ? this.weightedAvgPrice : this.currentGoldPrice;
-        const { totalGoldBaht, avgCostPrice } = this.calculateDcaGold(
+        const dcaResult = this.calculateDcaGold(
             this.monthlyAmount,
             this.months,
             fallbackPrice
         );
+
+        const { totalGoldBaht, avgCostPrice, totalWorkingDays, debugInfo } = dcaResult;
         this.lastDcaAvgPrice = avgCostPrice;
 
-        // Debug: แสดงราคาทองสิ้นเดือนจาก API ที่ใช้คำนวณ
+        // อัปเดตเงินซื้อต่อวันโดยประมาณ (ใช้ค่าเฉลี่ย ~20 วัน/เดือน สำหรับ UI)
+        const avgDailyAmount = Math.round(this.monthlyAmount / 20);
+        const dailyAmountEl = document.getElementById('dailyAmount2');
+        if (dailyAmountEl) {
+            dailyAmountEl.textContent = this.formatNumber(avgDailyAmount);
+        }
+
+        // อัปเดตจำนวนวันทำการทั้งหมด
+        const totalDaysEl = document.getElementById('totalDays2');
+        if (totalDaysEl) {
+            totalDaysEl.textContent = this.formatNumber(totalWorkingDays);
+        }
+
+        // Debug: แสดงข้อมูลการซื้อรายวัน
         if (this.debugMode) {
-            console.log('=== ราคาทองสิ้นเดือนจาก API ที่ใช้คำนวณ DCA ===');
-            console.log(`ต้องการออม: ${this.months} เดือน`);
+            console.log('=== 📊 การซื้อทองรายวัน (จันทร์-ศุกร์) ===');
+            console.log(`ออมเดือนละ: ${this.formatNumber(this.monthlyAmount)} บาท`);
+            console.log(`ระยะเวลา: ${this.months} เดือน`);
+            console.log(`จำนวนวันทำการทั้งหมด: ${totalWorkingDays} วัน`);
+            console.log('');
+            console.log('📅 รายละเอียดแต่ละเดือน:');
 
-            // ดึงราคาจำนวนเดือนที่ต้องการ
-            const selectedPrices = this.endOfMonthPrices.slice(-this.months);
-            console.log(`ราคาจาก API ที่ใช้ (${selectedPrices.length} เดือน):`);
-
-            selectedPrices.forEach((item, index) => {
-                console.log(`  [${index + 1}] วันที่: ${item.date} - ราคาขายแท่ง: ${this.formatNumber(item.sellBar)} บาท`);
-            });
-
-            // ถ้าไม่พอ แสดง fallback
-            if (selectedPrices.length < this.months) {
-                const missingMonths = this.months - selectedPrices.length;
-                console.log(`❗ ข้อมูลใน API ไม่พอ! ขาด ${missingMonths} เดือน`);
-                console.log(`ใช้ราคา fallback: ${this.formatNumber(fallbackPrice)} บาท สำหรับเดือนที่ขาด`);
+            if (debugInfo && debugInfo.length > 0) {
+                debugInfo.forEach((info, index) => {
+                    console.log(`  [${index + 1}] ${info.month}: ${info.workingDays} วันทำการ, ซื้อวันละ ${this.formatNumber(info.dailyAmount)} บาท → ได้ทอง ${info.goldBought} บาททอง`);
+                });
             }
 
-            console.log(`ราคาเฉลี่ยที่คำนวณได้: ${this.formatNumber(Math.round(avgCostPrice))} บาท/บาททอง`);
-            console.log('============================================');
+            console.log('');
+            console.log(`✅ ต้นทุนเฉลี่ย (DCA): ${this.formatNumber(Math.round(avgCostPrice))} บาท/บาททอง`);
+            console.log('==========================================');
         }
 
         // Update gold weight
@@ -953,13 +1050,10 @@ class GoldSavingCalculator2 {
         const estimatePrice = this.currentGoldPrice > 0 ? this.currentGoldPrice : fallbackPrice;
         this.renderProducts({ goldBaht: totalGoldBaht, estimatePrice });
 
-        // Debug log
+        // Debug summary
         if (this.debugMode) {
-            console.log(`--- คำนวณใหม่ ---`);
-            console.log(`ออมเดือนละ: ${this.formatNumber(this.monthlyAmount)} บาท`);
-            console.log(`ระยะเวลา: ${this.months} เดือน`);
+            console.log(`--- 📈 สรุปผลการออม ---`);
             console.log(`ยอดรวม: ${this.formatNumber(total)} บาท`);
-            console.log(`ต้นทุนเฉลี่ย (DCA): ${this.formatNumber(Math.round(avgCostPrice))} บาท/บาททอง`);
             console.log(`ทองสะสม: ${totalGoldBaht.toFixed(4)} บาททอง`);
             console.log(`มูลค่าปัจจุบัน: ${this.formatNumber(Math.round(currentGoldValue))} บาท`);
             console.log(`กำไร/ขาดทุน: ${this.formatNumber(Math.round(profitAmount))} บาท (${profitPercent.toFixed(2)}%)`);
