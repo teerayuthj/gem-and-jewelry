@@ -77,7 +77,7 @@ class GoldSavingCalculator2 {
                 howItWorks: 'วิธีการคำนวณ',
                 backtestInfo: 'ระบบนี้ใช้ราคาทองจริงย้อนหลังตามจำนวนเดือนที่คุณเลือก เพื่อจำลองว่าถ้าคุณออมทองกับเรามาก่อนหน้านี้ จะได้ผลลัพธ์และกำไรเท่าไร',
                 futureNote: 'ผลตอบแทนในอนาคตขึ้นอยู่กับราคาทองคำตลาดโลก ซึ่งอาจเปลี่ยนแปลงได้',
-                disclaimer: 'ราคาทองอ้างอิงจากราคาตลาด อาจมีการเปลี่ยนแปลงได้ ผลการคำนวณเป็นเพียงการประมาณการ'
+                disclaimer: 'ราคาทองอ้างอิงจากราคาตลาด อาจมีการเปลี่ยนแปลงได้ ผลการคำนวณเป็นเพียงการประมาณการและยังไม่รวมค่าจัดส่งการแบบมีประกันของทองคำแท่ง'
             },
             en: {
                 title: 'Save Gold, Build Future',
@@ -113,7 +113,7 @@ class GoldSavingCalculator2 {
                 howItWorks: 'How It Works',
                 backtestInfo: 'This calculator uses historical gold prices based on the months you selected to simulate what would have happened if you saved gold with us in the past.',
                 futureNote: 'Future returns depend on global gold market prices, which may vary.',
-                disclaimer: 'Gold prices are based on market rates and may change. Calculations are estimates only.'
+                disclaimer: 'Gold prices are based on market rates and may change. Calculations are estimates only and do not include insured shipping costs for gold bars.'
             },
             cn: {
                 title: '储蓄黄金，创造未来',
@@ -149,7 +149,7 @@ class GoldSavingCalculator2 {
                 howItWorks: '运作方式',
                 backtestInfo: '本系统使用您选择月份的真实历史金价，模拟如果您过去与我们储蓄黄金会获得的结果和利润。',
                 futureNote: '未来回报取决于全球黄金市场价格，可能会有变化。',
-                disclaimer: '金价基于市场行情，可能会有变化。计算结果仅供参考。'
+                disclaimer: '金价基于市场行情，可能会有变化。计算结果仅供参考，不包括金条的保险运费。'
             }
         };
 
@@ -727,8 +727,7 @@ class GoldSavingCalculator2 {
                             <div class="duration-options">
                                 ${this.presetMonths.map(m => `
                                     <div class="duration-chip ${m === this.months ? 'active' : ''}" data-months="${m}">
-                                        <div class="num">${m}</div>
-                                        <div class="label">${this.t('monthUnit')}</div>
+                                        <div class="chip-text">${m} ${this.t('monthUnit')}</div>
                                     </div>
                                 `).join('')}
                             </div>
@@ -1262,7 +1261,7 @@ class GoldSavingCalculator2 {
         // Price display
         let priceHtml = '';
         if (hasManyVariants && priceRange) {
-            priceHtml = `เริ่มต้น ${this.formatNumber(priceRange.min)}`;
+            priceHtml = `ราคา ${this.formatNumber(priceRange.min)}`;
         } else {
             priceHtml = `${this.formatNumber(product.price)}`;
         }
