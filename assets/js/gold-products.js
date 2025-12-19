@@ -396,6 +396,16 @@ const GoldProducts = {
     },
 
     /**
+     * ดึงรายการสินค้าปัจจุบัน (fallback หากยังไม่มีข้อมูล)
+     */
+    getProducts: function() {
+        if (this.products && this.products.length > 0) {
+            return this.products;
+        }
+        return this.fallbackProducts;
+    },
+
+    /**
      * คำนวณราคาสินค้าทั้งหมดและเรียงตามราคา
      */
     getProductsWithPrice: function(goldPrice) {

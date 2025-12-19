@@ -1,0 +1,1427 @@
+/**
+ * Gold Saving Calculator 3 Styles
+ * Theme: Goal-First Design with 3 UI Variants
+ * - Luxury: Premium dark gold theme
+ * - Minimal: Clean white space
+ * - Playful: Colorful & fun
+ */
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Prompt", sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    transition: background 0.5s ease;
+}
+
+/* Navigation */
+.nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-back {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+.nav-back:hover {
+    color: #333;
+}
+
+.nav-logo img {
+    height: 32px;
+}
+
+.lang-switcher {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.lang-btn3 {
+    padding: 0.4rem 0.75rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: white;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.lang-btn3:hover {
+    border-color: #045b96;
+    color: #045b96;
+}
+
+.lang-btn3.active {
+    background: linear-gradient(135deg, #045b96, #002e65);
+    border-color: transparent;
+    color: white;
+}
+
+/* Style Switcher */
+.style-switcher {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.style-label {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.style-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    background: white;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.style-btn:hover {
+    border-color: #045b96;
+    color: #045b96;
+}
+
+.style-btn.active {
+    border-color: #045b96;
+    background: #045b96;
+    color: white;
+}
+
+/* Main Section */
+.main-section {
+    min-height: calc(100vh - 150px);
+    padding: 2rem 1rem;
+}
+
+/* Loading */
+.loading-container {
+    text-align: center;
+    padding: 4rem;
+}
+
+.loading-container i {
+    font-size: 3rem;
+    color: #045b96;
+    margin-bottom: 1rem;
+}
+
+.loading-container p {
+    color: #666;
+    font-size: 1rem;
+}
+
+/* Compare Link */
+.compare-link {
+    text-align: center;
+    padding: 1.5rem;
+    background: #f8f9fa;
+}
+
+.compare-link a {
+    color: #045b96;
+    text-decoration: underline;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+.compare-link a:hover {
+    color: #002e65;
+}
+
+/* ========================================
+   WRAPPER
+   ======================================== */
+
+.gold-saving3-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+/* ========================================
+   HEADER
+   ======================================== */
+
+.saving3-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.saving3-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.saving3-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+/* ========================================
+   GOAL SELECTION - เลือกเป้าหมาย
+   ======================================== */
+
+.goal-section {
+    margin-bottom: 2rem;
+}
+
+.goal-section-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.goal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.goal-card {
+    position: relative;
+    padding: 1.5rem;
+    border-radius: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.goal-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.goal-card:hover {
+    transform: translateY(-8px);
+}
+
+.goal-card.selected {
+    transform: scale(1.02);
+}
+
+.goal-icon {
+    font-size: 3rem;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.goal-weight {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.goal-price {
+    font-size: 1.1rem;
+    opacity: 0.8;
+    margin-bottom: 0.75rem;
+}
+
+.goal-check {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s;
+}
+
+.goal-card.selected .goal-check {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ========================================
+   PLAN OPTIONS - ตัวเลือกแผนออม
+   ======================================== */
+
+.plan-section {
+    margin-bottom: 2rem;
+    opacity: 0.5;
+    pointer-events: none;
+    transition: all 0.4s;
+}
+
+.plan-section.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.plan-section-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.selected-goal-info {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.selected-goal-info .goal-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.selected-goal-info .goal-target {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+.plan-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.plan-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.plan-option:hover {
+    transform: translateX(5px);
+}
+
+.plan-option.selected {
+    transform: scale(1.02);
+}
+
+.plan-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.plan-radio {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.plan-radio::after {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform 0.3s;
+}
+
+.plan-option.selected .plan-radio::after {
+    transform: scale(1);
+}
+
+.plan-amount {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.plan-per-day {
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+.plan-right {
+    text-align: right;
+}
+
+.plan-duration {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.plan-label {
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+/* Custom Amount */
+.custom-amount-section {
+    margin-top: 1rem;
+    padding: 1.25rem;
+    border-radius: 16px;
+}
+
+.custom-amount-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+.custom-amount-input {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.custom-amount-input input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    border: 2px solid;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.custom-amount-input input:focus {
+    outline: none;
+}
+
+.custom-amount-result {
+    font-size: 1rem;
+    font-weight: 600;
+    min-width: 100px;
+    text-align: center;
+}
+
+/* ========================================
+   RESULT SECTION - ผลลัพธ์
+   ======================================== */
+
+.result-section {
+    margin-bottom: 2rem;
+    opacity: 0.5;
+    pointer-events: none;
+    transition: all 0.4s;
+}
+
+.result-section.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.result-card {
+    padding: 2rem;
+    border-radius: 24px;
+    text-align: center;
+}
+
+.result-title {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin-bottom: 0.5rem;
+}
+
+.result-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.result-item {
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+.result-item .label {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-bottom: 0.25rem;
+}
+
+.result-item .value {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.result-item .unit {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+/* CTA Button */
+.cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+}
+
+.cta-button i {
+    font-size: 1.2rem;
+}
+
+/* ========================================
+   PROFIT/LOSS PREVIEW
+   ======================================== */
+
+.profit-preview {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    border-radius: 16px;
+}
+
+.profit-preview-title {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profit-stats {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+}
+
+.profit-stat {
+    text-align: center;
+}
+
+.profit-stat .stat-label {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.profit-stat .stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.profit-stat .stat-value.positive {
+    color: #4caf50;
+}
+
+.profit-stat .stat-value.negative {
+    color: #f44336;
+}
+
+/* ========================================
+   BENEFITS
+   ======================================== */
+
+.benefits3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.benefit3 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    border-radius: 16px;
+    transition: all 0.3s;
+}
+
+.benefit3:hover {
+    transform: translateY(-5px);
+}
+
+.benefit3-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+}
+
+.benefit3 span {
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* ========================================
+   DISCLAIMER
+   ======================================== */
+
+.disclaimer3 {
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-top: 2rem;
+}
+
+.disclaimer3 i {
+    font-size: 1rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* ========================================
+   STYLE A: LUXURY (Dark Gold Theme)
+   ======================================== */
+
+body[data-ui-style="luxury"] {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #fff;
+}
+
+body[data-ui-style="luxury"] .nav-bar {
+    background: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+body[data-ui-style="luxury"] .nav-back,
+body[data-ui-style="luxury"] .lang-btn3 {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+body[data-ui-style="luxury"] .lang-btn3.active {
+    background: linear-gradient(135deg, #d4af37, #b8860b);
+}
+
+body[data-ui-style="luxury"] .style-switcher {
+    background: rgba(26, 26, 46, 0.8);
+    border-color: rgba(212, 175, 55, 0.2);
+}
+
+body[data-ui-style="luxury"] .style-label {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+body[data-ui-style="luxury"] .style-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(212, 175, 55, 0.3);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+body[data-ui-style="luxury"] .style-btn.active {
+    background: linear-gradient(135deg, #d4af37, #b8860b);
+    border-color: transparent;
+    color: #1a1a2e;
+}
+
+body[data-ui-style="luxury"] .saving3-title {
+    background: linear-gradient(135deg, #ffd700, #d4af37);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+body[data-ui-style="luxury"] .saving3-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+body[data-ui-style="luxury"] .goal-section-title,
+body[data-ui-style="luxury"] .plan-section-title {
+    color: #d4af37;
+}
+
+body[data-ui-style="luxury"] .goal-card {
+    background: linear-gradient(145deg, rgba(212, 175, 55, 0.1), rgba(184, 134, 11, 0.05));
+    border: 2px solid rgba(212, 175, 55, 0.2);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+body[data-ui-style="luxury"] .goal-card:hover {
+    border-color: rgba(212, 175, 55, 0.5);
+    box-shadow: 0 20px 60px rgba(212, 175, 55, 0.2);
+}
+
+body[data-ui-style="luxury"] .goal-card.selected {
+    background: linear-gradient(145deg, rgba(212, 175, 55, 0.25), rgba(184, 134, 11, 0.15));
+    border-color: #d4af37;
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+}
+
+body[data-ui-style="luxury"] .goal-check {
+    background: #d4af37;
+    color: #1a1a2e;
+}
+
+body[data-ui-style="luxury"] .selected-goal-info {
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+body[data-ui-style="luxury"] .plan-option {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body[data-ui-style="luxury"] .plan-option:hover {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+body[data-ui-style="luxury"] .plan-option.selected {
+    background: rgba(212, 175, 55, 0.15);
+    border-color: #d4af37;
+}
+
+body[data-ui-style="luxury"] .plan-radio {
+    border-color: rgba(212, 175, 55, 0.5);
+}
+
+body[data-ui-style="luxury"] .plan-option.selected .plan-radio {
+    border-color: #d4af37;
+}
+
+body[data-ui-style="luxury"] .plan-option.selected .plan-radio::after {
+    background: #d4af37;
+}
+
+body[data-ui-style="luxury"] .custom-amount-section {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(212, 175, 55, 0.3);
+}
+
+body[data-ui-style="luxury"] .custom-amount-input input {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(212, 175, 55, 0.3);
+    color: white;
+}
+
+body[data-ui-style="luxury"] .custom-amount-input input:focus {
+    border-color: #d4af37;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+body[data-ui-style="luxury"] .result-card {
+    background: linear-gradient(145deg, rgba(212, 175, 55, 0.15), rgba(184, 134, 11, 0.1));
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+body[data-ui-style="luxury"] .result-item {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+body[data-ui-style="luxury"] .cta-button {
+    background: linear-gradient(135deg, #d4af37, #b8860b);
+    color: #1a1a2e;
+    box-shadow: 0 10px 40px rgba(212, 175, 55, 0.4);
+}
+
+body[data-ui-style="luxury"] .cta-button:hover {
+    box-shadow: 0 15px 50px rgba(212, 175, 55, 0.6);
+}
+
+body[data-ui-style="luxury"] .profit-preview {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body[data-ui-style="luxury"] .benefit3 {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body[data-ui-style="luxury"] .benefit3-icon {
+    background: linear-gradient(135deg, #d4af37, #b8860b);
+    color: #1a1a2e;
+}
+
+body[data-ui-style="luxury"] .disclaimer3 {
+    background: rgba(255, 152, 0, 0.1);
+    border: 1px solid rgba(255, 152, 0, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+body[data-ui-style="luxury"] .disclaimer3 i {
+    color: #ff9800;
+}
+
+body[data-ui-style="luxury"] .compare-link {
+    background: rgba(26, 26, 46, 0.8);
+}
+
+body[data-ui-style="luxury"] .compare-link a {
+    color: #d4af37;
+}
+
+/* ========================================
+   STYLE B: MINIMAL (Clean White)
+   ======================================== */
+
+body[data-ui-style="minimal"] {
+    background: #ffffff;
+    color: #333;
+}
+
+body[data-ui-style="minimal"] .style-switcher {
+    background: #fafafa;
+}
+
+body[data-ui-style="minimal"] .saving3-title {
+    color: #1a1a1a;
+}
+
+body[data-ui-style="minimal"] .saving3-subtitle {
+    color: #666;
+}
+
+body[data-ui-style="minimal"] .goal-section-title,
+body[data-ui-style="minimal"] .plan-section-title {
+    color: #333;
+}
+
+body[data-ui-style="minimal"] .goal-card {
+    background: #fff;
+    border: 2px solid #e8e8e8;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+body[data-ui-style="minimal"] .goal-card:hover {
+    border-color: #333;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+body[data-ui-style="minimal"] .goal-card.selected {
+    border-color: #1a1a1a;
+    background: #fafafa;
+}
+
+body[data-ui-style="minimal"] .goal-icon {
+    filter: grayscale(100%);
+}
+
+body[data-ui-style="minimal"] .goal-card.selected .goal-icon {
+    filter: none;
+}
+
+body[data-ui-style="minimal"] .goal-check {
+    background: #1a1a1a;
+    color: white;
+}
+
+body[data-ui-style="minimal"] .selected-goal-info {
+    background: #f5f5f5;
+}
+
+body[data-ui-style="minimal"] .plan-option {
+    background: #fafafa;
+    border: 1px solid #e8e8e8;
+}
+
+body[data-ui-style="minimal"] .plan-option:hover {
+    border-color: #ccc;
+}
+
+body[data-ui-style="minimal"] .plan-option.selected {
+    background: #f0f0f0;
+    border-color: #1a1a1a;
+}
+
+body[data-ui-style="minimal"] .plan-radio {
+    border-color: #ccc;
+}
+
+body[data-ui-style="minimal"] .plan-option.selected .plan-radio {
+    border-color: #1a1a1a;
+}
+
+body[data-ui-style="minimal"] .plan-option.selected .plan-radio::after {
+    background: #1a1a1a;
+}
+
+body[data-ui-style="minimal"] .custom-amount-section {
+    background: #fafafa;
+    border: 1px dashed #ddd;
+}
+
+body[data-ui-style="minimal"] .custom-amount-input input {
+    background: white;
+    border-color: #ddd;
+    color: #333;
+}
+
+body[data-ui-style="minimal"] .custom-amount-input input:focus {
+    border-color: #1a1a1a;
+}
+
+body[data-ui-style="minimal"] .result-card {
+    background: #f5f5f5;
+    border: 1px solid #e8e8e8;
+}
+
+body[data-ui-style="minimal"] .result-item {
+    background: white;
+}
+
+body[data-ui-style="minimal"] .cta-button {
+    background: #1a1a1a;
+    color: white;
+}
+
+body[data-ui-style="minimal"] .cta-button:hover {
+    background: #333;
+}
+
+body[data-ui-style="minimal"] .profit-preview {
+    background: #fafafa;
+    border: 1px solid #e8e8e8;
+}
+
+body[data-ui-style="minimal"] .benefit3 {
+    background: #fafafa;
+}
+
+body[data-ui-style="minimal"] .benefit3-icon {
+    background: #1a1a1a;
+    color: white;
+}
+
+body[data-ui-style="minimal"] .disclaimer3 {
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    color: #5d4037;
+}
+
+body[data-ui-style="minimal"] .disclaimer3 i {
+    color: #ff8f00;
+}
+
+/* ========================================
+   STYLE C: PLAYFUL (Colorful & Fun)
+   ======================================== */
+
+body[data-ui-style="playful"] {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    color: #fff;
+}
+
+body[data-ui-style="playful"] .nav-bar {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+body[data-ui-style="playful"] .nav-back {
+    color: #764ba2;
+}
+
+body[data-ui-style="playful"] .lang-btn3.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+body[data-ui-style="playful"] .style-switcher {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+body[data-ui-style="playful"] .style-label {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+body[data-ui-style="playful"] .style-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+body[data-ui-style="playful"] .style-btn.active {
+    background: white;
+    color: #764ba2;
+}
+
+body[data-ui-style="playful"] .saving3-title {
+    color: white;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+}
+
+body[data-ui-style="playful"] .saving3-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+body[data-ui-style="playful"] .goal-section-title,
+body[data-ui-style="playful"] .plan-section-title {
+    color: white;
+}
+
+body[data-ui-style="playful"] .goal-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+body[data-ui-style="playful"] .goal-card:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-8px) rotate(-1deg);
+}
+
+body[data-ui-style="playful"] .goal-card.selected {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: white;
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+}
+
+body[data-ui-style="playful"] .goal-check {
+    background: #4caf50;
+    color: white;
+}
+
+body[data-ui-style="playful"] .selected-goal-info {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+body[data-ui-style="playful"] .plan-option {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+}
+
+body[data-ui-style="playful"] .plan-option:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+body[data-ui-style="playful"] .plan-option.selected {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: white;
+}
+
+body[data-ui-style="playful"] .plan-radio {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+body[data-ui-style="playful"] .plan-option.selected .plan-radio {
+    border-color: white;
+}
+
+body[data-ui-style="playful"] .plan-option.selected .plan-radio::after {
+    background: white;
+}
+
+body[data-ui-style="playful"] .custom-amount-section {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+}
+
+body[data-ui-style="playful"] .custom-amount-input input {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+body[data-ui-style="playful"] .custom-amount-input input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+body[data-ui-style="playful"] .custom-amount-input input:focus {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: white;
+}
+
+body[data-ui-style="playful"] .result-card {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+body[data-ui-style="playful"] .result-item {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+body[data-ui-style="playful"] .cta-button {
+    background: white;
+    color: #764ba2;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+body[data-ui-style="playful"] .cta-button:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+}
+
+body[data-ui-style="playful"] .profit-preview {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+body[data-ui-style="playful"] .benefit3 {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+body[data-ui-style="playful"] .benefit3:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+body[data-ui-style="playful"] .benefit3-icon {
+    background: white;
+    color: #764ba2;
+}
+
+body[data-ui-style="playful"] .disclaimer3 {
+    background: rgba(255, 193, 7, 0.2);
+    border: 1px solid rgba(255, 193, 7, 0.4);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+body[data-ui-style="playful"] .disclaimer3 i {
+    color: #ffc107;
+}
+
+body[data-ui-style="playful"] .compare-link {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+body[data-ui-style="playful"] .compare-link a {
+    color: white;
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
+}
+
+.goal-card {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+.goal-card:nth-child(1) { animation-delay: 0.1s; }
+.goal-card:nth-child(2) { animation-delay: 0.2s; }
+.goal-card:nth-child(3) { animation-delay: 0.3s; }
+.goal-card:nth-child(4) { animation-delay: 0.4s; }
+.goal-card:nth-child(5) { animation-delay: 0.5s; }
+
+.plan-option {
+    animation: fadeInUp 0.4s ease forwards;
+}
+
+.plan-option:nth-child(1) { animation-delay: 0.1s; }
+.plan-option:nth-child(2) { animation-delay: 0.15s; }
+.plan-option:nth-child(3) { animation-delay: 0.2s; }
+.plan-option:nth-child(4) { animation-delay: 0.25s; }
+
+.cta-button {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .nav-container {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .lang-switcher {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+
+    .style-switcher {
+        flex-wrap: wrap;
+        padding: 0.75rem;
+    }
+
+    .style-label {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .saving3-title {
+        font-size: 1.6rem;
+    }
+
+    .saving3-subtitle {
+        font-size: 1rem;
+    }
+
+    .goal-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .goal-card {
+        padding: 1.25rem 1rem;
+    }
+
+    .goal-icon {
+        font-size: 2.5rem;
+    }
+
+    .goal-weight {
+        font-size: 1.2rem;
+    }
+
+    .goal-price {
+        font-size: 0.95rem;
+    }
+
+    .plan-option {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+
+    .plan-left {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .result-summary {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .benefits3 {
+        grid-template-columns: 1fr;
+    }
+
+    .benefit3 {
+        flex-direction: row;
+        text-align: left;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .benefit3-icon {
+        margin-bottom: 0;
+    }
+
+    .profit-stats {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-section {
+        padding: 1rem 0.75rem;
+    }
+
+    .goal-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .goal-card {
+        padding: 1rem 0.75rem;
+    }
+
+    .goal-icon {
+        font-size: 2rem;
+    }
+
+    .goal-weight {
+        font-size: 1.1rem;
+    }
+
+    .goal-price {
+        font-size: 0.85rem;
+    }
+
+    .cta-button {
+        width: 100%;
+        padding: 1rem 1.5rem;
+    }
+}
+
+/* ========================================
+   CONTACT SECTION (บันทึกแผน)
+   ======================================== */
+
+.contact-section3 {
+    margin-top: 2rem;
+}
+
+.contact-toggle3 {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    border-radius: 16px;
+    border: 2px dashed;
+    background: transparent;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    transition: all 0.3s;
+}
+
+.contact-panel3 {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    border-radius: 20px;
+    display: none;
+}
+
+.contact-panel3.open {
+    display: block;
+    animation: fadeInUp 0.4s ease;
+}
+
+body[data-ui-style="luxury"] .contact-toggle3 {
+    border-color: rgba(212, 175, 55, 0.3);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+body[data-ui-style="luxury"] .contact-toggle3:hover {
+    border-color: #d4af37;
+    color: #d4af37;
+}
+
+body[data-ui-style="luxury"] .contact-panel3 {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+body[data-ui-style="minimal"] .contact-toggle3 {
+    border-color: #ddd;
+    color: #666;
+}
+
+body[data-ui-style="minimal"] .contact-toggle3:hover {
+    border-color: #1a1a1a;
+    color: #1a1a1a;
+}
+
+body[data-ui-style="minimal"] .contact-panel3 {
+    background: #fafafa;
+    border: 1px solid #e8e8e8;
+}
+
+body[data-ui-style="playful"] .contact-toggle3 {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+body[data-ui-style="playful"] .contact-toggle3:hover {
+    border-color: white;
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+body[data-ui-style="playful"] .contact-panel3 {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
