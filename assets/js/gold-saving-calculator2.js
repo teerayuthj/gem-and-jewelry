@@ -49,9 +49,32 @@ class GoldSavingCalculator2 {
         this.localLead = {
             name: '',
             email: '',
+            phoneCountry: '+66',
             phone: '',
             lineId: ''
         };
+
+        // Country codes for phone
+        this.countryCodes = [
+            { code: '+66', country: '🇹🇭 TH', name: 'Thailand' },
+            { code: '+1', country: '🇺🇸 US', name: 'United States' },
+            { code: '+44', country: '🇬🇧 UK', name: 'United Kingdom' },
+            { code: '+81', country: '🇯🇵 JP', name: 'Japan' },
+            { code: '+82', country: '🇰🇷 KR', name: 'South Korea' },
+            { code: '+86', country: '🇨🇳 CN', name: 'China' },
+            { code: '+852', country: '🇭🇰 HK', name: 'Hong Kong' },
+            { code: '+65', country: '🇸🇬 SG', name: 'Singapore' },
+            { code: '+60', country: '🇲🇾 MY', name: 'Malaysia' },
+            { code: '+84', country: '🇻🇳 VN', name: 'Vietnam' },
+            { code: '+62', country: '🇮🇩 ID', name: 'Indonesia' },
+            { code: '+63', country: '🇵🇭 PH', name: 'Philippines' },
+            { code: '+91', country: '🇮🇳 IN', name: 'India' },
+            { code: '+971', country: '🇦🇪 AE', name: 'UAE' },
+            { code: '+49', country: '🇩🇪 DE', name: 'Germany' },
+            { code: '+33', country: '🇫🇷 FR', name: 'France' },
+            { code: '+61', country: '🇦🇺 AU', name: 'Australia' },
+            { code: '+64', country: '🇳🇿 NZ', name: 'New Zealand' }
+        ];
         this.localUi = {
             contactOpen: false
         };
@@ -105,7 +128,7 @@ class GoldSavingCalculator2 {
 
                 contactTitle: 'บันทึกแผน & ให้เราติดต่อกลับ',
                 contactSubtitle: 'ไม่บังคับ — กรอกเมื่อพร้อม',
-                localOnly: 'ข้อมูลนี้เก็บไว้ในเครื่องของคุณเท่านั้น (ยังไม่ส่งไปที่ไหน)',
+                localOnly: 'ข้อมูลนี้จะถูกส่งให้ทีมงานเพื่อติดต่อกลับตามความสนใจของคุณ',
                 planSummary: 'แผนตอนนี้',
                 nameLabel: 'ชื่อ',
                 emailLabel: 'อีเมล',
@@ -161,7 +184,7 @@ class GoldSavingCalculator2 {
 
                 contactTitle: 'Save Plan & Contact Info',
                 contactSubtitle: 'Optional — fill when ready',
-                localOnly: 'Stored only in this browser (not sent anywhere yet)',
+                localOnly: 'Your info will be sent to our team to contact you based on your interest',
                 planSummary: 'Current plan',
                 nameLabel: 'Name',
                 emailLabel: 'Email',
@@ -217,7 +240,7 @@ class GoldSavingCalculator2 {
 
                 contactTitle: '保存计划与联系方式',
                 contactSubtitle: '非必填 — 准备好再填写',
-                localOnly: '仅保存在此浏览器中（尚未发送到任何地方）',
+                localOnly: '您的信息将发送给我们的团队，以便根据您的兴趣与您联系',
                 planSummary: '当前计划',
                 nameLabel: '姓名',
                 emailLabel: '邮箱',
@@ -328,6 +351,7 @@ class GoldSavingCalculator2 {
         this.localLead = {
             name: typeof lead.name === 'string' ? lead.name : '',
             email: typeof lead.email === 'string' ? lead.email : '',
+            phoneCountry: typeof lead.phoneCountry === 'string' ? lead.phoneCountry : '+66',
             phone: typeof lead.phone === 'string' ? lead.phone : '',
             lineId: typeof lead.lineId === 'string' ? lead.lineId : ''
         };
@@ -345,7 +369,7 @@ class GoldSavingCalculator2 {
     }
 
     clearLocalLead() {
-        this.localLead = { name: '', email: '', phone: '', lineId: '' };
+        this.localLead = { name: '', email: '', phoneCountry: '+66', phone: '', lineId: '' };
         this.localUi = { ...this.localUi, contactOpen: false };
         this.queuePersistLocalState();
     }
@@ -380,6 +404,7 @@ class GoldSavingCalculator2 {
             lead: {
                 name: String(this.localLead.name || '').trim(),
                 email: String(this.localLead.email || '').trim(),
+                phoneCountry: String(this.localLead.phoneCountry || '+66'),
                 phone: String(this.localLead.phone || '').trim(),
                 lineId: String(this.localLead.lineId || '').trim()
             }
@@ -427,7 +452,10 @@ class GoldSavingCalculator2 {
         parts.push(`${this.t('planSummary')}: ${this.formatNumber(this.monthlyAmount)} ${this.t('baht')}, ${this.months} ${this.t('monthUnit')}`);
         if (this.localLead.name) parts.push(`${this.t('nameLabel')}: ${this.localLead.name}`);
         if (this.localLead.email) parts.push(`${this.t('emailLabel')}: ${this.localLead.email}`);
-        if (this.localLead.phone) parts.push(`${this.t('phoneLabel')}: ${this.localLead.phone}`);
+        if (this.localLead.phone) {
+            const fullPhone = `${this.localLead.phoneCountry} ${this.localLead.phone}`;
+            parts.push(`${this.t('phoneLabel')}: ${fullPhone}`);
+        }
         if (this.localLead.lineId) parts.push(`${this.t('lineIdLabel')}: ${this.localLead.lineId}`);
         return parts.join('\n');
     }
@@ -1004,7 +1032,7 @@ class GoldSavingCalculator2 {
 
                             <div class="daily-info" id="dailyInfo2">
                                 <i class="fas fa-calendar-check"></i>
-                                <span>${this.t('dailyBuyInfo')}: ~<strong id="dailyAmount2">${this.formatNumber(Math.round(this.monthlyAmount / 20))}</strong> ${this.t('perDay')}</span>
+                                <span>${this.t('dailyBuyInfo')}: ~<strong id="dailyAmount2">-</strong> ${this.t('perDay')}</span>
                             </div>
 
                             <div class="slider-wrapper">
@@ -1093,9 +1121,14 @@ class GoldSavingCalculator2 {
 	                                            <label for="leadEmail2">${this.t('emailLabel')} <span class="lead-optional">(${this.t('optionalLabel')})</span></label>
 	                                            <input id="leadEmail2" class="lead-input" type="email" autocomplete="email" inputmode="email" value="${this.escapeHtml(this.localLead.email)}" />
 	                                        </div>
-	                                        <div class="lead-field">
+	                                        <div class="lead-field lead-field-phone">
 	                                            <label for="leadPhone2">${this.t('phoneLabel')} <span class="lead-optional">(${this.t('optionalLabel')})</span></label>
-	                                            <input id="leadPhone2" class="lead-input" type="tel" autocomplete="tel" inputmode="tel" value="${this.escapeHtml(this.localLead.phone)}" />
+	                                            <div class="phone-input-group">
+	                                                <select id="leadPhoneCountry2" class="lead-input phone-country-select">
+	                                                    ${this.countryCodes.map(c => `<option value="${c.code}" ${c.code === this.localLead.phoneCountry ? 'selected' : ''}>${c.country} ${c.code}</option>`).join('')}
+	                                                </select>
+	                                                <input id="leadPhone2" class="lead-input phone-number-input" type="tel" autocomplete="tel" inputmode="tel" placeholder="812345678" value="${this.escapeHtml(this.localLead.phone)}" />
+	                                            </div>
 	                                        </div>
 	                                        <div class="lead-field">
 	                                            <label for="leadLineId2">${this.t('lineIdLabel')} <span class="lead-optional">(${this.t('optionalLabel')})</span></label>
@@ -1259,20 +1292,23 @@ class GoldSavingCalculator2 {
 
         const nameEl = document.getElementById('leadName2');
         const emailEl = document.getElementById('leadEmail2');
+        const phoneCountryEl = document.getElementById('leadPhoneCountry2');
         const phoneEl = document.getElementById('leadPhone2');
         const lineIdEl = document.getElementById('leadLineId2');
 
         const syncLead = () => {
             if (nameEl) this.localLead.name = nameEl.value.trim();
             if (emailEl) this.localLead.email = emailEl.value.trim();
+            if (phoneCountryEl) this.localLead.phoneCountry = phoneCountryEl.value;
             if (phoneEl) this.localLead.phone = phoneEl.value.trim();
             if (lineIdEl) this.localLead.lineId = lineIdEl.value.trim();
             this.queuePersistLocalState();
             this.updateSaveButtonState();
         };
 
-        [nameEl, emailEl, phoneEl, lineIdEl].filter(Boolean).forEach((input) => {
+        [nameEl, emailEl, phoneCountryEl, phoneEl, lineIdEl].filter(Boolean).forEach((input) => {
             input.addEventListener('input', () => syncLead());
+            input.addEventListener('change', () => syncLead());
             // Save silently on blur; show status only when user clicks "บันทึก"
             input.addEventListener('blur', () => syncLead());
         });
@@ -1282,6 +1318,7 @@ class GoldSavingCalculator2 {
             clearBtn.addEventListener('click', () => {
                 if (nameEl) nameEl.value = '';
                 if (emailEl) emailEl.value = '';
+                if (phoneCountryEl) phoneCountryEl.value = '+66';
                 if (phoneEl) phoneEl.value = '';
                 if (lineIdEl) lineIdEl.value = '';
                 this.clearLocalLead();
@@ -1365,8 +1402,11 @@ class GoldSavingCalculator2 {
         const { totalGoldBaht, avgCostPrice, totalWorkingDays, debugInfo } = dcaResult;
         this.lastDcaAvgPrice = avgCostPrice;
 
-        // อัปเดตเงินซื้อต่อวันโดยประมาณ (ใช้ค่าเฉลี่ย ~20 วัน/เดือน สำหรับ UI)
-        const avgDailyAmount = Math.round(this.monthlyAmount / 20);
+        // อัปเดตเงินซื้อต่อวันโดยใช้จำนวนวันทำการจริงจาก API
+        const avgWorkingDaysPerMonth = totalWorkingDays / this.months;
+        const avgDailyAmount = avgWorkingDaysPerMonth > 0
+            ? Math.round(this.monthlyAmount / avgWorkingDaysPerMonth)
+            : Math.round(this.monthlyAmount / 20); // fallback
         const dailyAmountEl = document.getElementById('dailyAmount2');
         if (dailyAmountEl) {
             dailyAmountEl.textContent = this.formatNumber(avgDailyAmount);

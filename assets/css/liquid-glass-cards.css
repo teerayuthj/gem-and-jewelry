@@ -782,6 +782,52 @@
     box-shadow: 0 0 0 3px rgba(4, 91, 150, 0.12);
 }
 
+/* Phone input with country code */
+.lead-field-phone {
+    grid-column: span 2;
+}
+
+.phone-input-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.phone-country-select {
+    width: auto;
+    min-width: 120px;
+    max-width: 140px;
+    flex-shrink: 0;
+    padding: 0.7rem 0.6rem;
+    font-size: 1rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+    padding-right: 1.8rem;
+}
+
+.phone-number-input {
+    flex: 1;
+    min-width: 0;
+}
+
+@media (max-width: 600px) {
+    .lead-field-phone {
+        grid-column: span 1;
+    }
+
+    .phone-input-group {
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    .phone-country-select {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
 .lead-actions {
     margin-top: 1rem;
     display: flex;
