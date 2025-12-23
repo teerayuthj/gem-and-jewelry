@@ -72,6 +72,8 @@
     <link rel="stylesheet" href="./assets/css/gold-saving2.css" />
     <link rel="stylesheet" href="./assets/css/gold-saving2-enhancements.css" />
     <link rel="stylesheet" href="./assets/css/gold-saving2-visuals.css" />
+    <!-- Modern Luxury Effects -->
+    <link rel="stylesheet" href="./assets/css/gold-saving2-modern-luxury.css" />
 </head>
 
 <body style="
@@ -139,12 +141,46 @@
     <script src="./assets/js/gold-saving-visuals.js"></script>
     <script src="./assets/js/calculator/gold-saving-calculator2.js"></script>
 
+    <!-- Modern Luxury Effects -->
+    <script src="./assets/js/modern-luxury-effects.js"></script>
+
     <script>
         // Initialize Gold Saving Calculator 2
         let goldSavingCalc2;
+        let modernLuxuryEffects;
 
         document.addEventListener("DOMContentLoaded", function () {
             goldSavingCalc2 = new GoldSavingCalculator2("gold-saving-app2");
+
+            // Initialize Modern Luxury Effects
+            if (typeof ModernLuxuryEffects !== 'undefined') {
+                modernLuxuryEffects = new ModernLuxuryEffects();
+
+                // Trigger celebration when affordable card appears
+                const observeAffordableCards = () => {
+                    const grid = document.getElementById('productsGrid2');
+                    if (!grid) return;
+
+                    const observer = new MutationObserver(() => {
+                        const affordableCards = grid.querySelectorAll('.supporting-card.affordable');
+                        if (affordableCards.length > 0) {
+                            // Check if this is a new affordable card (user just reached goal)
+                            const wasNotAffordable = grid.dataset.hadNoAffordable === 'true';
+                            if (wasNotAffordable) {
+                                modernLuxuryEffects.triggerCelebration();
+                                grid.dataset.hadNoAffordable = 'false';
+                            }
+                        } else {
+                            grid.dataset.hadNoAffordable = 'true';
+                        }
+                    });
+
+                    observer.observe(grid, { childList: true, subtree: true });
+                };
+
+                // Start observing after a short delay
+                setTimeout(observeAffordableCards, 1000);
+            }
 
             // Language Switcher
             const langBtns = document.querySelectorAll(".lang-btn2");
@@ -153,9 +189,21 @@
                     langBtns.forEach((b) => b.classList.remove("active"));
                     btn.classList.add("active");
                     goldSavingCalc2.setLanguage(btn.dataset.lang);
+
+                    // Refresh counters when language changes
+                    if (modernLuxuryEffects) {
+                        setTimeout(() => modernLuxuryEffects.refreshCounters(), 100);
+                    }
                 });
             });
         });
+
+        // Expose celebration function for manual triggering
+        function triggerGoalCelebration() {
+            if (modernLuxuryEffects) {
+                modernLuxuryEffects.triggerCelebration();
+            }
+        }
     </script>
 
     <style>

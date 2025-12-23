@@ -1,0 +1,707 @@
+/**
+ * Gold Saving Calculator 2 - Modern Luxury Product Grid
+ * Theme: Premium Gold & Blue with Advanced Effects
+ *
+ * PERFORMANCE OPTIMIZED VERSION
+ * - Reduced backdrop-filter for better scroll performance
+ * - GPU-accelerated transforms only
+ * - Paused animations during scroll
+ * - Reduced motion support
+ */
+
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================ */
+
+/* Pause animations during scroll for better performance */
+.is-scrolling #productsGrid2 .supporting-card,
+.is-scrolling #productsGrid2 .hero-card,
+.is-scrolling #productsGrid2 .supporting-img img,
+.is-scrolling #productsGrid2 .hero-image img {
+    animation-play-state: paused !important;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    #productsGrid2 *,
+    #productsGrid2 *::before,
+    #productsGrid2 *::after {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Performance mode - JS controlled */
+.performance-mode #productsGrid2 .supporting-card,
+.performance-mode #productsGrid2 .hero-card {
+    transition: none !important;
+}
+
+.performance-mode #productsGrid2 *::before,
+.performance-mode #productsGrid2 *::after {
+    animation: none !important;
+}
+
+.performance-mode #productsGrid2 .spotlight,
+.performance-mode #productsGrid2 .shimmer-overlay {
+    display: none !important;
+}
+
+/* ============================================
+   MODERN LUXURY PRODUCT GRID
+   ============================================ */
+
+/* Glassmorphism 2.0 - Premium Card Base (OPTIMIZED) */
+#productsGrid2 .supporting-card,
+#productsGrid2 .hero-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.95);
+    /* Removed heavy backdrop-filter for scroll performance */
+    /* backdrop-filter: blur(20px) saturate(180%); */
+    border-radius: 20px;
+    overflow: hidden;
+    /* Use transform for GPU acceleration */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform;
+}
+
+/* Animated Gradient Border */
+#productsGrid2 .supporting-card::before,
+#productsGrid2 .hero-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        45deg,
+        #045b96,
+        #002e65,
+        #d4af37,
+        #ffd700,
+        #045b96
+    );
+    background-size: 400% 400%;
+    border-radius: 22px;
+    z-index: -1;
+    animation: gradientFlow 8s ease infinite;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#productsGrid2 .supporting-card:hover::before,
+#productsGrid2 .hero-card:hover::before {
+    opacity: 1;
+}
+
+/* Affordable card gradient - only show on hover */
+#productsGrid2 .supporting-card.affordable::before,
+#productsGrid2 .hero-card.affordable::before {
+    background: linear-gradient(
+        45deg,
+        #4caf50,
+        #81c784,
+        #a5d6a7,
+        #c8e6c9,
+        #4caf50
+    );
+    background-size: 400% 400%;
+    opacity: 0; /* Hidden by default - same as normal cards */
+}
+
+#productsGrid2 .supporting-card.affordable:hover::before,
+#productsGrid2 .hero-card.affordable:hover::before {
+    opacity: 1;
+}
+
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Only animate gradient on hover - not continuously */
+#productsGrid2 .supporting-card::before,
+#productsGrid2 .hero-card::before {
+    animation-play-state: paused;
+}
+
+#productsGrid2 .supporting-card:hover::before,
+#productsGrid2 .hero-card:hover::before {
+    animation-play-state: running;
+}
+
+/* Inner content layer - REMOVED (was causing double background)
+   Card already has background, no need for ::after layer */
+
+/* 3D Perspective Container */
+#productsGrid2 .smart-supporting-grid {
+    perspective: 1500px;
+}
+
+/* 3D Tilt Effect on Hover */
+#productsGrid2 .supporting-card {
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+#productsGrid2 .supporting-card:hover {
+    transform: translateY(-12px) rotateX(5deg) rotateY(-5deg);
+    box-shadow:
+        0 30px 60px rgba(4, 91, 150, 0.25),
+        0 0 40px rgba(4, 91, 150, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+#productsGrid2 .supporting-card.affordable:hover {
+    box-shadow:
+        0 30px 60px rgba(76, 175, 80, 0.3),
+        0 0 40px rgba(76, 175, 80, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Spotlight Effect */
+#productsGrid2 .supporting-card .spotlight,
+#productsGrid2 .hero-card .spotlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: radial-gradient(
+        600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(255, 215, 0, 0.15),
+        transparent 40%
+    );
+    border-radius: 20px;
+}
+
+#productsGrid2 .supporting-card:hover .spotlight,
+#productsGrid2 .hero-card:hover .spotlight {
+    opacity: 1;
+}
+
+#productsGrid2 .supporting-card.affordable .spotlight {
+    background: radial-gradient(
+        600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(76, 175, 80, 0.2),
+        transparent 40%
+    );
+}
+
+/* ============================================
+   FLOATING IMAGE ANIMATION (OPTIMIZED)
+   - Only animate on hover to save resources
+   ============================================ */
+
+#productsGrid2 .supporting-img img {
+    /* Removed continuous animation - only animate on hover */
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.15));
+    transition: transform 0.3s ease, filter 0.3s ease;
+    will-change: transform;
+}
+
+#productsGrid2 .supporting-card:hover .supporting-img img {
+    transform: scale(1.05) translateY(-4px);
+    filter: drop-shadow(0 12px 25px rgba(4, 91, 150, 0.2));
+}
+
+/* Hero card floating image */
+#productsGrid2 .hero-image img {
+    /* Removed continuous animation */
+    filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.18));
+    transition: transform 0.3s ease, filter 0.3s ease;
+    will-change: transform;
+}
+
+#productsGrid2 .hero-card:hover .hero-image img {
+    transform: scale(1.05) translateY(-4px);
+    filter: drop-shadow(0 12px 30px rgba(4, 91, 150, 0.25));
+}
+
+/* ============================================
+   SHIMMER OVERLAY EFFECT
+   ============================================ */
+
+#productsGrid2 .supporting-card .shimmer-overlay,
+#productsGrid2 .hero-card .shimmer-overlay {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.6),
+        rgba(212, 175, 55, 0.3),
+        rgba(255, 255, 255, 0.6),
+        transparent
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 10;
+    transition: left 0.8s ease;
+}
+
+#productsGrid2 .supporting-card:hover .shimmer-overlay,
+#productsGrid2 .hero-card:hover .shimmer-overlay {
+    left: 150%;
+}
+
+/* Shimmer on price text */
+#productsGrid2 .supporting-price,
+#productsGrid2 .hero-price {
+    position: relative;
+    overflow: hidden;
+}
+
+#productsGrid2 .supporting-price::after,
+#productsGrid2 .hero-price::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 215, 0, 0.4),
+        transparent
+    );
+    transition: left 1.5s ease;
+}
+
+#productsGrid2 .supporting-card:hover .supporting-price::after,
+#productsGrid2 .hero-card:hover .hero-price::after {
+    left: 100%;
+}
+
+/* ============================================
+   ENHANCED GRADIENT TEXT
+   ============================================ */
+
+/* OPTIMIZED: Static gradient text - no continuous animation */
+#productsGrid2 .supporting-price {
+    font-size: 1.9rem;
+    font-weight: 800;
+    background: linear-gradient(
+        135deg,
+        #045b96 0%,
+        #002e65 25%,
+        #d4af37 50%,
+        #ffd700 75%,
+        #045b96 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    /* Animation only on hover */
+    animation: none;
+    margin-bottom: 0.5rem;
+    transition: background-position 0.5s ease;
+}
+
+#productsGrid2 .supporting-card:hover .supporting-price {
+    animation: shimmerText 3s linear infinite;
+}
+
+@keyframes shimmerText {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+/* OPTIMIZED: Static gradient text for hero */
+#productsGrid2 .hero-price {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(
+        135deg,
+        #002e65 0%,
+        #045b96 20%,
+        #d4af37 40%,
+        #ffd700 60%,
+        #045b96 80%,
+        #002e65 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: none;
+    margin-bottom: 1rem;
+}
+
+#productsGrid2 .hero-card:hover .hero-price {
+    animation: shimmerText 3s linear infinite;
+}
+
+/* ============================================
+   COUNTER ANIMATION
+   ============================================ */
+
+#productsGrid2 .counter-number {
+    display: inline-block;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+#productsGrid2 .counter-number.counting {
+    animation: countPulse 0.5s ease;
+}
+
+@keyframes countPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+        color: #ffd700;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* ============================================
+   ENHANCED BADGES & STATUS
+   ============================================ */
+
+#productsGrid2 .status-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.1rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.15),
+        0 0 20px rgba(4, 91, 150, 0.2);
+    z-index: 5;
+    pointer-events: none;
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+#productsGrid2 .status-icon.affordable {
+    color: #4caf50;
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.15),
+        0 0 20px rgba(76, 175, 80, 0.3);
+}
+
+#productsGrid2 .status-icon.almost {
+    color: #ff9800;
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.15),
+        0 0 20px rgba(255, 152, 0, 0.3);
+}
+
+/* OPTIMIZED: Removed continuous pulse animation
+   - Status icons are static, subtle hover effect instead */
+@keyframes pulseGlow {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+#productsGrid2 .status-icon {
+    animation: none; /* Disabled continuous animation */
+    transition: transform 0.2s ease;
+}
+
+#productsGrid2 .supporting-card:hover .status-icon {
+    transform: scale(1.1);
+}
+
+/* Variant hint badge - enhanced */
+#productsGrid2 .variant-hint {
+    display: inline-block;
+    background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+    color: #0369a1;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    box-shadow:
+        0 2px 10px rgba(4, 91, 150, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    position: relative;
+    overflow: hidden;
+}
+
+#productsGrid2 .variant-hint::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.8),
+        transparent
+    );
+    animation: shimmerBadge 3s ease infinite;
+}
+
+/* OPTIMIZED: Only shimmer on hover */
+@keyframes shimmerBadge {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+#productsGrid2 .variant-hint::before {
+    animation: none;
+}
+
+#productsGrid2 .supporting-card:hover .variant-hint::before {
+    animation: shimmerBadge 1.5s ease forwards;
+}
+
+/* ============================================
+   ENHANCED PROGRESS BAR
+   ============================================ */
+
+#productsGrid2 .supporting-progress {
+    height: 10px;
+    border-radius: 8px;
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(
+        90deg,
+        rgba(4, 91, 150, 0.1),
+        rgba(0, 46, 101, 0.1)
+    );
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: visible;
+}
+
+#productsGrid2 .supporting-progress .progress-fill {
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #ff9800, #ffc107);
+    transition: width 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+    box-shadow:
+        0 0 15px rgba(255, 152, 0, 0.5),
+        0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* OPTIMIZED: Static progress bar - no continuous glow animation */
+#productsGrid2 .supporting-progress .progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    border-radius: 8px;
+    opacity: 0.5;
+    /* Removed continuous animation */
+}
+
+#productsGrid2 .supporting-card.affordable .supporting-progress .progress-fill {
+    background: linear-gradient(90deg, #4caf50, #81c784);
+    box-shadow:
+        0 0 15px rgba(76, 175, 80, 0.5),
+        0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   MAGNETIC BUTTON EFFECT
+   ============================================ */
+
+#productsGrid2 .hero-btn,
+#productsGrid2 .tap-hint {
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+#productsGrid2 .hero-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+#productsGrid2 .hero-btn:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+#productsGrid2 .hero-btn:hover {
+    background: linear-gradient(to right, #002e65, #045b96);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow:
+        0 10px 30px rgba(4, 91, 150, 0.4),
+        0 0 20px rgba(4, 91, 150, 0.3);
+}
+
+/* ============================================
+   HERO CARD ENHANCEMENTS
+   ============================================ */
+
+#productsGrid2 .hero-card {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(248, 249, 250, 0.9) 100%
+    );
+    backdrop-filter: blur(30px) saturate(200%);
+    box-shadow:
+        0 20px 60px rgba(4, 91, 150, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+#productsGrid2 .hero-card:hover {
+    transform: translateY(-8px);
+    box-shadow:
+        0 30px 80px rgba(4, 91, 150, 0.25),
+        0 0 50px rgba(4, 91, 150, 0.15),
+        0 0 0 1px rgba(212, 175, 55, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+/* OPTIMIZED: Hero badge - static glow, no continuous animation */
+#productsGrid2 .hero-badge {
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.15),
+        0 0 15px currentColor;
+    transition: box-shadow 0.3s ease;
+}
+
+#productsGrid2 .hero-card:hover .hero-badge {
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.15),
+        0 0 25px currentColor;
+}
+
+/* ============================================
+   SKELETON LOADING
+   ============================================ */
+
+#productsGrid2 .skeleton-loading {
+    background: linear-gradient(
+        90deg,
+        #f0f0f0 25%,
+        #e0e0e0 50%,
+        #f0f0f0 75%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+@keyframes skeletonShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Simplified effects on mobile for better performance */
+    #productsGrid2 .supporting-card:hover {
+        transform: translateY(-6px);
+    }
+
+    /* No floating animation on mobile - just hover scale */
+    #productsGrid2 .supporting-card:hover .supporting-img img {
+        transform: scale(1.02);
+    }
+}
+
+@media (max-width: 480px) {
+    /* Simplify effects on small screens */
+    #productsGrid2 .supporting-card::before {
+        animation: none;
+    }
+
+    #productsGrid2 .supporting-card:hover {
+        transform: translateY(-5px);
+    }
+}
+
+/* ============================================
+   SUCCESS CELEBRATION (for when goal is reached)
+   ============================================ */
+
+.celebration-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10000;
+}
+
+.confetti {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    opacity: 0;
+}
+
+.confetti.falling {
+    animation: confettiFall 3s ease-out forwards;
+}
+
+@keyframes confettiFall {
+    0% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(100vh) rotate(720deg);
+    }
+}
+
+/* Celebration pulse on card */
+#productsGrid2 .celebration-pulse {
+    animation: celebrationPulse 0.8s ease-out;
+}
+
+@keyframes celebrationPulse {
+    0% {
+        box-shadow:
+            0 0 0 0 rgba(76, 175, 80, 0.7),
+            0 0 20px rgba(76, 175, 80, 0.5);
+    }
+    70% {
+        box-shadow:
+            0 0 0 30px rgba(76, 175, 80, 0),
+            0 0 40px rgba(76, 175, 80, 0);
+    }
+    100% {
+        box-shadow:
+            0 0 0 0 rgba(76, 175, 80, 0),
+            0 0 20px rgba(76, 175, 80, 0);
+    }
+}
