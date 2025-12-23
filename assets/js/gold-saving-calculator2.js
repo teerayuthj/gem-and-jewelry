@@ -1564,8 +1564,11 @@ class GoldSavingCalculator2 {
         this.initGridLazyImages(grid);
         this.bindProductsGridEvents(grid, productsByKey);
 
-        // Bind modal events
-        this.bindModalEvents();
+        // Bind modal events with a small delay to ensure DOM is fully updated
+        setTimeout(() => {
+            console.log('🕒 Binding modal events after DOM update...');
+            this.bindModalEvents();
+        }, 50);
     }
 
     /**
@@ -1813,48 +1816,78 @@ class GoldSavingCalculator2 {
      * Bind Modal Events
      */
     bindModalEvents() {
-        // Hero button - เลือกลาย (locked -> preview only)
-        const selectVariantBtns = document.querySelectorAll('.select-variant');
-        selectVariantBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const weight = btn.dataset.weight;
-                const locked = btn.dataset.affordable !== '1';
-                this.openVariantModal(weight, { locked });
-            });
-        });
+        try {
+            const grid = document.getElementById('productsGrid2');
+            if (!grid) {
+                console.warn('Products grid not found for modal binding');
+                return;
+            }
 
-        // Supporting cards - tap to open modal (ignore image preview clicks)
-        const supportingCards = document.querySelectorAll('.supporting-card');
-        supportingCards.forEach(card => {
-            card.addEventListener('click', (e) => {
-                if (e.target.closest('.js-img-preview')) return;
-                const weight = card.dataset.weight;
-                const variantCount = GoldProducts.getVariantCount(weight);
-                if (variantCount > 1) {
-                    const locked = card.dataset.affordable !== '1';
+            // Hero button - เลือกลาย (locked -> preview only)
+            const selectVariantBtns = grid.querySelectorAll('.select-variant');
+            selectVariantBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    console.log('🖱️ Hero button clicked!');
+                    e.preventDefault();
+                    const weight = btn.dataset.weight;
+                    const locked = btn.dataset.affordable !== '1';
+                    console.log(`📋 Opening modal for weight: ${weight}, locked: ${locked}`);
                     this.openVariantModal(weight, { locked });
-                } else {
-                    // ถ้ามีแค่ตัวเดียว ให้เปิด link โดยตรง
-                    if (card.dataset.affordable === '1') {
-                        const variants = GoldProducts.getVariantsByWeight(weight);
-                        if (variants.length > 0) {
-                            window.open(variants[0].link, '_blank');
+                });
+            });
+
+            // Supporting cards - tap to open modal (ignore image preview clicks)
+            const supportingCards = grid.querySelectorAll('.supporting-card');
+            supportingCards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    console.log('🖱️ Supporting card clicked!');
+                    if (e.target.closest('.js-img-preview')) return;
+                    const weight = card.dataset.weight;
+                    const variantCount = GoldProducts.getVariantCount(weight);
+                    console.log(`📋 Supporting card weight: ${weight}, variants: ${variantCount}`);
+                    if (variantCount > 1) {
+                        const locked = card.dataset.affordable !== '1';
+                        console.log(`📋 Opening modal for supporting card weight: ${weight}, locked: ${locked}`);
+                        this.openVariantModal(weight, { locked });
+                    } else {
+                        // ถ้ามีแค่ตัวเดียว ให้เปิด link โดยตรง
+                        if (card.dataset.affordable === '1') {
+                            const variants = GoldProducts.getVariantsByWeight(weight);
+                            if (variants.length > 0) {
+                                window.open(variants[0].link, '_blank');
+                            }
                         }
                     }
-                }
+                });
             });
-        });
+
+            console.log(`Bound modal events for ${selectVariantBtns.length} hero buttons and ${supportingCards.length} supporting cards`);
+            
+            // Debug: Log the actual elements
+            if (selectVariantBtns.length > 0) {
+                console.log('🔍 First hero button:', selectVariantBtns[0]);
+            }
+            if (supportingCards.length > 0) {
+                console.log('🔍 First supporting card:', supportingCards[0]);
+            }
+        } catch (error) {
+            console.error('Error binding modal events:', error);
+        }
     }
 
     /**
      * Open Variant Modal
      */
     openVariantModal(weightLabel, options = {}) {
+        console.log(`Opening variant modal for weight: ${weightLabel}, locked: ${!!options.locked}`);
         const variants = GoldProducts.getVariantsByWeight(weightLabel);
-        if (variants.length === 0) return;
+        if (variants.length === 0) {
+            console.warn(`No variants found for weight: ${weightLabel}`);
+            return;
+        }
         const isLocked = !!options.locked;
         const variantsByKey = new Map(variants.map(v => [String(v.sku || v.id), v]));
+        console.log(`Found ${variants.length} variants for ${weightLabel}`);
 
         // Remove existing modal
         const existingModal = document.getElementById('variantModal');
@@ -1913,6 +1946,7 @@ class GoldSavingCalculator2 {
         `;
 
         document.body.appendChild(modal);
+        console.log('📝 Modal added to DOM');
 
         const variantGrid = modal.querySelector('.variant-grid');
         const variantClickHandler = (e) => {
@@ -1983,6 +2017,7 @@ class GoldSavingCalculator2 {
         // Animate in
         requestAnimationFrame(() => {
             modal.classList.add('active');
+            console.log('🎬 Modal animation started');
         });
 
         // Close events
