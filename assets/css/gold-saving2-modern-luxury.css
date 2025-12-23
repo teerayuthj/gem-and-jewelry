@@ -70,10 +70,10 @@
 #productsGrid2 .hero-card::before {
     content: '';
     position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: linear-gradient(
         45deg,
         #045b96,
@@ -83,8 +83,8 @@
         #045b96
     );
     background-size: 400% 400%;
-    border-radius: 22px;
-    z-index: -1;
+    border-radius: 20px;
+    z-index: 0;
     animation: gradientFlow 8s ease infinite;
     opacity: 0;
     transition: opacity 0.5s ease;
@@ -92,7 +92,7 @@
 
 #productsGrid2 .supporting-card:hover::before,
 #productsGrid2 .hero-card:hover::before {
-    opacity: 1;
+    opacity: 0.15;
 }
 
 /* Affordable card gradient - only show on hover */
@@ -101,18 +101,18 @@
     background: linear-gradient(
         45deg,
         #4caf50,
-        #81c784,
-        #a5d6a7,
-        #c8e6c9,
+        #2e7d32,
+        #66bb6a,
+        #43a047,
         #4caf50
     );
     background-size: 400% 400%;
-    opacity: 0; /* Hidden by default - same as normal cards */
+    opacity: 0;
 }
 
 #productsGrid2 .supporting-card.affordable:hover::before,
 #productsGrid2 .hero-card.affordable:hover::before {
-    opacity: 1;
+    opacity: 0.2;
 }
 
 @keyframes gradientFlow {
@@ -217,11 +217,39 @@
     filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.18));
     transition: transform 0.3s ease, filter 0.3s ease;
     will-change: transform;
+    position: relative;
+    z-index: 1;
 }
 
 #productsGrid2 .hero-card:hover .hero-image img {
     transform: scale(1.05) translateY(-4px);
-    filter: drop-shadow(0 12px 30px rgba(4, 91, 150, 0.25));
+    filter: drop-shadow(0 16px 40px rgba(255, 152, 0, 0.5));
+}
+
+/* Hero image container with orange pulse effect */
+#productsGrid2 .hero-image {
+    position: relative;
+    overflow: visible;
+    transition: all 0.3s ease;
+}
+
+#productsGrid2 .hero-image::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 152, 0, 0.4) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.5s ease, height 0.5s ease;
+    z-index: 0;
+}
+
+#productsGrid2 .hero-card:hover .hero-image::before {
+    width: 100%;
+    height: 100%;
 }
 
 /* ============================================

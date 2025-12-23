@@ -1664,6 +1664,7 @@ body.modal-open {
     line-height: 1;
     font-variant-numeric: tabular-nums;
     pointer-events: none;
+    z-index: 5;
 }
 
 .img-count-badge::before {
