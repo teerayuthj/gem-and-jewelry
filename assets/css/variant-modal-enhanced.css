@@ -1,0 +1,1172 @@
+/* ============================================
+   VARIANT MODAL - ENHANCED EDITION
+   ปรับปรุงให้ Variant Modal สวยหรูหราขึ้น
+   สร้าง: 2025-12-23
+   ============================================ */
+
+/* ============================================
+   MODAL CONTAINER - ENHANCED EDITION
+   ============================================ */
+
+/* Fixed Modal Container (กล่อง Popup หลัก) */
+.variant-modal.fixed-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Original Modal Style - สำหรับเปรียบเทียบ */
+.variant-modal.fixed-modal.original-modal {
+    transition: all 0.3s ease;
+}
+
+.variant-modal.fixed-modal.original-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Enhanced Modal Style - แบบปรับปรุงใหม่ */
+.variant-modal.fixed-modal.enhanced-modal.active {
+    opacity: 1;
+    visibility: visible;
+    animation: modalBackdropFadeIn 0.4s ease forwards;
+}
+
+@keyframes modalBackdropFadeIn {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: blur(8px);
+    }
+}
+
+/* Luxury Modal Style - สุดหรู */
+.variant-modal.fixed-modal.luxury-modal.active {
+    opacity: 1;
+    visibility: visible;
+    animation: luxuryModalReveal 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes luxuryModalReveal {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ===== MODAL BACKDROP ===== */
+
+/* Original Backdrop */
+.variant-modal.fixed-modal.original-modal .variant-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Enhanced Backdrop - พรีเมียม */
+.variant-modal.fixed-modal.enhanced-modal .variant-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 30% 20%, rgba(4, 91, 150, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+        rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    animation: backdropPulse 4s ease-in-out infinite;
+}
+
+@keyframes backdropPulse {
+    0%, 100% {
+        background:
+            radial-gradient(circle at 30% 20%, rgba(4, 91, 150, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 70% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+            rgba(0, 0, 0, 0.6);
+    }
+    50% {
+        background:
+            radial-gradient(circle at 70% 80%, rgba(4, 91, 150, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+            rgba(0, 0, 0, 0.65);
+    }
+}
+
+/* Luxury Backdrop - สุดหรู */
+.variant-modal.fixed-modal.luxury-modal .variant-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.2) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 100%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+        rgba(10, 10, 20, 0.85);
+    backdrop-filter: blur(12px);
+}
+
+/* ===== MODAL CONTENT BOX ===== */
+
+/* Original Content */
+.variant-modal.fixed-modal.original-modal .variant-modal-content {
+    position: relative;
+    background: white;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.variant-modal.fixed-modal.original-modal.active .variant-modal-content {
+    transform: scale(1) translateY(0);
+}
+
+/* Enhanced Content - พรีเมียมสวยหรู */
+.variant-modal.fixed-modal.enhanced-modal .variant-modal-content {
+    position: relative;
+    background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
+    border-radius: 28px;
+    width: 90%;
+    max-width: 650px;
+    max-height: 85vh;
+    overflow: hidden;
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(212, 175, 55, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transform: scale(0.85) translateY(30px);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.variant-modal.fixed-modal.enhanced-modal.active .variant-modal-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* Elegant Glow Ring for Enhanced Modal */
+.variant-modal.fixed-modal.enhanced-modal .variant-modal-content::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        135deg,
+        rgba(212, 175, 55, 0.3),
+        rgba(4, 91, 150, 0.2),
+        rgba(212, 175, 55, 0.3)
+    );
+    border-radius: 30px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.variant-modal.fixed-modal.enhanced-modal.active .variant-modal-content::before {
+    opacity: 1;
+    animation: contentGlow 3s ease-in-out infinite;
+}
+
+@keyframes contentGlow {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+}
+
+/* Luxury Content - สุดหรูทอง */
+.variant-modal.fixed-modal.luxury-modal .variant-modal-content {
+    position: relative;
+    background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%);
+    border-radius: 32px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow: hidden;
+    transform: scale(0.8) translateY(40px);
+    opacity: 0;
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.variant-modal.fixed-modal.luxury-modal.active .variant-modal-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* Animated Gold Border for Luxury Modal */
+.variant-modal.fixed-modal.luxury-modal .variant-modal-content::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(
+        135deg,
+        #d4af37,
+        #f4d03f,
+        #b8860b,
+        #d4af37,
+        #f4d03f
+    );
+    background-size: 300% 300%;
+    border-radius: 35px;
+    z-index: -1;
+    animation: luxuryBorderFlow 4s linear infinite;
+}
+
+@keyframes luxuryBorderFlow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+}
+
+/* Gold Glow Effect */
+.variant-modal.fixed-modal.luxury-modal .variant-modal-content::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        ellipse at 50% 0%,
+        rgba(212, 175, 55, 0.15),
+        transparent 60%
+    );
+    border-radius: 32px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ===== MODAL HEADER ===== */
+
+/* Original Header */
+.variant-modal.fixed-modal.original-modal .variant-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: linear-gradient(to right, #045b96, #002e65);
+    color: white;
+}
+
+/* Enhanced Header */
+.variant-modal.fixed-modal.enhanced-modal .variant-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 28px;
+    background: linear-gradient(
+        135deg,
+        #045b96 0%,
+        #034573 50%,
+        #002e65 100%
+    );
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Header Shine Effect */
+.variant-modal.fixed-modal.enhanced-modal .variant-modal-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.15),
+        transparent
+    );
+    animation: headerShine 3s ease-in-out infinite;
+}
+
+@keyframes headerShine {
+    0%, 100% { left: -100%; }
+    50% { left: 150%; }
+}
+
+.variant-modal.fixed-modal.enhanced-modal .variant-modal-header h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.variant-modal.fixed-modal.enhanced-modal .variant-modal-header h3::before {
+    content: '✨';
+    font-size: 1.2rem;
+    animation: iconBounce 2s ease-in-out infinite;
+}
+
+@keyframes iconBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* Luxury Header */
+.variant-modal.fixed-modal.luxury-modal .variant-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 32px;
+    background: linear-gradient(
+        135deg,
+        #1a1a2e 0%,
+        #16213e 50%,
+        #0f0f1a 100%
+    );
+    color: #f4d03f;
+    border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Gold Particles in Luxury Header */
+.variant-modal.fixed-modal.luxury-modal .variant-modal-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(circle, rgba(212, 175, 55, 0.3) 1px, transparent 1px),
+        radial-gradient(circle, rgba(212, 175, 55, 0.2) 1px, transparent 1px);
+    background-size: 30px 30px, 20px 20px;
+    background-position: 0 0, 15px 15px;
+    animation: goldParticles 20s linear infinite;
+    opacity: 0.5;
+}
+
+@keyframes goldParticles {
+    0% { background-position: 0 0, 15px 15px; }
+    100% { background-position: 30px 30px, 45px 45px; }
+}
+
+.variant-modal.fixed-modal.luxury-modal .variant-modal-header h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 10px rgba(212, 175, 55, 0.5);
+}
+
+.variant-modal.fixed-modal.luxury-modal .variant-modal-header h3::before {
+    content: '👑';
+    font-size: 1.3rem;
+    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.8));
+}
+
+/* ===== CLOSE BUTTON ===== */
+
+/* Original Close */
+.variant-modal.fixed-modal.original-modal .variant-modal-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.variant-modal.fixed-modal.original-modal .variant-modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+/* Enhanced Close */
+.variant-modal.fixed-modal.enhanced-modal .variant-modal-close {
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 2;
+}
+
+.variant-modal.fixed-modal.enhanced-modal .variant-modal-close:hover {
+    background: rgba(255, 100, 100, 0.8);
+    border-color: rgba(255, 100, 100, 0.5);
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 100, 100, 0.5);
+}
+
+/* Luxury Close */
+.variant-modal.fixed-modal.luxury-modal .variant-modal-close {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
+    border: 2px solid rgba(212, 175, 55, 0.4);
+    color: #f4d03f;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 2;
+}
+
+.variant-modal.fixed-modal.luxury-modal .variant-modal-close::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 50%;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.variant-modal.fixed-modal.luxury-modal .variant-modal-close:hover {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.4), rgba(212, 175, 55, 0.2));
+    border-color: #f4d03f;
+    transform: rotate(90deg) scale(1.15);
+    box-shadow:
+        0 0 25px rgba(212, 175, 55, 0.6),
+        inset 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+.variant-modal.fixed-modal.luxury-modal .variant-modal-close:hover::before {
+    opacity: 1;
+}
+
+/* ===== MODAL BODY ===== */
+
+/* Original Body */
+.variant-modal.fixed-modal.original-modal .variant-modal-body {
+    padding: 20px;
+    max-height: calc(80vh - 70px);
+    overflow-y: auto;
+    background: #f8f9fa;
+}
+
+/* Enhanced Body */
+.variant-modal.fixed-modal.enhanced-modal .variant-modal-body {
+    padding: 24px;
+    max-height: calc(85vh - 90px);
+    overflow-y: auto;
+    background: linear-gradient(180deg, #ffffff 0%, #f5f7fa 100%);
+}
+
+/* Custom Scrollbar for Enhanced Body */
+.variant-modal.fixed-modal.enhanced-modal .variant-modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.variant-modal.fixed-modal.enhanced-modal .variant-modal-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+.variant-modal.fixed-modal.enhanced-modal .variant-modal-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #045b96, #d4af37);
+    border-radius: 4px;
+}
+
+/* Luxury Body */
+.variant-modal.fixed-modal.luxury-modal .variant-modal-body {
+    padding: 28px;
+    max-height: calc(90vh - 100px);
+    overflow-y: auto;
+    background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+}
+
+/* Custom Scrollbar for Luxury Body */
+.variant-modal.fixed-modal.luxury-modal .variant-modal-body::-webkit-scrollbar {
+    width: 10px;
+}
+
+.variant-modal.fixed-modal.luxury-modal .variant-modal-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+}
+
+.variant-modal.fixed-modal.luxury-modal .variant-modal-body::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #d4af37, #b8860b);
+    border-radius: 5px;
+}
+
+.variant-modal.fixed-modal.luxury-modal .variant-modal-body::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #f4d03f, #d4af37);
+}
+
+/* ===== BASE VARIANT MODAL STYLES (Grid Items) ===== */
+.variant-modal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 20px;
+}
+
+/* ===== ORIGINAL STYLE (สำหรับเปรียบเทียบ) ===== */
+.variant-modal.original-style .variant-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.variant-modal.original-style .variant-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.variant-modal.original-style .variant-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    flex-shrink: 0;
+}
+
+.variant-modal.original-style .variant-img img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.variant-modal.original-style .variant-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.variant-modal.original-style .variant-price {
+    font-size: 16px;
+    font-weight: 600;
+    color: #045b96;
+}
+
+/* ===== ENHANCED STYLE (แบบปรับปรุงใหม่ - หรูหรา) ===== */
+.variant-modal.enhanced-style .variant-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
+    border-radius: 20px;
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.06),
+        0 1px 4px rgba(212, 175, 55, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+/* Elegant gradient overlay */
+.variant-modal.enhanced-style .variant-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(212, 175, 55, 0.03) 0%,
+        rgba(4, 91, 150, 0.02) 50%,
+        rgba(212, 175, 55, 0.03) 100%
+    );
+    border-radius: 20px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+/* Mouse tracking spotlight */
+.variant-modal.enhanced-style .variant-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        200px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(212, 175, 55, 0.12),
+        transparent 50%
+    );
+    border-radius: 20px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.variant-modal.enhanced-style .variant-item:hover::before,
+.variant-modal.enhanced-style .variant-item:hover::after {
+    opacity: 1;
+}
+
+.variant-modal.enhanced-style .variant-item:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: rgba(212, 175, 55, 0.35);
+    box-shadow:
+        0 12px 32px rgba(4, 91, 150, 0.12),
+        0 4px 12px rgba(212, 175, 55, 0.15),
+        0 0 0 1px rgba(212, 175, 55, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Enhanced Variant Image Container */
+.variant-modal.enhanced-style .variant-img {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #ffffff 0%, #f5f6f7 100%);
+    flex-shrink: 0;
+    z-index: 2;
+    overflow: hidden;
+}
+
+/* Glow Ring Effect - วงแหวนเรืองแสง */
+.variant-modal.enhanced-style .variant-img .glow-ring {
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #d4af37, #f4d03f, #d4af37);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: -1;
+    filter: blur(2px);
+}
+
+.variant-modal.enhanced-style .variant-item:hover .variant-img .glow-ring {
+    opacity: 0.4;
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.5; }
+}
+
+.variant-modal.enhanced-style .variant-img img {
+    max-width: 85%;
+    max-height: 85%;
+    object-fit: contain;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.1));
+}
+
+.variant-modal.enhanced-style .variant-item:hover .variant-img img {
+    transform: scale(1.1);
+    filter: drop-shadow(0 4px 12px rgba(212, 175, 55, 0.2));
+}
+
+/* Shine Effect - แสงวิ่งผ่าน */
+.variant-modal.enhanced-style .variant-item .shine-effect {
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 80%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        rgba(212, 175, 55, 0.2),
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 10;
+    border-radius: 20px;
+    transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.variant-modal.enhanced-style .variant-item:hover .shine-effect {
+    left: 150%;
+}
+
+/* Variant Info */
+.variant-modal.enhanced-style .variant-info {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.variant-modal.enhanced-style .variant-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.variant-modal.enhanced-style .variant-item:hover .variant-name {
+    color: #045b96;
+}
+
+.variant-modal.enhanced-style .variant-price {
+    font-size: 18px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #045b96 0%, #d4af37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ===== SELECTED STATE ===== */
+.variant-modal.enhanced-style .variant-item.variant-selected {
+    background: linear-gradient(145deg, #f0fff4 0%, #e8f5e9 100%);
+    border-color: #4caf50;
+    box-shadow:
+        0 8px 24px rgba(76, 175, 80, 0.2),
+        0 0 0 2px rgba(76, 175, 80, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transform: translateY(-4px) scale(1.02);
+}
+
+.variant-modal.enhanced-style .variant-item.variant-selected .check-icon {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #4caf50, #66bb6a);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    z-index: 20;
+    animation: checkBounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes checkBounce {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.variant-modal.enhanced-style .variant-item.variant-selected .variant-img .glow-ring {
+    background: linear-gradient(135deg, #4caf50, #66bb6a);
+    opacity: 0.3;
+}
+
+.variant-modal.enhanced-style .variant-item.variant-selected .variant-price {
+    background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ===== ENTRANCE ANIMATION ===== */
+.variant-modal.enhanced-style .variant-item.variant-item-animate {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: variantFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: var(--delay, 0s);
+}
+
+@keyframes variantFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== LUXURY STYLE (สุดหรู - Gold Premium) ===== */
+.variant-modal.luxury-style .variant-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 24px;
+    background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 24px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+/* Animated Gold Border */
+.variant-modal.luxury-style .variant-item::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        135deg,
+        #d4af37,
+        #f4d03f,
+        #d4af37,
+        #b8860b,
+        #d4af37
+    );
+    background-size: 300% 300%;
+    border-radius: 24px;
+    z-index: -1;
+    opacity: 0.6;
+    transition: opacity 0.4s ease;
+    animation: borderGradient 4s ease infinite;
+}
+
+.variant-modal.luxury-style .variant-item:hover::before {
+    opacity: 1;
+}
+
+@keyframes borderGradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Dark inner background */
+.variant-modal.luxury-style .variant-item::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 22px;
+    z-index: 0;
+}
+
+.variant-modal.luxury-style .variant-item:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow:
+        0 20px 50px rgba(212, 175, 55, 0.25),
+        0 0 40px rgba(212, 175, 55, 0.15),
+        0 0 0 4px rgba(212, 175, 55, 0.3);
+}
+
+/* Luxury Variant Image */
+.variant-modal.luxury-style .variant-img {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #0f0f1a 0%, #1a1a2e 100%);
+    flex-shrink: 0;
+    z-index: 2;
+    overflow: visible;
+}
+
+/* Gold Border for Image */
+.variant-modal.luxury-style .variant-img .gold-border {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 23px;
+    border: 2px solid transparent;
+    background: linear-gradient(135deg, #d4af37, #f4d03f, #d4af37) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.5;
+    transition: all 0.4s ease;
+}
+
+.variant-modal.luxury-style .variant-item:hover .variant-img .gold-border {
+    opacity: 1;
+    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.6));
+}
+
+/* Sparkle Effects */
+.variant-modal.luxury-style .variant-img .sparkle-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.variant-modal.luxury-style .variant-img .sparkle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #f4d03f;
+    border-radius: 50%;
+    opacity: 0;
+    box-shadow: 0 0 6px 2px rgba(244, 208, 63, 0.8);
+}
+
+.variant-modal.luxury-style .variant-img .sparkle:nth-child(1) {
+    top: 10%;
+    right: 15%;
+}
+
+.variant-modal.luxury-style .variant-img .sparkle:nth-child(2) {
+    bottom: 20%;
+    left: 10%;
+}
+
+.variant-modal.luxury-style .variant-img .sparkle:nth-child(3) {
+    top: 50%;
+    right: 5%;
+}
+
+.variant-modal.luxury-style .variant-item:hover .sparkle {
+    animation: sparkleAnim 1.5s ease-in-out infinite;
+}
+
+.variant-modal.luxury-style .variant-item:hover .sparkle:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.variant-modal.luxury-style .variant-item:hover .sparkle:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.variant-modal.luxury-style .variant-item:hover .sparkle:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+@keyframes sparkleAnim {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1); }
+}
+
+.variant-modal.luxury-style .variant-img img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 4px 12px rgba(212, 175, 55, 0.3));
+}
+
+.variant-modal.luxury-style .variant-item:hover .variant-img img {
+    transform: scale(1.15) rotate(3deg);
+    filter: drop-shadow(0 6px 20px rgba(212, 175, 55, 0.5));
+}
+
+/* Luxury Shine Effect */
+.variant-modal.luxury-style .variant-item .shine-effect {
+    position: absolute;
+    top: 0;
+    left: -200%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(212, 175, 55, 0.2),
+        rgba(244, 208, 63, 0.4),
+        rgba(212, 175, 55, 0.2),
+        transparent
+    );
+    transform: skewX(-25deg);
+    pointer-events: none;
+    z-index: 10;
+    border-radius: 24px;
+    transition: left 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.variant-modal.luxury-style .variant-item:hover .shine-effect {
+    left: 200%;
+}
+
+/* Luxury Variant Info */
+.variant-modal.luxury-style .variant-info {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.variant-modal.luxury-style .variant-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: #e0e0e0;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease;
+}
+
+.variant-modal.luxury-style .variant-item:hover .variant-name {
+    color: #f4d03f;
+}
+
+/* Gold Gradient Price */
+.variant-modal.luxury-style .variant-price.gold-gradient {
+    font-size: 20px;
+    font-weight: 700;
+    background: linear-gradient(
+        135deg,
+        #d4af37 0%,
+        #f4d03f 25%,
+        #d4af37 50%,
+        #b8860b 75%,
+        #d4af37 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: goldShimmer 3s linear infinite;
+}
+
+@keyframes goldShimmer {
+    to { background-position: 200% center; }
+}
+
+/* Luxury Selected State */
+.variant-modal.luxury-style .variant-item.variant-selected {
+    background: linear-gradient(145deg, #1a3a2a 0%, #0d2818 100%);
+    border-color: #4caf50;
+    box-shadow:
+        0 0 0 2px rgba(76, 175, 80, 0.5),
+        0 0 0 4px rgba(212, 175, 55, 0.3),
+        0 15px 40px rgba(76, 175, 80, 0.3);
+}
+
+.variant-modal.luxury-style .variant-item.variant-selected::before {
+    background: linear-gradient(
+        135deg,
+        #4caf50,
+        #66bb6a,
+        #4caf50
+    );
+    opacity: 0.8;
+}
+
+.variant-modal.luxury-style .variant-item.variant-selected .check-icon {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #4caf50, #81c784);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1a1a2e;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow:
+        0 0 0 3px rgba(212, 175, 55, 0.5),
+        0 4px 15px rgba(76, 175, 80, 0.5);
+    z-index: 20;
+    animation: checkBounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .variant-modal {
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .variant-modal.enhanced-style .variant-item,
+    .variant-modal.luxury-style .variant-item {
+        padding: 14px 16px;
+        min-width: calc(50% - 8px);
+        flex: 1 1 calc(50% - 8px);
+    }
+
+    .variant-modal.enhanced-style .variant-img,
+    .variant-modal.luxury-style .variant-img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .variant-modal.enhanced-style .variant-price,
+    .variant-modal.luxury-style .variant-price {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .variant-modal.enhanced-style .variant-item,
+    .variant-modal.luxury-style .variant-item {
+        min-width: 100%;
+        flex: 1 1 100%;
+    }
+}

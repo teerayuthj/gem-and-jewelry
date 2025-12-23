@@ -72,6 +72,12 @@
          All styles consolidated into one file
          ============================================ -->
     <link rel="stylesheet" href="./assets/css/calculator/gold-saving2/gold-saving2.css" />
+
+    <!-- ============================================
+         Image Viewer Modal - Enhanced Edition
+         สำหรับดูรูปภาพสินค้าขนาดใหญ่แบบสวยหรู
+         ============================================ -->
+    <link rel="stylesheet" href="./assets/css/image-viewer-enhanced.css" />
 </head>
 
 <body style="
@@ -207,6 +213,125 @@
                 modernLuxuryEffects.triggerCelebration();
             }
         }
+
+        // ============================================
+        // ENHANCED IMAGE VIEWER MODAL
+        // สำหรับดูรูปภาพสินค้าขนาดใหญ่แบบสวยหรู
+        // ============================================
+
+        // ฟังก์ชันเปิด Image Viewer Modal (Enhanced Style)
+        function openEnhancedImageViewer(imgSrc, title, price) {
+            // สร้าง modal
+            const modal = document.createElement('div');
+            modal.className = 'image-viewer-modal enhanced-modal';
+
+            modal.innerHTML = `
+                <div class="image-viewer-backdrop"></div>
+                <div class="image-viewer-content">
+                    <div class="image-viewer-image-wrapper">
+                        <img class="image-viewer-image" src="${imgSrc}" alt="${title}" onerror="this.src='https://via.placeholder.com/800x600/045b96/ffffff?text=Gold+Bar'">
+                    </div>
+                    <button class="image-viewer-close">✕</button>
+                    <div class="image-viewer-info">
+                        <span><span class="info-icon">📦</span> ${title}</span>
+                        ${price ? `<span><span class="info-icon">💰</span> ${price}</span>` : ''}
+                    </div>
+                    <div class="zoom-hint">คลิกเพื่อซูมรูป</div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            // ป้องกันการ scroll ของ body
+            document.body.style.overflow = 'hidden';
+
+            // Trigger animation
+            requestAnimationFrame(() => {
+                modal.classList.add('active');
+            });
+
+            // จัดการปุ่มปิดและ backdrop
+            const closeBtn = modal.querySelector('.image-viewer-close');
+            const backdrop = modal.querySelector('.image-viewer-backdrop');
+            const image = modal.querySelector('.image-viewer-image');
+
+            closeBtn.addEventListener('click', closeEnhancedImageViewer);
+            backdrop.addEventListener('click', closeEnhancedImageViewer);
+
+            // ฟังก์ชันซูมรูป
+            let isZoomed = false;
+            image.addEventListener('click', (e) => {
+                e.stopPropagation();
+                isZoomed = !isZoomed;
+                image.classList.toggle('zoomed', isZoomed);
+                modal.classList.toggle('zoomed', isZoomed);
+            });
+
+            // ฟังก์ชันปิด modal
+            function closeEnhancedImageViewer() {
+                modal.classList.remove('active');
+                setTimeout(() => {
+                    modal.remove();
+                    document.body.style.overflow = '';
+                }, 400);
+            }
+        }
+
+        // เพิ่ม event listener สำหรับรูปภาพสินค้าหลังจาก DOM โหลดเสร็จ
+        document.addEventListener('DOMContentLoaded', function() {
+            // เพิ่ม click handler ให้รูปภาพใน productsGrid2
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes.length) {
+                        // ค้นหารูปภาพใน product cards ที่เพิ่งสร้าง
+                        const productImages = document.querySelectorAll('#productsGrid2 .hero-card img, #productsGrid2 .supporting-card img');
+                        productImages.forEach(function(img) {
+                            // เพิ่ม cursor pointer
+                            img.style.cursor = 'pointer';
+                            img.title = 'คลิกเพื่อดูรูปขนาดใหญ่';
+
+                            // ถ้ายังไม่มี click handler
+                            if (!img.dataset.imageViewerAttached) {
+                                img.dataset.imageViewerAttached = 'true';
+
+                                img.addEventListener('click', function(e) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+
+                                    // หาข้อมูลสินค้าจาก card
+                                    const card = this.closest('.hero-card, .supporting-card');
+                                    const title = card.querySelector('.product-name, .card-title, h3, h4')?.textContent || 'ทองคำแท่ง';
+                                    const price = card.querySelector('.product-price, .card-price, .price')?.textContent || '';
+
+                                    // เปิด modal
+                                    openEnhancedImageViewer(this.src, title, price);
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+            // เริ่ม observe productsGrid2
+            const productsGrid = document.getElementById('productsGrid2');
+            if (productsGrid) {
+                observer.observe(productsGrid, { childList: true, subtree: true });
+            }
+        });
+
+        // ปิด modal เมื่อกด ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modal = document.querySelector('.image-viewer-modal');
+                if (modal) {
+                    modal.classList.remove('active');
+                    setTimeout(() => {
+                        modal.remove();
+                        document.body.style.overflow = '';
+                    }, 400);
+                }
+            }
+        });
     </script>
 
     <style>

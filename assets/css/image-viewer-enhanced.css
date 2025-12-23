@@ -1,0 +1,758 @@
+/* ============================================
+   IMAGE VIEWER MODAL - ENHANCED EDITION
+   Modal สำหรับดูรูปภาพสินค้าขนาดใหญ่
+   สร้าง: 2025-12-23
+   ============================================ */
+
+/* ============================================
+   BASE IMAGE VIEWER MODAL
+   ============================================ */
+
+.image-viewer-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.image-viewer-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ===== ORIGINAL STYLE ===== */
+
+.image-viewer-modal.original-modal .image-viewer-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+}
+
+.image-viewer-modal.original-modal .image-viewer-content {
+    position: relative;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-viewer-modal.original-modal .image-viewer-image {
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+}
+
+.image-viewer-modal.original-modal .image-viewer-close {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: all 0.3s;
+}
+
+.image-viewer-modal.original-modal .image-viewer-close:hover {
+    background: rgba(255, 100, 100, 0.8);
+    transform: rotate(90deg);
+}
+
+/* ===== ENHANCED STYLE - พรีเมียมหรูหรา ===== */
+
+.image-viewer-modal.enhanced-modal {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.image-viewer-modal.enhanced-modal.active {
+    animation: enhancedBackdropFadeIn 0.5s ease forwards;
+}
+
+@keyframes enhancedBackdropFadeIn {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: blur(12px);
+    }
+}
+
+/* Enhanced Backdrop */
+.image-viewer-modal.enhanced-modal .image-viewer-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 50% 30%, rgba(4, 91, 150, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 50% 70%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+        rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    animation: enhancedBackdropPulse 6s ease-in-out infinite;
+}
+
+@keyframes enhancedBackdropPulse {
+    0%, 100% {
+        background:
+            radial-gradient(circle at 50% 30%, rgba(4, 91, 150, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 50% 70%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+            rgba(0, 0, 0, 0.85);
+    }
+    50% {
+        background:
+            radial-gradient(circle at 50% 70%, rgba(4, 91, 150, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 50% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+            rgba(0, 0, 0, 0.88);
+    }
+}
+
+/* Enhanced Content Container */
+.image-viewer-modal.enhanced-modal .image-viewer-content {
+    position: relative;
+    width: 90%;
+    max-width: 950px;
+    max-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: scale(0.9) translateY(20px);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.image-viewer-modal.enhanced-modal.active .image-viewer-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* Image Frame with Glow */
+.image-viewer-modal.enhanced-modal .image-viewer-image-wrapper {
+    position: relative;
+    display: inline-block;
+    padding: 8px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border-radius: 20px;
+    box-shadow:
+        0 25px 80px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(212, 175, 55, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Animated Glow Ring */
+.image-viewer-modal.enhanced-modal .image-viewer-image-wrapper::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    background: linear-gradient(
+        135deg,
+        rgba(212, 175, 55, 0.4),
+        rgba(4, 91, 150, 0.3),
+        rgba(212, 175, 55, 0.4)
+    );
+    border-radius: 24px;
+    z-index: -1;
+    opacity: 0;
+    animation: enhancedImageGlow 3s ease-in-out infinite;
+}
+
+.image-viewer-modal.enhanced-modal.active .image-viewer-image-wrapper::before {
+    opacity: 1;
+}
+
+@keyframes enhancedImageGlow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+}
+
+.image-viewer-modal.enhanced-modal .image-viewer-image {
+    max-width: 100%;
+    max-height: 85vh;
+    border-radius: 16px;
+    display: block;
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: zoom-in;
+}
+
+.image-viewer-modal.enhanced-modal .image-viewer-image:hover {
+    transform: scale(1.02);
+}
+
+.image-viewer-modal.enhanced-modal .image-viewer-image.zoomed {
+    transform: scale(1.5);
+    cursor: zoom-out;
+}
+
+/* Enhanced Close Button */
+.image-viewer-modal.enhanced-modal .image-viewer-close {
+    position: absolute;
+    top: -60px;
+    right: 0;
+    background: linear-gradient(135deg, rgba(4, 91, 150, 0.8), rgba(4, 91, 150, 0.6));
+    border: 2px solid rgba(212, 175, 55, 0.4);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.image-viewer-modal.enhanced-modal .image-viewer-close:hover {
+    background: linear-gradient(135deg, rgba(255, 100, 100, 0.9), rgba(255, 100, 100, 0.7));
+    border-color: rgba(255, 100, 100, 0.5);
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 0 30px rgba(255, 100, 100, 0.5);
+}
+
+/* Image Info Overlay */
+.image-viewer-modal.enhanced-modal .image-viewer-info {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    padding: 12px 24px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    color: white;
+    font-size: 14px;
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.image-viewer-modal.enhanced-modal.active .image-viewer-info {
+    opacity: 1;
+    bottom: 20px;
+}
+
+.image-viewer-modal.enhanced-modal .image-viewer-info span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.image-viewer-modal.enhanced-modal .image-viewer-info .info-icon {
+    color: #d4af37;
+}
+
+/* Navigation Arrows */
+.image-viewer-modal.enhanced-modal .image-viewer-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, rgba(4, 91, 150, 0.8), rgba(4, 91, 150, 0.6));
+    border: 2px solid rgba(212, 175, 55, 0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    z-index: 10;
+}
+
+.image-viewer-modal.enhanced-modal.active .image-viewer-nav {
+    opacity: 1;
+}
+
+.image-viewer-modal.enhanced-modal .image-viewer-nav.prev {
+    left: -70px;
+}
+
+.image-viewer-modal.enhanced-modal .image-viewer-nav.next {
+    right: -70px;
+}
+
+.image-viewer-modal.enhanced-modal .image-viewer-nav:hover {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.8), rgba(212, 175, 55, 0.6));
+    border-color: #f4d03f;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
+}
+
+/* ===== LUXURY STYLE - สุดหรูทอง ===== */
+
+.image-viewer-modal.luxury-modal {
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.image-viewer-modal.luxury-modal.active {
+    animation: luxuryModalReveal 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes luxuryModalReveal {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Luxury Backdrop */
+.image-viewer-modal.luxury-modal .image-viewer-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.3) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 100%, rgba(212, 175, 55, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 20% 50%, rgba(4, 91, 150, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.15) 0%, transparent 40%),
+        rgba(5, 5, 15, 0.92);
+    backdrop-filter: blur(15px);
+}
+
+/* Luxury Content */
+.image-viewer-modal.luxury-modal .image-viewer-content {
+    position: relative;
+    width: 90%;
+    max-width: 1000px;
+    max-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: scale(0.85) translateY(30px);
+    opacity: 0;
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.image-viewer-modal.luxury-modal.active .image-viewer-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* Luxury Image Frame */
+.image-viewer-modal.luxury-modal .image-viewer-image-wrapper {
+    position: relative;
+    display: inline-block;
+    padding: 12px;
+    background: linear-gradient(145deg, rgba(26, 26, 46, 0.9), rgba(15, 15, 26, 0.9));
+    border-radius: 24px;
+    box-shadow:
+        0 30px 100px rgba(0, 0, 0, 0.8),
+        0 0 60px rgba(212, 175, 55, 0.15);
+}
+
+/* Animated Gold Border */
+.image-viewer-modal.luxury-modal .image-viewer-image-wrapper::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    background: linear-gradient(
+        135deg,
+        #d4af37,
+        #f4d03f,
+        #b8860b,
+        #d4af37,
+        #f4d03f
+    );
+    background-size: 300% 300%;
+    border-radius: 28px;
+    z-index: -1;
+    animation: luxuryGoldBorderFlow 4s linear infinite;
+}
+
+@keyframes luxuryGoldBorderFlow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+}
+
+/* Gold Glow Effect */
+.image-viewer-modal.luxury-modal .image-viewer-image-wrapper::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background: radial-gradient(
+        ellipse at 50% 50%,
+        rgba(212, 175, 55, 0.2),
+        transparent 70%
+    );
+    border-radius: 40px;
+    z-index: -2;
+    animation: luxuryGlowPulse 3s ease-in-out infinite;
+}
+
+@keyframes luxuryGlowPulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.image-viewer-modal.luxury-modal .image-viewer-image {
+    max-width: 100%;
+    max-height: 85vh;
+    border-radius: 20px;
+    display: block;
+    box-shadow:
+        0 10px 50px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(212, 175, 55, 0.2);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: zoom-in;
+}
+
+.image-viewer-modal.luxury-modal .image-viewer-image:hover {
+    transform: scale(1.03);
+}
+
+.image-viewer-modal.luxury-modal .image-viewer-image.zoomed {
+    transform: scale(1.6);
+    cursor: zoom-out;
+}
+
+/* Luxury Close Button */
+.image-viewer-modal.luxury-modal .image-viewer-close {
+    position: absolute;
+    top: -70px;
+    right: 0;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.15));
+    border: 2px solid rgba(212, 175, 55, 0.5);
+    color: #f4d03f;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 4px 25px rgba(212, 175, 55, 0.3),
+        inset 0 0 15px rgba(212, 175, 55, 0.1);
+}
+
+.image-viewer-modal.luxury-modal .image-viewer-close::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 50%;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-viewer-modal.luxury-modal .image-viewer-close:hover {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.5), rgba(212, 175, 55, 0.3));
+    border-color: #f4d03f;
+    transform: rotate(90deg) scale(1.15);
+    box-shadow:
+        0 0 40px rgba(212, 175, 55, 0.6),
+        inset 0 0 25px rgba(212, 175, 55, 0.2);
+}
+
+.image-viewer-modal.luxury-modal .image-viewer-close:hover::before {
+    opacity: 1;
+}
+
+/* Luxury Info Overlay */
+.image-viewer-modal.luxury-modal .image-viewer-info {
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 24px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(15, 15, 26, 0.9));
+    backdrop-filter: blur(15px);
+    border-radius: 35px;
+    border: 2px solid rgba(212, 175, 55, 0.4);
+    color: #f4d03f;
+    font-size: 15px;
+    font-weight: 500;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+.image-viewer-modal.luxury-modal.active .image-viewer-info {
+    opacity: 1;
+    bottom: 25px;
+}
+
+.image-viewer-modal.luxury-modal .image-viewer-info span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.image-viewer-modal.luxury-modal .image-viewer-info .info-icon {
+    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.8));
+}
+
+/* Luxury Navigation Arrows */
+.image-viewer-modal.luxury-modal .image-viewer-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 55px;
+    height: 55px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.15));
+    border: 2px solid rgba(212, 175, 55, 0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #f4d03f;
+    font-size: 22px;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    z-index: 10;
+}
+
+.image-viewer-modal.luxury-modal.active .image-viewer-nav {
+    opacity: 1;
+}
+
+.image-viewer-modal.luxury-modal .image-viewer-nav.prev {
+    left: -80px;
+}
+
+.image-viewer-modal.luxury-modal .image-viewer-nav.next {
+    right: -80px;
+}
+
+.image-viewer-modal.luxury-modal .image-viewer-nav:hover {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.6), rgba(212, 175, 55, 0.4));
+    border-color: #f4d03f;
+    transform: translateY(-50%) scale(1.15);
+    box-shadow:
+        0 0 35px rgba(212, 175, 55, 0.6),
+        inset 0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+/* ===== ZOOM HINT ===== */
+
+.image-viewer-modal .zoom-hint {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 16px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    color: white;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.image-viewer-modal.active .zoom-hint {
+    opacity: 1;
+}
+
+.image-viewer-modal.zoomed .zoom-hint {
+    opacity: 0;
+}
+
+/* ===== IMAGE VIEWER DOTS (for multiple images) ===== */
+
+.image-viewer-modal .image-viewer-dots {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    border-radius: 25px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.image-viewer-modal.active .image-viewer-dots {
+    opacity: 1;
+}
+
+.image-viewer-modal .image-viewer-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.image-viewer-modal .image-viewer-dot:hover {
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(1.2);
+}
+
+.image-viewer-modal .image-viewer-dot.active {
+    background: #d4af37;
+    border-color: #f4d03f;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+}
+
+/* Enhanced Modal Dots */
+.image-viewer-modal.enhanced-modal .image-viewer-dots {
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.image-viewer-modal.enhanced-modal .image-viewer-dot.active {
+    background: linear-gradient(135deg, #045b96, #034573);
+    border-color: rgba(212, 175, 55, 0.5);
+}
+
+/* Luxury Modal Dots */
+.image-viewer-modal.luxury-modal .image-viewer-dots {
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(15, 15, 26, 0.9));
+    border: 2px solid rgba(212, 175, 55, 0.4);
+}
+
+.image-viewer-modal.luxury-modal .image-viewer-dot {
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+.image-viewer-modal.luxury-modal .image-viewer-dot.active {
+    background: linear-gradient(135deg, #d4af37, #f4d03f);
+    border-color: #f4d03f;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+}
+
+/* Image Count in Info */
+.image-viewer-modal .image-viewer-info .image-count {
+    background: rgba(212, 175, 55, 0.2);
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.image-viewer-modal.enhanced-modal .image-viewer-info .image-count {
+    background: linear-gradient(135deg, rgba(4, 91, 150, 0.3), rgba(4, 91, 150, 0.2));
+    border-color: rgba(4, 91, 150, 0.4);
+    color: white;
+}
+
+.image-viewer-modal.luxury-modal .image-viewer-info .image-count {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.2));
+    border-color: rgba(212, 175, 55, 0.5);
+    color: #f4d03f;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+    .image-viewer-modal.enhanced-modal .image-viewer-content,
+    .image-viewer-modal.luxury-modal .image-viewer-content {
+        width: 95%;
+        max-height: 85vh;
+    }
+
+    .image-viewer-modal.enhanced-modal .image-viewer-close,
+    .image-viewer-modal.luxury-modal .image-viewer-close {
+        top: -55px;
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+
+    .image-viewer-modal.enhanced-modal .image-viewer-nav,
+    .image-viewer-modal.luxury-modal .image-viewer-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .image-viewer-modal.enhanced-modal .image-viewer-nav.prev,
+    .image-viewer-modal.luxury-modal .image-viewer-nav.prev {
+        left: 10px;
+    }
+
+    .image-viewer-modal.enhanced-modal .image-viewer-nav.next,
+    .image-viewer-modal.luxury-modal .image-viewer-nav.next {
+        right: 10px;
+    }
+
+    .image-viewer-modal.enhanced-modal .image-viewer-info,
+    .image-viewer-modal.luxury-modal .image-viewer-info {
+        width: 90%;
+        flex-wrap: wrap;
+        justify-content: center;
+        bottom: 15px;
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+
+    .image-viewer-modal .image-viewer-dots {
+        bottom: 65px;
+        gap: 8px;
+        padding: 8px 14px;
+    }
+
+    .image-viewer-modal .image-viewer-dot {
+        width: 10px;
+        height: 10px;
+    }
+}

@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variant Modal Demo - Enhanced Effects</title>
+    <link rel="stylesheet" href="assets/css/variant-modal-enhanced.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .demo-header h1 {
+            font-size: 2.5rem;
+            color: #045b96;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #045b96, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .demo-header .subtitle {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .demo-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        .demo-section {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .section-header.original h2 { color: #666; }
+        .section-header.enhanced h2 { color: #045b96; }
+        .section-header.luxury h2 { color: #1a1a2e; }
+
+        .section-header .badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .section-header.original .badge {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .section-header.enhanced .badge {
+            background: linear-gradient(135deg, #045b96, #d4af37);
+            color: white;
+        }
+
+        .section-header.luxury .badge {
+            background: linear-gradient(135deg, #1a1a2e, #d4af37);
+            color: white;
+        }
+
+        .selected-demo {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            margin-top: 30px;
+        }
+
+        .selected-demo h2 {
+            text-align: center;
+            font-size: 1.8rem;
+            color: #4caf50;
+            margin-bottom: 25px;
+        }
+
+        .selected-showcase {
+            display: flex;
+            justify-content: center;
+        }
+
+        .features-list {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            margin-top: 30px;
+        }
+
+        .features-list h2 {
+            text-align: center;
+            font-size: 1.8rem;
+            color: #045b96;
+            margin-bottom: 30px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 25px 20px;
+            background: linear-gradient(145deg, #f8f9fa, #ffffff);
+            border-radius: 16px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .demo-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .demo-section {
+                padding: 20px;
+            }
+
+            .demo-btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+
+        /* Demo Buttons */
+        .demo-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Prompt', sans-serif;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .demo-btn span {
+            font-size: 1.3rem;
+        }
+
+        .demo-btn.original-btn {
+            background: linear-gradient(135deg, #e0e0e0, #f0f0f0);
+            color: #666;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-btn.original-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .demo-btn.enhanced-btn {
+            background: linear-gradient(135deg, #045b96, #034573);
+            color: white;
+            box-shadow: 0 4px 15px rgba(4, 91, 150, 0.3);
+        }
+
+        .demo-btn.enhanced-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(4, 91, 150, 0.4);
+        }
+
+        .demo-btn.luxury-btn {
+            background: linear-gradient(135deg, #1a1a2e, #d4af37);
+            color: white;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .demo-btn.luxury-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <header class="demo-header">
+            <h1>Variant Modal - Enhanced Effects</h1>
+            <p class="subtitle">เปรียบเทียบการแสดงผลของ Variant Modal แบบเดิม vs แบบใหม่ที่ปรับปรุงแล้ว</p>
+        </header>
+
+        <div class="demo-sections">
+            <!-- Section 1: Original Style -->
+            <section class="demo-section">
+                <div class="section-header original">
+                    <h2>Original Style (แบบเดิม)</h2>
+                    <span class="badge">ก่อนปรับปรุง</span>
+                </div>
+                <div class="variant-modal original-style">
+                    <div class="variant-item">
+                        <div class="variant-img">
+                            <img src="https://cdn.gemproclub.com/variants/1-5g.webp" alt="1.5g">
+                        </div>
+                        <div class="variant-info">
+                            <div class="variant-name">1.5 กรัม</div>
+                            <div class="variant-price">฿3,150</div>
+                        </div>
+                    </div>
+                    <div class="variant-item">
+                        <div class="variant-img">
+                            <img src="https://cdn.gemproclub.com/variants/2g.webp" alt="2g">
+                        </div>
+                        <div class="variant-info">
+                            <div class="variant-name">2.0 กรัม</div>
+                            <div class="variant-price">฿4,200</div>
+                        </div>
+                    </div>
+                    <div class="variant-item">
+                        <div class="variant-img">
+                            <img src="https://cdn.gemproclub.com/variants/3g.webp" alt="3g">
+                        </div>
+                        <div class="variant-info">
+                            <div class="variant-name">3.0 กรัม</div>
+                            <div class="variant-price">฿6,300</div>
+                        </div>
+                    </div>
+                    <div class="variant-item">
+                        <div class="variant-img">
+                            <img src="https://cdn.gemproclub.com/variants/5g.webp" alt="5g">
+                        </div>
+                        <div class="variant-info">
+                            <div class="variant-name">5.0 กรัม</div>
+                            <div class="variant-price">฿10,500</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Enhanced Style -->
+            <section class="demo-section">
+                <div class="section-header enhanced">
+                    <h2>Enhanced Style (แบบปรับปรุงใหม่)</h2>
+                    <span class="badge">พรีเมียม หรูหราขึ้น</span>
+                </div>
+                <div class="variant-modal enhanced-style">
+                    <div class="variant-item variant-item-animate" style="--delay: 0s">
+                        <div class="variant-img">
+                            <div class="glow-ring"></div>
+                            <img src="https://cdn.gemproclub.com/variants/1-5g.webp" alt="1.5g">
+                        </div>
+                        <div class="variant-info">
+                            <div class="variant-name">1.5 กรัม</div>
+                            <div class="variant-price">฿3,150</div>
+                        </div>
+                        <div class="shine-effect"></div>
+                    </div>
+                    <div class="variant-item variant-item-animate" style="--delay: 0.1s">
+                        <div class="variant-img">
+                            <div class="glow-ring"></div>
+                            <img src="https://cdn.gemproclub.com/variants/2g.webp" alt="2g">
+                        </div>
+                        <div class="variant-info">
+                            <div class="variant-name">2.0 กรัม</div>
+                            <div class="variant-price">฿4,200</div>
+                        </div>
+                        <div class="shine-effect"></div>
+                    </div>
+                    <div class="variant-item variant-item-animate" style="--delay: 0.2s">
+                        <div class="variant-img">
+                            <div class="glow-ring"></div>
+                            <img src="https://cdn.gemproclub.com/variants/3g.webp" alt="3g">
+                        </div>
+                        <div class="variant-info">
+                            <div class="variant-name">3.0 กรัม</div>
+                            <div class="variant-price">฿6,300</div>
+                        </div>
+                        <div class="shine-effect"></div>
+                    </div>
+                    <div class="variant-item variant-item-animate" style="--delay: 0.3s">
+                        <div class="variant-img">
+                            <div class="glow-ring"></div>
+                            <img src="https://cdn.gemproclub.com/variants/5g.webp" alt="5g">
+                        </div>
+                        <div class="variant-info">
+                            <div class="variant-name">5.0 กรัม</div>
+                            <div class="variant-price">฿10,500</div>
+                        </div>
+                        <div class="shine-effect"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Luxury Style -->
+            <section class="demo-section">
+                <div class="section-header luxury">
+                    <h2>Luxury Style (สุดหรู)</h2>
+                    <span class="badge">Gold Premium</span>
+                </div>
+                <div class="variant-modal luxury-style">
+                    <div class="variant-item variant-item-animate" style="--delay: 0s">
+                        <div class="variant-img">
+                            <div class="gold-border"></div>
+                            <div class="sparkle-container">
+                                <span class="sparkle"></span>
+                                <span class="sparkle"></span>
+                                <span class="sparkle"></span>
+                            </div>
+                            <img src="https://cdn.gemproclub.com/variants/1-5g.webp" alt="1.5g">
+                        </div>
+                        <div class="variant-info">
+                            <div class="variant-name">1.5 กรัม</div>
+                            <div class="variant-price gold-gradient">฿3,150</div>
+                        </div>
+                        <div class="shine-effect"></div>
+                    </div>
+                    <div class="variant-item variant-item-animate" style="--delay: 0.1s">
+                        <div class="variant-img">
+                            <div class="gold-border"></div>
+                            <div class="sparkle-container">
+                                <span class="sparkle"></span>
+                                <span class="sparkle"></span>
+                                <span class="sparkle"></span>
+                            </div>
+                            <img src="https://cdn.gemproclub.com/variants/2g.webp" alt="2g">
+                        </div>
+                        <div class="variant-info">
+                            <div class="variant-name">2.0 กรัม</div>
+                            <div class="variant-price gold-gradient">฿4,200</div>
+                        </div>
+                        <div class="shine-effect"></div>
+                    </div>
+                    <div class="variant-item variant-item-animate" style="--delay: 0.2s">
+                        <div class="variant-img">
+                            <div class="gold-border"></div>
+                            <div class="sparkle-container">
+                                <span class="sparkle"></span>
+                                <span class="sparkle"></span>
+                                <span class="sparkle"></span>
+                            </div>
+                            <img src="https://cdn.gemproclub.com/variants/3g.webp" alt="3g">
+                        </div>
+                        <div class="variant-info">
+                            <div class="variant-name">3.0 กรัม</div>
+                            <div class="variant-price gold-gradient">฿6,300</div>
+                        </div>
+                        <div class="shine-effect"></div>
+                    </div>
+                    <div class="variant-item variant-item-animate" style="--delay: 0.3s">
+                        <div class="variant-img">
+                            <div class="gold-border"></div>
+                            <div class="sparkle-container">
+                                <span class="sparkle"></span>
+                                <span class="sparkle"></span>
+                                <span class="sparkle"></span>
+                            </div>
+                            <img src="https://cdn.gemproclub.com/variants/5g.webp" alt="5g">
+                        </div>
+                        <div class="variant-info">
+                            <div class="variant-name">5.0 กรัม</div>
+                            <div class="variant-price gold-gradient">฿10,500</div>
+                        </div>
+                        <div class="shine-effect"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Selected State Demo -->
+        <section class="selected-demo">
+            <h2>Selected State (สถานะเมื่อเลือก)</h2>
+            <div class="selected-showcase">
+                <div class="variant-modal enhanced-style">
+                    <div class="variant-item">
+                        <div class="variant-img">
+                            <div class="glow-ring"></div>
+                            <img src="https://cdn.gemproclub.com/variants/1-5g.webp" alt="1.5g">
+                        </div>
+                        <div class="variant-info">
+                            <div class="variant-name">1.5 กรัม</div>
+                            <div class="variant-price">฿3,150</div>
+                        </div>
+                        <div class="shine-effect"></div>
+                    </div>
+                    <div class="variant-item variant-selected">
+                        <div class="check-icon">✓</div>
+                        <div class="variant-img">
+                            <div class="glow-ring"></div>
+                            <img src="https://cdn.gemproclub.com/variants/2g.webp" alt="2g">
+                        </div>
+                        <div class="variant-info">
+                            <div class="variant-name">2.0 กรัม</div>
+                            <div class="variant-price">฿4,200</div>
+                        </div>
+                        <div class="shine-effect"></div>
+                    </div>
+                    <div class="variant-item">
+                        <div class="variant-img">
+                            <div class="glow-ring"></div>
+                            <img src="https://cdn.gemproclub.com/variants/3g.webp" alt="3g">
+                        </div>
+                        <div class="variant-info">
+                            <div class="variant-name">3.0 กรัม</div>
+                            <div class="variant-price">฿6,300</div>
+                        </div>
+                        <div class="shine-effect"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features List -->
+        <section class="features-list">
+            <h2>Features ที่เพิ่มเข้ามา</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3>Glow Ring Effect</h3>
+                    <p>วงแหวนเรืองแสงรอบภาพสินค้า เพิ่มความหรูหรา</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌟</div>
+                    <h3>Sparkle Animation</h3>
+                    <p>แสงกระพริบสวยงามเมื่อ hover (Luxury Style)</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💫</div>
+                    <h3>Shine Effect</h3>
+                    <p>แสงวิ่งผ่านเมื่อ hover เหมือนโลหะหรู</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Selected State</h3>
+                    <p>สถานะที่ชัดเจนเมื่อเลือก พร้อม Check icon</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Smooth Animations</h3>
+                    <p>Animation ลื่นไหลด้วย cubic-bezier</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Gold Gradient</h3>
+                    <p>สีทองไล่ระดับสวยงาม</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modal Popup Demo -->
+        <section class="features-list">
+            <h2>🎬 Modal Popup Demo (กดเปิดดูได้จริง)</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 30px;">คลิกที่ปุ่มด้านล่างเพื่อดูการแสดงผลของ Modal Popup แบบต่างๆ</p>
+
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 40px;">
+                <button onclick="openModal('original')" class="demo-btn original-btn">
+                    <span>📋</span> Original Modal
+                </button>
+                <button onclick="openModal('enhanced')" class="demo-btn enhanced-btn">
+                    <span>✨</span> Enhanced Modal
+                </button>
+                <button onclick="openModal('luxury')" class="demo-btn luxury-btn">
+                    <span>👑</span> Luxury Modal
+                </button>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 16px;">
+                <h3 style="margin-bottom: 15px; color: #045b96;">ความแตกต่างที่เห็นได้ชัดเจน:</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #e0e0e0;">
+                            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Feature</th>
+                            <th style="padding: 12px; text-align: center; border: 1px solid #ddd;">Original</th>
+                            <th style="padding: 12px; text-align: center; border: 1px solid #ddd;">Enhanced</th>
+                            <th style="padding: 12px; text-align: center; border: 1px solid #ddd;">Luxury</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 12px; border: 1px solid #ddd;">Backdrop</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #999;">เทาโทนมืด</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #045b96;">Gradient + Blur + Pulse</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #d4af37;">ทองเรืองแสง</td>
+                        </tr>
+                        <tr style="background: #fafafa;">
+                            <td style="padding: 12px; border: 1px solid #ddd;">Modal Box</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #999;">ขาวธรรมดา</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #045b96;">Gradient + Glow</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #d4af37;">Dark + ขอบทองวิ่ง</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border: 1px solid #ddd;">Animation</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #999;">Scale เล็กน้อย</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #045b96;">Bounce + Stagger</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #d4af37;">Dramatic Reveal</td>
+                        </tr>
+                        <tr style="background: #fafafa;">
+                            <td style="padding: 12px; border: 1px solid #ddd;">Header</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #999;">น้ำเงินธรรมดา</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #045b96;">Shine Effect + Icon</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #d4af37;">Particles + Crown</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border: 1px solid #ddd;">Close Button</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #999;">วงกลมขาว</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #045b96;">แดงว่องเมื่อ hover</td>
+                            <td style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #d4af37;">ทองเรืองแสง</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Usage Instructions -->
+        <section class="features-list">
+            <h2>วิธีการใช้งาน</h2>
+            <div style="background: #f8f9fa; padding: 25px; border-radius: 16px; border-left: 4px solid #d4af37;">
+                <h3 style="margin-bottom: 15px; color: #045b96;">ขั้นตอนการนำไปใช้:</h3>
+                <ol style="color: #555; line-height: 1.8; padding-left: 20px;">
+                    <li>เพิ่ม CSS file ลงใน HTML: <code style="background: #e0e0e0; padding: 4px 8px; border-radius: 4px;">&lt;link rel="stylesheet" href="assets/css/variant-modal-enhanced.css"&gt;</code></li>
+                    <li>เพิ่ม class <code style="background: #e0e0e0; padding: 4px 8px; border-radius: 4px;">variant-modal enhanced-style</code> หรือ <code style="background: #e0e0e0; padding: 4px 8px; border-radius: 4px;">luxury-style</code> ใน variant-modal container</li>
+                    <li>เพิ่ม HTML elements สำหรับ effects (ดูตัวอย่างในไฟล์นี้):</li>
+                </ol>
+                <ul style="color: #555; line-height: 1.8; padding-left: 40px; margin-top: 10px;">
+                    <li><code>glow-ring</code> - สำหรับ Enhanced Style</li>
+                    <li><code>gold-border</code> + <code>sparkle-container</code> - สำหรับ Luxury Style</li>
+                    <li><code>shine-effect</code> - สำหรับทั้งสองแบบ</li>
+                </ul>
+                <p style="margin-top: 15px; color: #666;">สำหรับ JavaScript สำหรับ mouse tracking และ selection, ดูได้ที่ด้านล่างของไฟล์นี้</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Add interactive selection
+        document.querySelectorAll('.variant-modal:not(.original-style) .variant-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const parent = this.closest('.variant-modal');
+                parent.querySelectorAll('.variant-item').forEach(i => {
+                    i.classList.remove('variant-selected');
+                    const checkIcon = i.querySelector('.check-icon');
+                    if (checkIcon) checkIcon.remove();
+                });
+                this.classList.add('variant-selected');
+                if (!this.querySelector('.check-icon')) {
+                    const checkIcon = document.createElement('div');
+                    checkIcon.className = 'check-icon';
+                    checkIcon.textContent = '✓';
+                    this.appendChild(checkIcon);
+                }
+            });
+        });
+
+        // Track mouse for spotlight effect
+        document.querySelectorAll('.variant-item').forEach(item => {
+            item.addEventListener('mousemove', (e) => {
+                const rect = item.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                item.style.setProperty('--mouse-x', `${x}%`);
+                item.style.setProperty('--mouse-y', `${y}%`);
+            });
+        });
+
+        // Modal Popup Functions
+        function openModal(type) {
+            // Remove existing modal
+            const existingModal = document.querySelector('.variant-modal.fixed-modal');
+            if (existingModal) existingModal.remove();
+
+            // Create modal based on type
+            const modal = document.createElement('div');
+            modal.className = `variant-modal fixed-modal ${type}-modal`;
+
+            const variantClass = type === 'luxury' ? 'luxury-style' : (type === 'enhanced' ? 'enhanced-style' : 'original-style');
+
+            modal.innerHTML = `
+                <div class="variant-modal-backdrop" onclick="closeModal()"></div>
+                <div class="variant-modal-content">
+                    <div class="variant-modal-header">
+                        <h3>เลือกน้ำหนักทองคำแท่ง</h3>
+                        <button class="variant-modal-close" onclick="closeModal()">✕</button>
+                    </div>
+                    <div class="variant-modal-body">
+                        <div class="variant-modal ${variantClass}">
+                            <div class="variant-item variant-item-animate" style="--delay: 0s">
+                                <div class="variant-img">
+                                    ${type !== 'original' ? '<div class="glow-ring"></div>' : ''}
+                                    ${type === 'luxury' ? '<div class="gold-border"></div><div class="sparkle-container"><span class="sparkle"></span><span class="sparkle"></span><span class="sparkle"></span></div>' : ''}
+                                    <img src="https://cdn.gemproclub.com/variants/1-5g.webp" alt="1.5g">
+                                </div>
+                                <div class="variant-info">
+                                    <div class="variant-name">1.5 กรัม</div>
+                                    <div class="variant-price ${type === 'luxury' ? 'gold-gradient' : ''}">฿3,150</div>
+                                </div>
+                                ${type !== 'original' ? '<div class="shine-effect"></div>' : ''}
+                            </div>
+                            <div class="variant-item variant-item-animate" style="--delay: 0.1s">
+                                <div class="variant-img">
+                                    ${type !== 'original' ? '<div class="glow-ring"></div>' : ''}
+                                    ${type === 'luxury' ? '<div class="gold-border"></div><div class="sparkle-container"><span class="sparkle"></span><span class="sparkle"></span><span class="sparkle"></span></div>' : ''}
+                                    <img src="https://cdn.gemproclub.com/variants/2g.webp" alt="2g">
+                                </div>
+                                <div class="variant-info">
+                                    <div class="variant-name">2.0 กรัม</div>
+                                    <div class="variant-price ${type === 'luxury' ? 'gold-gradient' : ''}">฿4,200</div>
+                                </div>
+                                ${type !== 'original' ? '<div class="shine-effect"></div>' : ''}
+                            </div>
+                            <div class="variant-item variant-item-animate" style="--delay: 0.2s">
+                                <div class="variant-img">
+                                    ${type !== 'original' ? '<div class="glow-ring"></div>' : ''}
+                                    ${type === 'luxury' ? '<div class="gold-border"></div><div class="sparkle-container"><span class="sparkle"></span><span class="sparkle"></span><span class="sparkle"></span></div>' : ''}
+                                    <img src="https://cdn.gemproclub.com/variants/3g.webp" alt="3g">
+                                </div>
+                                <div class="variant-info">
+                                    <div class="variant-name">3.0 กรัม</div>
+                                    <div class="variant-price ${type === 'luxury' ? 'gold-gradient' : ''}">฿6,300</div>
+                                </div>
+                                ${type !== 'original' ? '<div class="shine-effect"></div>' : ''}
+                            </div>
+                            <div class="variant-item variant-item-animate" style="--delay: 0.3s">
+                                <div class="variant-img">
+                                    ${type !== 'original' ? '<div class="glow-ring"></div>' : ''}
+                                    ${type === 'luxury' ? '<div class="gold-border"></div><div class="sparkle-container"><span class="sparkle"></span><span class="sparkle"></span><span class="sparkle"></span></div>' : ''}
+                                    <img src="https://cdn.gemproclub.com/variants/5g.webp" alt="5g">
+                                </div>
+                                <div class="variant-info">
+                                    <div class="variant-name">5.0 กรัม</div>
+                                    <div class="variant-price ${type === 'luxury' ? 'gold-gradient' : ''}">฿10,500</div>
+                                </div>
+                                ${type !== 'original' ? '<div class="shine-effect"></div>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            // Trigger animation
+            requestAnimationFrame(() => {
+                modal.classList.add('active');
+            });
+
+            // Add click handlers for variant items
+            modal.querySelectorAll('.variant-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const parent = this.closest('.variant-modal');
+                    parent.querySelectorAll('.variant-item').forEach(i => {
+                        i.classList.remove('variant-selected');
+                        const checkIcon = i.querySelector('.check-icon');
+                        if (checkIcon) checkIcon.remove();
+                    });
+                    this.classList.add('variant-selected');
+                    if (!this.querySelector('.check-icon')) {
+                        const checkIcon = document.createElement('div');
+                        checkIcon.className = 'check-icon';
+                        checkIcon.textContent = '✓';
+                        this.appendChild(checkIcon);
+                    }
+                });
+            });
+
+            // Track mouse for spotlight
+            modal.querySelectorAll('.variant-item').forEach(item => {
+                item.addEventListener('mousemove', (e) => {
+                    const rect = item.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    item.style.setProperty('--mouse-x', `${x}%`);
+                    item.style.setProperty('--mouse-y', `${y}%`);
+                });
+            });
+
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('.variant-modal.fixed-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                setTimeout(() => {
+                    modal.remove();
+                    document.body.style.overflow = '';
+                }, 400);
+            }
+        }
+
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>

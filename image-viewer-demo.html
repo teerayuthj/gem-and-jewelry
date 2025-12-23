@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Viewer Modal Demo - Enhanced Edition</title>
+    <link rel="stylesheet" href="assets/css/image-viewer-enhanced.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .demo-header h1 {
+            font-size: 2.5rem;
+            color: #045b96;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #045b96, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .demo-header .subtitle {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        /* Style Selector */
+        .style-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .style-btn {
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Prompt', sans-serif;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .style-btn.original {
+            background: linear-gradient(135deg, #e0e0e0, #f0f0f0);
+            color: #666;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .style-btn.enhanced {
+            background: linear-gradient(135deg, #045b96, #034573);
+            color: white;
+            box-shadow: 0 4px 15px rgba(4, 91, 150, 0.3);
+        }
+
+        .style-btn.luxury {
+            background: linear-gradient(135deg, #1a1a2e, #d4af37);
+            color: white;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .style-btn.active {
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Image Gallery */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .gallery-item {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(4, 91, 150, 0.15);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-item-info {
+            padding: 18px;
+        }
+
+        .gallery-item-info h3 {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .gallery-item-info p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Features Section */
+        .features-section {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .features-section h2 {
+            text-align: center;
+            font-size: 1.8rem;
+            color: #045b96;
+            margin-bottom: 30px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 25px 20px;
+            background: linear-gradient(145deg, #f8f9fa, #ffffff);
+            border-radius: 16px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Comparison Table */
+        .comparison-section {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            margin-top: 30px;
+        }
+
+        .comparison-section h2 {
+            text-align: center;
+            font-size: 1.8rem;
+            color: #045b96;
+            margin-bottom: 30px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 14px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+        }
+
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .comparison-table th:first-child {
+            background: #f0f0f0;
+        }
+
+        .comparison-table tr:hover {
+            background: #fafafa;
+        }
+
+        @media (max-width: 768px) {
+            .demo-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <header class="demo-header">
+            <h1>Image Viewer Modal Demo</h1>
+            <p class="subtitle">Modal สำหรับดูรูปภาพสินค้าขนาดใหญ่ - คลิกรูปเพื่อดู</p>
+        </header>
+
+        <!-- Style Selector -->
+        <div class="style-selector">
+            <button class="style-btn original active" onclick="setStyle('original')">
+                📋 Original
+            </button>
+            <button class="style-btn enhanced" onclick="setStyle('enhanced')">
+                ✨ Enhanced
+            </button>
+            <button class="style-btn luxury" onclick="setStyle('luxury')">
+                👑 Luxury
+            </button>
+        </div>
+
+        <!-- Test Modal Buttons -->
+        <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
+            <button class="style-btn original" onclick="testModal('original')">
+                📋 ทดสอบ Original Modal
+            </button>
+            <button class="style-btn enhanced" onclick="testModal('enhanced')">
+                ✨ ทดสอบ Enhanced Modal
+            </button>
+            <button class="style-btn luxury" onclick="testModal('luxury')">
+                👑 ทดสอบ Luxury Modal
+            </button>
+        </div>
+
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            หรือคลิกที่รูปสินค้าด้านล่างเพื่อดู modal ตามสไตล์ที่เลือกไว้ด้านบน
+        </p>
+
+        <!-- Image Gallery -->
+        <div class="image-gallery">
+            <div class="gallery-item" onclick="openImageViewer(this)"
+                 data-img="https://cdn.gemproclub.com/variants/1-5g.webp"
+                 data-title="ทองคำแท่ง 1.5 กรัม"
+                 data-price="฿3,150">
+                <img src="https://cdn.gemproclub.com/variants/1-5g.webp" alt="ทองคำแท่ง 1.5 กรัม">
+                <div class="gallery-item-info">
+                    <h3>ทองคำแท่ง 1.5 กรัม</h3>
+                    <p>฿3,150</p>
+                </div>
+            </div>
+
+            <div class="gallery-item" onclick="openImageViewer(this)"
+                 data-img="https://cdn.gemproclub.com/variants/2g.webp"
+                 data-title="ทองคำแท่ง 2.0 กรัม"
+                 data-price="฿4,200">
+                <img src="https://cdn.gemproclub.com/variants/2g.webp" alt="ทองคำแท่ง 2.0 กรัม">
+                <div class="gallery-item-info">
+                    <h3>ทองคำแท่ง 2.0 กรัม</h3>
+                    <p>฿4,200</p>
+                </div>
+            </div>
+
+            <div class="gallery-item" onclick="openImageViewer(this)"
+                 data-img="https://cdn.gemproclub.com/variants/3g.webp"
+                 data-title="ทองคำแท่ง 3.0 กรัม"
+                 data-price="฿6,300">
+                <img src="https://cdn.gemproclub.com/variants/3g.webp" alt="ทองคำแท่ง 3.0 กรัม">
+                <div class="gallery-item-info">
+                    <h3>ทองคำแท่ง 3.0 กรัม</h3>
+                    <p>฿6,300</p>
+                </div>
+            </div>
+
+            <div class="gallery-item" onclick="openImageViewer(this)"
+                 data-img="https://cdn.gemproclub.com/variants/5g.webp"
+                 data-title="ทองคำแท่ง 5.0 กรัม"
+                 data-price="฿10,500">
+                <img src="https://cdn.gemproclub.com/variants/5g.webp" alt="ทองคำแท่ง 5.0 กรัม">
+                <div class="gallery-item-info">
+                    <h3>ทองคำแท่ง 5.0 กรัม</h3>
+                    <p>฿10,500</p>
+                </div>
+            </div>
+
+            <div class="gallery-item" onclick="openImageViewer(this)"
+                 data-img="https://cdn.gemproclub.com/variants/1-5g.webp"
+                 data-title="ทองคำแท่ง 10.0 กรัม"
+                 data-price="฿21,000">
+                <img src="https://cdn.gemproclub.com/variants/1-5g.webp" alt="ทองคำแท่ง 10.0 กรัม">
+                <div class="gallery-item-info">
+                    <h3>ทองคำแท่ง 10.0 กรัม</h3>
+                    <p>฿21,000</p>
+                </div>
+            </div>
+
+            <div class="gallery-item" onclick="openImageViewer(this)"
+                 data-img="https://cdn.gemproclub.com/variants/2g.webp"
+                 data-title="ทองคำแท่ง 15.0 กรัม"
+                 data-price="฿31,500">
+                <img src="https://cdn.gemproclub.com/variants/2g.webp" alt="ทองคำแท่ง 15.0 กรัม">
+                <div class="gallery-item-info">
+                    <h3>ทองคำแท่ง 15.0 กรัม</h3>
+                    <p>฿31,500</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <h2>Features ที่เพิ่มเข้ามา</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🖼️</div>
+                    <h3>Beautiful Frame</h3>
+                    <p>กรอบรูปสวยหรูพร้อม Glow Effect</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Zoom Function</h3>
+                    <p>คลิกเพื่อซูมรูปภาพได้</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3>Smooth Animations</h3>
+                    <p>Animation ลื่นไหลสวยงาม</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Premium Backdrop</h3>
+                    <p>พื้นหลังสวยหรู Blur + Gradient</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💡</div>
+                    <h3>Image Info</h3>
+                    <p>แสดงข้อมูลสินค้าใต้รูป</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⬅️➡️</div>
+                    <h3>Navigation</h3>
+                    <p>ปุ่มเลื่อนดูรูปอื่น (ในอนาคต)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Table -->
+        <section class="comparison-section">
+            <h2>เปรียบเทียบแต่ละสไตล์</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Original</th>
+                        <th>Enhanced</th>
+                        <th>Luxury</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Backdrop</strong></td>
+                        <td>ดำมืด</td>
+                        <td style="color: #045b96;">Gradient + Blur + Pulse</td>
+                        <td style="color: #d4af37;">ทองเรืองแสง + Blur</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Image Frame</strong></td>
+                        <td>ธรรมดา</td>
+                        <td style="color: #045b96;">กรอบ + Glow Ring</td>
+                        <td style="color: #d4af37;">กรอบทองวิ่ง</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Close Button</strong></td>
+                        <td>วงกลมขาว</td>
+                        <td style="color: #045b96;">น้ำเงิน + แดงเมื่อ hover</td>
+                        <td style="color: #d4af37;">ทองเรืองแสง</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Animation</strong></td>
+                        <td>Scale เล็กน้อย</td>
+                        <td style="color: #045b96;">Bounce + Stagger</td>
+                        <td style="color: #d4af37;">Dramatic Reveal</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Info Overlay</strong></td>
+                        <td>ไม่มี</td>
+                        <td style="color: #045b96;">มี + Glassmorphism</td>
+                        <td style="color: #d4af37;">มี + Gold Border</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gold Effects</strong></td>
+                        <td>ไม่มี</td>
+                        <td style="color: #045b96;">Glow Ring</td>
+                        <td style="color: #d4af37;">Full Gold Premium</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script>
+        // Current selected style
+        let currentStyle = 'original';
+
+        // Test images (ทดสอบด้วยรูปที่แน่นอนว่าโหลดได้)
+        const testImages = [
+            {
+                src: 'https://picsum.photos/800/600?random=1',
+                title: 'ทองคำแท่ง 1.5 กรัม',
+                price: '฿3,150'
+            },
+            {
+                src: 'https://picsum.photos/800/600?random=2',
+                title: 'ทองคำแท่ง 2.0 กรัม',
+                price: '฿4,200'
+            },
+            {
+                src: 'https://picsum.photos/800/600?random=3',
+                title: 'ทองคำแท่ง 3.0 กรัม',
+                price: '฿6,300'
+            },
+            {
+                src: 'https://picsum.photos/800/600?random=4',
+                title: 'ทองคำแท่ง 5.0 กรัม',
+                price: '฿10,500'
+            }
+        ];
+
+        function setStyle(style) {
+            currentStyle = style;
+
+            // Update button states (only for style selector, not test buttons)
+            document.querySelectorAll('.style-selector .style-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.style-selector .style-btn.${style}`).classList.add('active');
+        }
+
+        // Test modal function - เปิด modal โดยตรงเพื่อทดสอบแต่ละสไตล์
+        function testModal(style) {
+            const randomImg = testImages[Math.floor(Math.random() * testImages.length)];
+            openImageViewerWithStyle(style, randomImg.src, randomImg.title, randomImg.price);
+        }
+
+        function openImageViewer(element) {
+            // Get image data
+            const imgSrc = element.dataset.img;
+            const title = element.dataset.title;
+            const price = element.dataset.price;
+
+            openImageViewerWithStyle(currentStyle, imgSrc, title, price);
+        }
+
+        function openImageViewerWithStyle(style, imgSrc, title, price) {
+            // Create modal
+            const modal = document.createElement('div');
+            modal.className = `image-viewer-modal ${style}-modal`;
+
+            modal.innerHTML = `
+                <div class="image-viewer-backdrop"></div>
+                <div class="image-viewer-content">
+                    <div class="image-viewer-image-wrapper">
+                        <img class="image-viewer-image" src="${imgSrc}" alt="${title}" onerror="this.src='https://via.placeholder.com/800x600/045b96/ffffff?text=Gold+Bar'">
+                    </div>
+                    <button class="image-viewer-close">✕</button>
+                    <div class="image-viewer-info">
+                        <span><span class="info-icon">📦</span> ${title}</span>
+                        <span><span class="info-icon">💰</span> ${price}</span>
+                    </div>
+                    <div class="zoom-hint">คลิกเพื่อซูมรูป</div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+
+            // Trigger animation
+            requestAnimationFrame(() => {
+                modal.classList.add('active');
+            });
+
+            // Close handlers
+            const closeBtn = modal.querySelector('.image-viewer-close');
+            const backdrop = modal.querySelector('.image-viewer-backdrop');
+            const image = modal.querySelector('.image-viewer-image');
+
+            closeBtn.addEventListener('click', closeImageViewer);
+            backdrop.addEventListener('click', closeImageViewer);
+
+            // Zoom functionality
+            let isZoomed = false;
+            image.addEventListener('click', (e) => {
+                e.stopPropagation();
+                isZoomed = !isZoomed;
+                image.classList.toggle('zoomed', isZoomed);
+                modal.classList.toggle('zoomed', isZoomed);
+            });
+
+            function closeImageViewer() {
+                modal.classList.remove('active');
+                setTimeout(() => {
+                    modal.remove();
+                    document.body.style.overflow = '';
+                }, 400);
+            }
+        }
+
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.querySelector('.image-viewer-modal');
+                if (modal) {
+                    modal.classList.remove('active');
+                    setTimeout(() => {
+                        modal.remove();
+                        document.body.style.overflow = '';
+                    }, 400);
+                }
+            }
+        });
+
+        // Update gallery images to use test images
+        document.addEventListener('DOMContentLoaded', () => {
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            galleryItems.forEach((item, index) => {
+                const img = item.querySelector('img');
+                if (img && testImages[index]) {
+                    img.src = testImages[index].src;
+                    item.dataset.img = testImages[index].src;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

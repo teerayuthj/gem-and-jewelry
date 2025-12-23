@@ -572,18 +572,19 @@ window.ImageLoader = {
     },
 
     /**
-     * Open image lightbox modal
+     * Open image lightbox modal - Enhanced Edition
      * @param {Object} options - Lightbox options
      * @param {string} options.title - Image title
+     * @param {string} options.price - Price (optional)
      * @param {Array<string>} options.images - Array of image URLs
      * @param {number} options.startIndex - Starting index
      * @param {Function} t - Translation function
      */
-    openImageLightbox({ title, images, startIndex = 0 }, t) {
+    openImageLightbox({ title, price, images, startIndex = 0 }, t) {
         if (!Array.isArray(images) || images.length === 0) return;
 
-        // Remove existing lightbox
-        const existing = document.getElementById('imageLightbox');
+        // Remove existing modal
+        const existing = document.querySelector('.image-viewer-modal');
         if (existing) {
             try {
                 if (typeof existing._cleanup === 'function') existing._cleanup();
@@ -593,46 +594,66 @@ window.ImageLoader = {
             existing.remove();
         }
 
-        const lightbox = document.createElement('div');
-        lightbox.id = 'imageLightbox';
-        lightbox.className = 'img-lightbox';
+        const modal = document.createElement('div');
+        modal.className = 'image-viewer-modal enhanced-modal';
 
         const safeIndex = Math.max(0, Math.min(images.length - 1, startIndex));
         let index = safeIndex;
+        let isZoomed = false;
 
-        const renderDots = () => {
+        // Render navigation arrows for multiple images
+        const renderNavigation = () => {
             if (images.length <= 1) return '';
-            return images.map((_, i) => `
-                <button type="button" class="img-lightbox-dot ${i === index ? 'active' : ''}" data-index="${i}" aria-label="Image ${i + 1}"></button>
-            `).join('');
+            return `
+                <button class="image-viewer-nav prev" aria-label="Previous">‹</button>
+                <button class="image-viewer-nav next" aria-label="Next">›</button>
+            `;
         };
 
-        lightbox.innerHTML = `
-            <div class="img-lightbox-backdrop"></div>
-            <div class="img-lightbox-content" role="dialog" aria-modal="true">
-                <div class="img-lightbox-header">
-                    <div class="img-lightbox-title">${title || ''}</div>
-                    <div class="img-lightbox-count">${index + 1}/${images.length}</div>
-                    <button type="button" class="img-lightbox-close" aria-label="Close">×</button>
+        // Render dots for multiple images
+        const renderDots = () => {
+            if (images.length <= 1) return '';
+            return `
+                <div class="image-viewer-dots">
+                    ${images.map((_, i) => `
+                        <button type="button" class="image-viewer-dot ${i === index ? 'active' : ''}" data-index="${i}" aria-label="Image ${i + 1}"></button>
+                    `).join('')}
                 </div>
-                <div class="img-lightbox-stage">
-                    <button type="button" class="img-lightbox-nav prev" aria-label="Previous">‹</button>
-                    <img class="img-lightbox-img" alt="${title || 'Image'}" decoding="async">
-                    <button type="button" class="img-lightbox-nav next" aria-label="Next">›</button>
+            `;
+        };
+
+        // Price info section
+        const priceInfo = price ? `<span><span class="info-icon">💰</span> ${price}</span>` : '';
+        const countInfo = images.length > 1 ? `<span class="image-count">${index + 1}/${images.length}</span>` : '';
+
+        modal.innerHTML = `
+            <div class="image-viewer-backdrop"></div>
+            <div class="image-viewer-content">
+                ${renderNavigation()}
+                <div class="image-viewer-image-wrapper">
+                    <img class="image-viewer-image" src="${images[index]}" alt="${title || 'Image'}"
+                         onerror="this.src='https://via.placeholder.com/800x600/045b96/ffffff?text=Gold+Bar'">
                 </div>
-                <div class="img-lightbox-dots">${renderDots()}</div>
+                <button class="image-viewer-close" aria-label="Close">✕</button>
+                <div class="image-viewer-info">
+                    <span><span class="info-icon">📦</span> ${title || ''}</span>
+                    ${priceInfo}
+                    ${countInfo}
+                </div>
+                <div class="zoom-hint">${t ? t('zoomHint') || 'คลิกเพื่อซูมรูป' : 'คลิกเพื่อซูมรูป'}</div>
+                ${renderDots()}
             </div>
         `;
 
-        document.body.appendChild(lightbox);
-        document.body.classList.add('modal-open');
+        document.body.appendChild(modal);
+        document.body.style.overflow = 'hidden';
 
-        const imgEl = lightbox.querySelector('.img-lightbox-img');
-        const countEl = lightbox.querySelector('.img-lightbox-count');
-        const dotsEl = lightbox.querySelector('.img-lightbox-dots');
-        const prevBtn = lightbox.querySelector('.img-lightbox-nav.prev');
-        const nextBtn = lightbox.querySelector('.img-lightbox-nav.next');
-        const stageEl = lightbox.querySelector('.img-lightbox-stage');
+        const imgEl = modal.querySelector('.image-viewer-image');
+        const prevBtn = modal.querySelector('.image-viewer-nav.prev');
+        const nextBtn = modal.querySelector('.image-viewer-nav.next');
+        const dotsEl = modal.querySelector('.image-viewer-dots');
+        const infoEl = modal.querySelector('.image-viewer-info');
+        const contentEl = modal.querySelector('.image-viewer-content');
 
         const preloadNeighbor = () => {
             if (images.length <= 1) return;
@@ -644,20 +665,32 @@ window.ImageLoader = {
             });
         };
 
+        const updateDots = () => {
+            if (!dotsEl) return;
+            dotsEl.querySelectorAll('.image-viewer-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        };
+
+        const updateCount = () => {
+            const countSpan = infoEl?.querySelector('.image-count');
+            if (countSpan) {
+                countSpan.textContent = `${index + 1}/${images.length}`;
+            }
+        };
+
         const update = () => {
             imgEl.src = images[index];
-            countEl.textContent = `${index + 1}/${images.length}`;
-            if (images.length <= 1) {
-                prevBtn.style.display = 'none';
-                nextBtn.style.display = 'none';
-                dotsEl.style.display = 'none';
-            } else {
-                prevBtn.style.display = '';
-                nextBtn.style.display = '';
-                dotsEl.style.display = '';
-                dotsEl.innerHTML = renderDots();
-            }
+            updateDots();
+            updateCount();
             preloadNeighbor();
+
+            // Reset zoom when changing images
+            if (isZoomed) {
+                isZoomed = false;
+                imgEl.classList.remove('zoomed');
+                modal.classList.remove('zoomed');
+            }
         };
 
         const go = (nextIndex) => {
@@ -666,27 +699,55 @@ window.ImageLoader = {
         };
 
         const close = () => {
-            if (typeof lightbox._cleanup === 'function') lightbox._cleanup();
-            lightbox.classList.remove('active');
+            if (typeof modal._cleanup === 'function') modal._cleanup();
+            modal.classList.remove('active');
             setTimeout(() => {
-                document.body.classList.remove('modal-open');
-                lightbox.remove();
-            }, 200);
+                document.body.style.overflow = '';
+                modal.remove();
+            }, 400);
         };
 
+        // Zoom functionality
+        imgEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isZoomed = !isZoomed;
+            imgEl.classList.toggle('zoomed', isZoomed);
+            modal.classList.toggle('zoomed', isZoomed);
+        });
+
+        // Event handlers
+        modal.querySelector('.image-viewer-close').addEventListener('click', close);
+        modal.querySelector('.image-viewer-backdrop').addEventListener('click', close);
+
+        if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); go(index - 1); });
+        if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); go(index + 1); });
+
+        if (dotsEl) {
+            dotsEl.addEventListener('click', (e) => {
+                const dot = e.target.closest('.image-viewer-dot');
+                if (!dot) return;
+                const i = parseInt(dot.dataset.index, 10);
+                if (Number.isFinite(i)) go(i);
+            });
+        }
+
+        // Keyboard navigation
         const keyHandler = (e) => {
             if (e.key === 'Escape') return close();
             if (images.length <= 1) return;
             if (e.key === 'ArrowLeft') return go(index - 1);
             if (e.key === 'ArrowRight') return go(index + 1);
         };
+        document.addEventListener('keydown', keyHandler);
 
-        // Touch swipe
+        // Touch swipe support
         let touchStartX = null;
         const touchStart = (e) => {
+            if (isZoomed) return; // Disable swipe when zoomed
             touchStartX = e.touches?.[0]?.clientX ?? null;
         };
         const touchEnd = (e) => {
+            if (isZoomed) return;
             const endX = e.changedTouches?.[0]?.clientX ?? null;
             if (touchStartX == null || endX == null || images.length <= 1) return;
             const dx = endX - touchStartX;
@@ -695,26 +756,18 @@ window.ImageLoader = {
             touchStartX = null;
         };
 
-        lightbox.querySelector('.img-lightbox-close').addEventListener('click', close);
-        lightbox.querySelector('.img-lightbox-backdrop').addEventListener('click', close);
-        prevBtn.addEventListener('click', () => go(index - 1));
-        nextBtn.addEventListener('click', () => go(index + 1));
-        dotsEl.addEventListener('click', (e) => {
-            const dot = e.target.closest('.img-lightbox-dot');
-            if (!dot) return;
-            const i = parseInt(dot.dataset.index, 10);
-            if (Number.isFinite(i)) go(i);
-        });
+        contentEl.addEventListener('touchstart', touchStart, { passive: true });
+        contentEl.addEventListener('touchend', touchEnd, { passive: true });
 
-        stageEl.addEventListener('touchstart', touchStart, { passive: true });
-        stageEl.addEventListener('touchend', touchEnd, { passive: true });
-        document.addEventListener('keydown', keyHandler);
-
-        lightbox._cleanup = () => {
+        modal._cleanup = () => {
             document.removeEventListener('keydown', keyHandler);
         };
 
-        requestAnimationFrame(() => lightbox.classList.add('active'));
-        update();
+        // Trigger animation
+        requestAnimationFrame(() => {
+            modal.classList.add('active');
+        });
+
+        preloadNeighbor();
     }
 };

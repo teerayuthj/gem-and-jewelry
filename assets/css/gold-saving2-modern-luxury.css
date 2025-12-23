@@ -771,18 +771,23 @@
    VARIANT MODAL ANIMATIONS
    ============================================ */
 
-/* Variant item base styles with animations */
+/* Variant item base styles - Elegant & Refined */
 .variant-modal .variant-item {
     position: relative;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
     border-radius: 16px;
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    /* Smooth, elegant transition */
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
+    /* Refined shadow */
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.04),
+        0 1px 3px rgba(0, 0, 0, 0.02);
     will-change: transform;
 }
 
-/* Animated gradient border for variant items */
+/* Elegant gradient border for variant items */
 .variant-modal .variant-item::before {
     content: '';
     position: absolute;
@@ -790,25 +795,29 @@
     left: 0;
     right: 0;
     bottom: 0;
+    /* Static elegant gradient - no animation */
     background: linear-gradient(
-        45deg,
-        #045b96,
-        #002e65,
-        #d4af37,
-        #ffd700,
-        #045b96
+        135deg,
+        rgba(4, 91, 150, 0.04) 0%,
+        rgba(212, 175, 55, 0.06) 50%,
+        rgba(4, 91, 150, 0.04) 100%
     );
-    background-size: 400% 400%;
+    background-size: 100% 100%;
     border-radius: 16px;
     z-index: 0;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    animation: gradientFlow 8s ease infinite paused;
+    opacity: 1;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
 }
 
 .variant-modal .variant-item:hover::before {
-    opacity: 0.12;
-    animation-play-state: running;
+    /* Slightly more visible on hover */
+    background: linear-gradient(
+        135deg,
+        rgba(4, 91, 150, 0.08) 0%,
+        rgba(212, 175, 55, 0.1) 50%,
+        rgba(4, 91, 150, 0.08) 100%
+    );
 }
 
 /* Inner content layer */
@@ -831,7 +840,7 @@
     z-index: 2;
 }
 
-/* Spotlight effect for variant items */
+/* Subtle spotlight for variant items */
 .variant-modal .variant-item .variant-spotlight {
     position: absolute;
     top: 0;
@@ -841,11 +850,11 @@
     pointer-events: none;
     z-index: 3;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     background: radial-gradient(
-        500px circle at var(--variant-mouse-x, 50%) var(--variant-mouse-y, 50%),
-        rgba(255, 215, 0, 0.15),
-        transparent 40%
+        400px circle at var(--variant-mouse-x, 50%) var(--variant-mouse-y, 50%),
+        rgba(212, 175, 55, 0.08),
+        transparent 50%
     );
     border-radius: 16px;
 }
@@ -854,25 +863,25 @@
     opacity: 1;
 }
 
-/* Shimmer overlay for variant items */
+/* Elegant shimmer overlay for variant items */
 .variant-modal .variant-item .variant-shimmer {
     position: absolute;
     top: 0;
     left: -100%;
-    width: 50%;
+    width: 40%;
     height: 100%;
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 255, 255, 0.5),
-        rgba(212, 175, 55, 0.25),
-        rgba(255, 255, 255, 0.5),
+        rgba(255, 255, 255, 0.4),
+        rgba(212, 175, 55, 0.15),
+        rgba(255, 255, 255, 0.4),
         transparent
     );
-    transform: skewX(-20deg);
+    transform: skewX(-25deg);
     pointer-events: none;
     z-index: 10;
-    transition: left 0.8s ease;
+    transition: left 1s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 16px;
 }
 
@@ -880,23 +889,23 @@
     left: 150%;
 }
 
-/* Hover effect - lift and glow */
+/* Elegant hover effect - Subtle lift */
 .variant-modal .variant-item:hover {
-    transform: translateY(-8px) scale(1.02);
+    transform: translateY(-4px) scale(1.01);
     box-shadow:
-        0 20px 50px rgba(4, 91, 150, 0.25),
-        0 0 30px rgba(4, 91, 150, 0.15),
+        0 8px 24px rgba(4, 91, 150, 0.1),
+        0 2px 8px rgba(0, 0, 0, 0.04),
         inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
-/* Ripple effect for click feedback */
+/* Elegant ripple effect for click feedback */
 .variant-modal .variant-item .variant-ripple {
     position: absolute;
     top: 50%;
     left: 50%;
     width: 0;
     height: 0;
-    background: radial-gradient(circle, rgba(4, 91, 150, 0.3), transparent 70%);
+    background: radial-gradient(circle, rgba(4, 91, 150, 0.15), transparent 70%);
     border-radius: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
@@ -904,7 +913,7 @@
 }
 
 .variant-modal .variant-item .variant-ripple.ripple-animate {
-    animation: rippleEffect 0.6s ease-out forwards;
+    animation: rippleEffect 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes rippleEffect {
@@ -914,54 +923,39 @@
         opacity: 1;
     }
     100% {
-        width: 300px;
-        height: 300px;
+        width: 250px;
+        height: 250px;
         opacity: 0;
     }
 }
 
-/* Selection animation */
+/* Elegant selection animation */
 .variant-modal .variant-item.variant-selected {
-    transform: translateY(-8px) scale(1.03);
+    transform: translateY(-4px) scale(1.015);
     box-shadow:
-        0 20px 50px rgba(76, 175, 80, 0.35),
-        0 0 30px rgba(76, 175, 80, 0.25),
-        0 0 0 3px rgba(76, 175, 80, 0.4),
+        0 8px 24px rgba(76, 175, 80, 0.2),
+        0 2px 8px rgba(76, 175, 80, 0.1),
+        0 0 0 2px rgba(76, 175, 80, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    animation: selectedPulse 0.5s ease-out;
 }
 
 .variant-modal .variant-item.variant-selected::before {
+    /* Elegant green gradient - static */
     background: linear-gradient(
-        45deg,
-        #4caf50,
-        #2e7d32,
-        #66bb6a,
-        #43a047,
-        #4caf50
+        135deg,
+        rgba(76, 175, 80, 0.1) 0%,
+        rgba(102, 187, 106, 0.08) 50%,
+        rgba(76, 175, 80, 0.1) 100%
     );
-    background-size: 400% 400%;
-    opacity: 0.15;
-    animation-play-state: running;
+    background-size: 100% 100%;
+    opacity: 1;
 }
 
-@keyframes selectedPulse {
-    0% {
-        transform: translateY(-8px) scale(1.02);
-    }
-    50% {
-        transform: translateY(-8px) scale(1.06);
-    }
-    100% {
-        transform: translateY(-8px) scale(1.03);
-    }
-}
-
-/* Entrance animation - staggered fade-in */
+/* Elegant entrance animation - staggered fade-in */
 .variant-modal .variant-item.variant-item-animate {
     opacity: 0;
-    transform: translateY(30px) scale(0.95);
-    animation: variantItemEnter 0.5s ease-out forwards;
+    transform: translateY(16px) scale(0.98);
+    animation: variantItemEnter 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes variantItemEnter {
@@ -971,34 +965,37 @@
     }
 }
 
-/* Variant image hover effect */
+/* Elegant variant image hover effect */
 .variant-modal .variant-item:hover .variant-img img {
-    transform: scale(1.08);
-    filter: drop-shadow(0 8px 20px rgba(4, 91, 150, 0.2));
+    transform: scale(1.04);
+    filter: drop-shadow(0 4px 12px rgba(4, 91, 150, 0.12));
 }
 
 .variant-modal .variant-img img {
-    transition: transform 0.3s ease, filter 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                filter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;
 }
 
-/* Variant price text shimmer */
+/* Elegant variant price text */
 .variant-modal .variant-price {
     position: relative;
     overflow: hidden;
     font-weight: 700;
+    /* Rich blue-gold gradient - static */
     background: linear-gradient(
         135deg,
         #045b96 0%,
         #002e65 25%,
-        #d4af37 50%,
-        #ffd700 75%,
+        #b8860b 50%,
+        #d4af37 75%,
         #045b96 100%
     );
-    background-size: 200% auto;
+    background-size: 100% 100%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .variant-modal .variant-item:hover .variant-price::after {
@@ -1006,29 +1003,28 @@
     position: absolute;
     top: 0;
     left: -100%;
-    width: 100%;
+    width: 60%;
     height: 100%;
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 215, 0, 0.3),
+        rgba(212, 175, 55, 0.15),
         transparent
     );
-    animation: priceShimmer 1s ease forwards;
+    animation: priceShimmer 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes priceShimmer {
     to { left: 100%; }
 }
 
-/* Variant hover state for name */
+/* Elegant variant name styling */
 .variant-modal .variant-item:hover .variant-name {
     color: #045b96;
-    transform: translateX(4px);
 }
 
 .variant-modal .variant-name {
-    transition: all 0.3s ease;
+    transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Performance optimization for variant modal */
