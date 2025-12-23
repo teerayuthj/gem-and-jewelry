@@ -170,12 +170,26 @@ window.EventHandler = {
     /**
      * Update calculation and UI
      * @param {Object} calculator - Calculator instance
+     * @param {boolean} animateNumbers - Whether to animate number changes (default: true)
      */
-    updateCalculation(calculator) {
+    updateCalculation(calculator, animateNumbers = true) {
         const total = calculator.monthlyAmount * calculator.months;
 
-        // Update total display
-        document.getElementById('totalAmount2').textContent = calculator.formatNumber(total);
+        // Update total display (with animation if enabled)
+        const totalAmountEl = document.getElementById('totalAmount2');
+        if (animateNumbers && typeof window.AnimatedCounter !== 'undefined') {
+            // Get current value and parse it correctly for animation
+            const currentText = totalAmountEl.textContent || '0';
+            const currentTotal = parseFloat(currentText.replace(/,/g, '')) || 0;
+
+            window.AnimatedCounter.animate(totalAmountEl, total, {
+                duration: 800,
+                format: (num) => calculator.formatNumber(Math.round(num))
+            });
+        } else {
+            totalAmountEl.textContent = calculator.formatNumber(total);
+        }
+
         document.getElementById('formula2').textContent =
             `${calculator.formatNumber(calculator.monthlyAmount)} x ${calculator.months} ${calculator.t('monthUnit')}`;
 
@@ -215,6 +229,11 @@ window.EventHandler = {
             totalDaysEl.textContent = calculator.formatNumber(totalWorkingDays);
         }
 
+        // Check for milestones
+        if (typeof window.MilestoneTracker !== 'undefined') {
+            window.MilestoneTracker.check(totalGoldBaht, total);
+        }
+
         // Debug: แสดงข้อมูลการซื้อรายวัน
         if (calculator.debugMode) {
             console.log('=== 📊 การซื้อทองรายวัน (จันทร์-ศุกร์) ===');
@@ -235,8 +254,20 @@ window.EventHandler = {
             console.log('==========================================');
         }
 
-        // Update gold weight
-        document.getElementById('goldWeight2').textContent = totalGoldBaht.toFixed(4);
+        // Update gold weight (with animation if enabled)
+        const goldWeightEl = document.getElementById('goldWeight2');
+        if (animateNumbers && typeof window.AnimatedCounter !== 'undefined') {
+            // Get current value from text content and parse it correctly
+            const currentText = goldWeightEl.textContent || '0';
+            const currentGoldWeight = parseFloat(currentText.replace(/,/g, '')) || 0;
+
+            window.AnimatedCounter.animate(goldWeightEl, totalGoldBaht, {
+                duration: 800,
+                format: (num) => num.toFixed(4)
+            });
+        } else {
+            goldWeightEl.textContent = totalGoldBaht.toFixed(4);
+        }
 
         // Calculate profit/loss
         const currentGoldValue = totalGoldBaht * calculator.currentGoldPrice;
@@ -311,12 +342,23 @@ window.EventHandler = {
     },
 
     /**
-     * Show lead status message
+     * Show lead status message (using toast notifications if available)
      * @param {string} messageKey - Translation key for message
      * @param {string} variant - Status variant ('success' or 'info')
      * @param {Function} t - Translation function
      */
     setLeadStatus(messageKey, variant = 'success', t) {
+        // Use toast notifications if available
+        if (typeof window.ToastNotifications !== 'undefined') {
+            const message = t(messageKey);
+            if (variant === 'success') {
+                window.ToastNotifications.success(message);
+            } else {
+                window.ToastNotifications.info(message);
+            }
+        }
+
+        // Also update inline status as fallback
         const el = document.getElementById('leadStatus2');
         if (!el) return;
         el.classList.remove('success', 'info');
