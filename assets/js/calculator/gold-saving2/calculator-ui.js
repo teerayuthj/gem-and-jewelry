@@ -695,7 +695,10 @@ window.ProductRenderer = {
                         : [];
                 if (images.length === 0) return;
                 if (openImageLightboxCallback) {
-                    openImageLightboxCallback({ title: variant?.name || '', images, startIndex: 0 });
+                    const price = variant?.price
+                        ? `${formatNumber(variant.price)} ${t('baht')}`
+                        : '';
+                    openImageLightboxCallback({ title: variant?.name || '', price, images, startIndex: 0 });
                 }
                 return;
             }

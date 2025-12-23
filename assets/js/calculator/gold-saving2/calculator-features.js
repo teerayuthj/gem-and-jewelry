@@ -426,7 +426,10 @@ window.EventHandler = {
                 const title = product
                     ? (currentLang === 'en' ? product.nameEn : product.name)
                     : '';
-                callbacks.openImageLightbox({ title, images, startIndex: 0 });
+                const price = product?.price
+                    ? `${GoldSavingUtils.formatNumber(product.price)} บาท`
+                    : '';
+                callbacks.openImageLightbox({ title, price, images, startIndex: 0 });
                 return;
             }
 
