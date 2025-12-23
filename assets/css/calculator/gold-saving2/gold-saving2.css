@@ -1,0 +1,47 @@
+/**
+ * Gold Saving Calculator 2 - Main Stylesheet
+ *
+ * This is the main CSS file for saving2.html
+ * All styles are organized into separate files for better maintainability
+ *
+ * Directory Structure:
+ * gold-saving2/
+ * ├── gold-saving2.css (this file - imports all others)
+ *
+ * @version 2.0.0
+ * @since 2025-12-23
+ */
+
+/* ============================================
+   1. LIQUID GLASS CARDS
+   Base glassmorphism design for all cards
+   ============================================ */
+@import url('../../liquid-glass-cards.css');
+
+/* ============================================
+   2. MAIN CALCULATOR STYLES
+   Core layout and component styles
+   ============================================ */
+@import url('../../gold-saving2.css');
+
+/* ============================================
+   3. ENHANCEMENTS
+   Additional UI enhancements and effects
+   ============================================ */
+@import url('../../gold-saving2-enhancements.css');
+
+/* ============================================
+   4. VISUALS
+   Visual effects and animations
+   ============================================ */
+@import url('../../gold-saving2-visuals.css');
+
+/* ============================================
+   5. MODERN LUXURY EFFECTS
+   Premium animations and interactions
+   - Spotlight effects
+   - Shimmer overlays
+   - 3D hover effects
+   - Variant modal animations
+   ============================================ */
+@import url('../../gold-saving2-modern-luxury.css');

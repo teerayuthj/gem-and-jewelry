@@ -67,13 +67,11 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="./assets/css/liquid-glass-cards.css" />
-    <link rel="stylesheet" href="./assets/css/gold-saving2.css" />
-    <link rel="stylesheet" href="./assets/css/gold-saving2-enhancements.css" />
-    <link rel="stylesheet" href="./assets/css/gold-saving2-visuals.css" />
-    <!-- Modern Luxury Effects -->
-    <link rel="stylesheet" href="./assets/css/gold-saving2-modern-luxury.css" />
+    <!-- ============================================
+         CSS Files for Gold Saving Calculator 2
+         All styles consolidated into one file
+         ============================================ -->
+    <link rel="stylesheet" href="./assets/css/calculator/gold-saving2/gold-saving2.css" />
 </head>
 
 <body style="
@@ -128,21 +126,23 @@
 
 
 
-    <!-- Scripts -->
-    <!-- Dependencies -->
-    <script src="./assets/js/shared-price-manager.js"></script>
-    <script src="./assets/js/gold-products.js"></script>
+    <!-- ============================================
+         JS Files for Gold Saving Calculator 2
+         ============================================ -->
+    <!-- Shared Dependencies -->
+    <script src="./assets/js/shared/shared-price-manager.js"></script>
+    <script src="./assets/js/shared/gold-products.js"></script>
 
     <!-- Calculator Modules (โหลดตามลำดับ) -->
-    <script src="./assets/js/calculator/calculator-config.js"></script>
-    <script src="./assets/js/calculator/calculator-core.js"></script>
-    <script src="./assets/js/calculator/calculator-ui.js"></script>
-    <script src="./assets/js/calculator/calculator-features.js"></script>
-    <script src="./assets/js/gold-saving-visuals.js"></script>
-    <script src="./assets/js/calculator/gold-saving-calculator2.js"></script>
+    <script src="./assets/js/calculator/gold-saving2/calculator-config.js"></script>
+    <script src="./assets/js/calculator/gold-saving2/calculator-core.js"></script>
+    <script src="./assets/js/calculator/gold-saving2/calculator-ui.js"></script>
+    <script src="./assets/js/calculator/gold-saving2/calculator-features.js"></script>
+    <script src="./assets/js/calculator/gold-saving2/gold-saving-visuals.js"></script>
+    <script src="./assets/js/calculator/gold-saving2/gold-saving-calculator2.js"></script>
 
     <!-- Modern Luxury Effects -->
-    <script src="./assets/js/modern-luxury-effects.js"></script>
+    <script src="./assets/js/calculator/gold-saving2/modern-luxury-effects.js"></script>
 
     <script>
         // Initialize Gold Saving Calculator 2
@@ -196,6 +196,9 @@
                     }
                 });
             });
+
+            // Expose modernLuxuryEffects to window for external access
+            window.modernLuxuryEffects = modernLuxuryEffects;
         });
 
         // Expose celebration function for manual triggering

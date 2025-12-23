@@ -766,3 +766,280 @@
             0 0 20px rgba(76, 175, 80, 0);
     }
 }
+
+/* ============================================
+   VARIANT MODAL ANIMATIONS
+   ============================================ */
+
+/* Variant item base styles with animations */
+.variant-modal .variant-item {
+    position: relative;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: pointer;
+    will-change: transform;
+}
+
+/* Animated gradient border for variant items */
+.variant-modal .variant-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        #045b96,
+        #002e65,
+        #d4af37,
+        #ffd700,
+        #045b96
+    );
+    background-size: 400% 400%;
+    border-radius: 16px;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    animation: gradientFlow 8s ease infinite paused;
+}
+
+.variant-modal .variant-item:hover::before {
+    opacity: 0.12;
+    animation-play-state: running;
+}
+
+/* Inner content layer */
+.variant-modal .variant-item::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 14px;
+    z-index: 1;
+}
+
+/* Ensure variant content is above pseudo elements */
+.variant-modal .variant-img,
+.variant-modal .variant-info {
+    position: relative;
+    z-index: 2;
+}
+
+/* Spotlight effect for variant items */
+.variant-modal .variant-item .variant-spotlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: radial-gradient(
+        500px circle at var(--variant-mouse-x, 50%) var(--variant-mouse-y, 50%),
+        rgba(255, 215, 0, 0.15),
+        transparent 40%
+    );
+    border-radius: 16px;
+}
+
+.variant-modal .variant-item:hover .variant-spotlight {
+    opacity: 1;
+}
+
+/* Shimmer overlay for variant items */
+.variant-modal .variant-item .variant-shimmer {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.5),
+        rgba(212, 175, 55, 0.25),
+        rgba(255, 255, 255, 0.5),
+        transparent
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+    z-index: 10;
+    transition: left 0.8s ease;
+    border-radius: 16px;
+}
+
+.variant-modal .variant-item:hover .variant-shimmer {
+    left: 150%;
+}
+
+/* Hover effect - lift and glow */
+.variant-modal .variant-item:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow:
+        0 20px 50px rgba(4, 91, 150, 0.25),
+        0 0 30px rgba(4, 91, 150, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Ripple effect for click feedback */
+.variant-modal .variant-item .variant-ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(4, 91, 150, 0.3), transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 5;
+}
+
+.variant-modal .variant-item .variant-ripple.ripple-animate {
+    animation: rippleEffect 0.6s ease-out forwards;
+}
+
+@keyframes rippleEffect {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+    100% {
+        width: 300px;
+        height: 300px;
+        opacity: 0;
+    }
+}
+
+/* Selection animation */
+.variant-modal .variant-item.variant-selected {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow:
+        0 20px 50px rgba(76, 175, 80, 0.35),
+        0 0 30px rgba(76, 175, 80, 0.25),
+        0 0 0 3px rgba(76, 175, 80, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    animation: selectedPulse 0.5s ease-out;
+}
+
+.variant-modal .variant-item.variant-selected::before {
+    background: linear-gradient(
+        45deg,
+        #4caf50,
+        #2e7d32,
+        #66bb6a,
+        #43a047,
+        #4caf50
+    );
+    background-size: 400% 400%;
+    opacity: 0.15;
+    animation-play-state: running;
+}
+
+@keyframes selectedPulse {
+    0% {
+        transform: translateY(-8px) scale(1.02);
+    }
+    50% {
+        transform: translateY(-8px) scale(1.06);
+    }
+    100% {
+        transform: translateY(-8px) scale(1.03);
+    }
+}
+
+/* Entrance animation - staggered fade-in */
+.variant-modal .variant-item.variant-item-animate {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    animation: variantItemEnter 0.5s ease-out forwards;
+}
+
+@keyframes variantItemEnter {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Variant image hover effect */
+.variant-modal .variant-item:hover .variant-img img {
+    transform: scale(1.08);
+    filter: drop-shadow(0 8px 20px rgba(4, 91, 150, 0.2));
+}
+
+.variant-modal .variant-img img {
+    transition: transform 0.3s ease, filter 0.3s ease;
+    will-change: transform;
+}
+
+/* Variant price text shimmer */
+.variant-modal .variant-price {
+    position: relative;
+    overflow: hidden;
+    font-weight: 700;
+    background: linear-gradient(
+        135deg,
+        #045b96 0%,
+        #002e65 25%,
+        #d4af37 50%,
+        #ffd700 75%,
+        #045b96 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.variant-modal .variant-item:hover .variant-price::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 215, 0, 0.3),
+        transparent
+    );
+    animation: priceShimmer 1s ease forwards;
+}
+
+@keyframes priceShimmer {
+    to { left: 100%; }
+}
+
+/* Variant hover state for name */
+.variant-modal .variant-item:hover .variant-name {
+    color: #045b96;
+    transform: translateX(4px);
+}
+
+.variant-modal .variant-name {
+    transition: all 0.3s ease;
+}
+
+/* Performance optimization for variant modal */
+.variant-modal.locked .variant-item {
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .variant-modal .variant-item.variant-item-animate {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+}
