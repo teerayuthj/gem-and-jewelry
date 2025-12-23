@@ -1,0 +1,453 @@
+/**
+ * Gold Saving 2 - Enhancements
+ * E-commerce style - Image focused product cards
+ */
+
+/* ============================================
+   Product Grid - 4 columns responsive
+   ============================================ */
+#productsGrid2 .smart-supporting-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+/* ============================================
+   Supporting Card - E-commerce Style
+   ============================================ */
+#productsGrid2 .supporting-card {
+    padding: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+#productsGrid2 .supporting-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(4, 91, 150, 0.2);
+}
+
+/* ============================================
+   Product Image - Hero Style (E-commerce)
+   ============================================ */
+#productsGrid2 .supporting-img {
+    height: 220px;
+    padding: 1.5rem;
+    margin-bottom: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Image hover zoom effect */
+#productsGrid2 .supporting-img img {
+    transition: transform 0.4s ease;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+#productsGrid2 .supporting-card:hover .supporting-img img {
+    transform: scale(1.08);
+}
+
+/* Subtle shine effect on hover */
+#productsGrid2 .supporting-img::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+#productsGrid2 .supporting-card:hover .supporting-img::after {
+    left: 100%;
+}
+
+/* ============================================
+   Product Info - Compact & Clean
+   ============================================ */
+#productsGrid2 .supporting-info {
+    padding: 1rem 1.25rem 1.25rem;
+    background: #fff;
+}
+
+/* Product weight/name */
+#productsGrid2 .supporting-weight {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+/* Price - Bold & Prominent */
+#productsGrid2 .supporting-price {
+    font-size: 1.9rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #045b96, #002e65);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+#productsGrid2 .supporting-price .currency {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* Variant hint badge */
+#productsGrid2 .variant-hint {
+    font-size: 0.95rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+    color: #0369a1;
+    font-weight: 600;
+}
+
+/* Progress bar */
+#productsGrid2 .supporting-progress {
+    height: 8px;
+    border-radius: 4px;
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Progress percentage */
+#productsGrid2 .supporting-percent {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #374151;
+}
+
+/* Status icon - larger */
+#productsGrid2 .status-icon {
+    font-size: 1.1rem;
+    padding: 0.5rem;
+    top: 1rem;
+    right: 1rem;
+}
+
+/* ============================================
+   Tap Hint Button - Larger
+   ============================================ */
+#productsGrid2 .tap-hint {
+    padding: 0.75rem 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+/* ============================================
+   Variant Modal - Larger & Better
+   ============================================ */
+
+/* Modal container */
+.variant-modal-content {
+    max-width: 1100px;
+    max-height: 90vh;
+}
+
+/* Modal header */
+.variant-modal-header {
+    padding: 1.5rem 2rem;
+}
+
+.variant-modal-header h3 {
+    font-size: 1.8rem;
+}
+
+.variant-modal-close {
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+}
+
+/* Modal body */
+.variant-modal-body {
+    padding: 2rem;
+}
+
+/* Variant count info */
+.variant-count-info {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Variant grid - larger cards */
+.variant-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Variant item card */
+.variant-item {
+    padding: 1.5rem;
+    border-radius: 20px;
+}
+
+/* Variant image - much larger */
+.variant-img {
+    width: 120px;
+    height: 120px;
+    padding: 0.75rem;
+    border-radius: 16px;
+}
+
+/* Variant name */
+.variant-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    -webkit-line-clamp: 3;
+}
+
+/* Variant price */
+.variant-price {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+/* Variant button */
+.variant-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    font-size: 1.3rem;
+}
+
+/* ============================================
+   Variant Modal - Responsive
+   ============================================ */
+@media (max-width: 768px) {
+    .variant-modal-content {
+        width: 95%;
+        max-height: 92vh;
+    }
+
+    .variant-modal-header {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .variant-modal-header h3 {
+        font-size: 1.4rem;
+    }
+
+    .variant-modal-body {
+        padding: 1.5rem;
+    }
+
+    .variant-count-info {
+        font-size: 1.2rem;
+    }
+
+    .variant-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .variant-item {
+        padding: 1.25rem;
+    }
+
+    .variant-img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .variant-name {
+        font-size: 1.15rem;
+    }
+
+    .variant-price {
+        font-size: 1.4rem;
+    }
+
+    .variant-btn {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    .variant-modal-header {
+        padding: 1rem 1.25rem;
+    }
+
+    .variant-modal-header h3 {
+        font-size: 1.2rem;
+    }
+
+    .variant-modal-body {
+        padding: 1.25rem;
+    }
+
+    .variant-count-info {
+        font-size: 1.1rem;
+    }
+
+    .variant-img {
+        width: 85px;
+        height: 85px;
+    }
+
+    .variant-name {
+        font-size: 1.05rem;
+    }
+
+    .variant-price {
+        font-size: 1.25rem;
+    }
+
+    .variant-btn {
+        width: 46px;
+        height: 46px;
+    }
+}
+
+/* ============================================
+   Affordable card highlight
+   ============================================ */
+#productsGrid2 .supporting-card.affordable {
+    border-width: 3px;
+}
+
+#productsGrid2 .supporting-card.affordable .supporting-img {
+    background: transparent;
+}
+
+/* ============================================
+   Responsive - Desktop Large
+   ============================================ */
+@media (min-width: 1400px) {
+    #productsGrid2 .smart-supporting-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.75rem;
+    }
+
+    #productsGrid2 .supporting-img {
+        height: 240px;
+    }
+}
+
+/* Large screens - 4 columns */
+@media (min-width: 1200px) and (max-width: 1399px) {
+    #productsGrid2 .smart-supporting-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    #productsGrid2 .supporting-img {
+        height: 200px;
+    }
+}
+
+/* ============================================
+   Responsive - iPad / Tablet
+   ============================================ */
+@media (max-width: 1199px) and (min-width: 769px) {
+    #productsGrid2 .smart-supporting-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+    }
+
+    #productsGrid2 .supporting-img {
+        height: 180px;
+        padding: 1.25rem;
+    }
+
+    #productsGrid2 .supporting-weight {
+        font-size: 1.15rem;
+    }
+
+    #productsGrid2 .supporting-price {
+        font-size: 1.7rem;
+    }
+}
+
+/* ============================================
+   Responsive - Mobile
+   ============================================ */
+@media (max-width: 768px) {
+    #productsGrid2 .smart-supporting-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    #productsGrid2 .supporting-img {
+        height: 160px;
+        padding: 1rem;
+    }
+
+    #productsGrid2 .supporting-info {
+        padding: 0.85rem 1rem 1rem;
+    }
+
+    #productsGrid2 .supporting-weight {
+        font-size: 1.05rem;
+    }
+
+    #productsGrid2 .supporting-price {
+        font-size: 1.5rem;
+    }
+
+    #productsGrid2 .supporting-percent {
+        font-size: 1rem;
+    }
+
+    #productsGrid2 .variant-hint {
+        font-size: 0.85rem;
+        padding: 0.2rem 0.6rem;
+    }
+}
+
+/* ============================================
+   Responsive - Small Mobile
+   ============================================ */
+@media (max-width: 480px) {
+    #productsGrid2 .smart-supporting-grid {
+        gap: 0.75rem;
+    }
+
+    #productsGrid2 .supporting-card {
+        border-radius: 12px;
+    }
+
+    #productsGrid2 .supporting-img {
+        height: 140px;
+        padding: 0.85rem;
+    }
+
+    #productsGrid2 .supporting-info {
+        padding: 0.75rem 0.85rem 0.85rem;
+    }
+
+    #productsGrid2 .supporting-weight {
+        font-size: 0.95rem;
+        margin-bottom: 0.35rem;
+    }
+
+    #productsGrid2 .supporting-price {
+        font-size: 1.35rem;
+        margin-bottom: 0.35rem;
+    }
+
+    #productsGrid2 .supporting-percent {
+        font-size: 0.95rem;
+    }
+
+    #productsGrid2 .status-icon {
+        font-size: 0.9rem;
+        padding: 0.4rem;
+        top: 0.6rem;
+        right: 0.6rem;
+    }
+}

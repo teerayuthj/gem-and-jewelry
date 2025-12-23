@@ -1866,7 +1866,21 @@ body.modal-open {
     }
 
     .img-lightbox-nav {
-        display: none;
+        width: 40px;
+        height: 40px;
+        font-size: 2.5rem;
+        /* Keep navigation visible on mobile and iPad */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .img-lightbox-nav.prev {
+        left: 8px;
+    }
+
+    .img-lightbox-nav.next {
+        right: 8px;
     }
 
     .img-lightbox-img {
