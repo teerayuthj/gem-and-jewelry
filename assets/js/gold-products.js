@@ -355,9 +355,9 @@ const GoldProducts = {
             // เรียงตามราคา
             this.products.sort((a, b) => a.price - b.price);
 
-            // เรียง variants ในแต่ละน้ำหนักตามราคา
+            // เรียง variants ในแต่ละน้ำหนักตาม product_id (ล่าสุดก่อน)
             Object.keys(this.variantsByWeight).forEach(weight => {
-                this.variantsByWeight[weight].sort((a, b) => a.price - b.price);
+                this.variantsByWeight[weight].sort((a, b) => b.productId - a.productId);
             });
 
             console.log(`✨ โหลดสินค้าจาก API สำเร็จ ${this.products.length} น้ำหนัก`);
