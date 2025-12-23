@@ -625,10 +625,6 @@ window.ImageLoader = {
             `;
         };
 
-        // Price info section
-        const priceInfo = price ? `<span><span class="info-icon">💰</span> ${price}</span>` : '';
-        const countInfo = images.length > 1 ? `<span class="image-count">${index + 1}/${images.length}</span>` : '';
-
         modal.innerHTML = `
             <div class="image-viewer-backdrop"></div>
             <div class="image-viewer-content">
@@ -638,12 +634,6 @@ window.ImageLoader = {
                          onerror="this.src='https://via.placeholder.com/800x600/045b96/ffffff?text=Gold+Bar'">
                 </div>
                 <button class="image-viewer-close" aria-label="Close">✕</button>
-                <div class="image-viewer-info">
-                    <span><span class="info-icon">📦</span> ${title || ''}</span>
-                    ${priceInfo}
-                    ${countInfo}
-                </div>
-                <div class="zoom-hint">${t ? t('zoomHint') || 'คลิกเพื่อซูมรูป' : 'คลิกเพื่อซูมรูป'}</div>
                 ${renderDots()}
             </div>
         `;
@@ -655,7 +645,6 @@ window.ImageLoader = {
         const prevBtn = modal.querySelector('.image-viewer-nav.prev');
         const nextBtn = modal.querySelector('.image-viewer-nav.next');
         const dotsEl = modal.querySelector('.image-viewer-dots');
-        const infoEl = modal.querySelector('.image-viewer-info');
         const contentEl = modal.querySelector('.image-viewer-content');
 
         const preloadNeighbor = () => {
@@ -675,17 +664,9 @@ window.ImageLoader = {
             });
         };
 
-        const updateCount = () => {
-            const countSpan = infoEl?.querySelector('.image-count');
-            if (countSpan) {
-                countSpan.textContent = `${index + 1}/${images.length}`;
-            }
-        };
-
         const update = () => {
             imgEl.src = images[index];
             updateDots();
-            updateCount();
             preloadNeighbor();
 
             // Reset zoom when changing images
