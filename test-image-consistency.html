@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Consistency Test</title>
+    <style>
+        body {
+            font-family: "Prompt", Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
+            min-height: 100vh;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #045b96;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .comparison-section {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .image-comparison {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .image-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 2px solid #e0e0e0;
+            max-width: 300px;
+        }
+        
+        .image-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #045b96;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .image-preview {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow:
+                0 0 0 1px rgba(0, 0, 0, 0.06),
+                0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(4, 91, 150, 0.08);
+        }
+        
+        .image-preview img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+            filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.12));
+            transition: filter 0.3s ease, transform 0.3s ease;
+        }
+        
+        .image-preview:hover img {
+            transform: scale(1.05);
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.16));
+        }
+        
+        .image-card:hover {
+            border-color: #045b96;
+            box-shadow: 0 15px 40px rgba(4, 91, 150, 0.15);
+        }
+        
+        .code-snippet {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: "Monaco", monospace;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            overflow-x: auto;
+        }
+        
+        .code-snippet pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        
+        .checklist {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .checklist h3 {
+            color: #045b96;
+            margin-bottom: 1rem;
+        }
+        
+        .checklist ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .checklist li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .checklist li:before {
+            content: "✅";
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .note {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .note p {
+            margin: 0;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .image-comparison {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .image-card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎨 Image Consistency Test</h1>
+        
+        <div class="comparison-section">
+            <div class="section-title">
+                <i class="fas fa-images"></i>
+                <span>Product Images vs Modal Images</span>
+            </div>
+            
+            <div class="image-comparison">
+                <!-- Product Image Style -->
+                <div class="image-card">
+                    <h3>📦 Product Image Style</h3>
+                    <div class="image-preview">
+                        <img src="https://via.placeholder.com/150x150/FFD700/000000?text=GOLD" alt="Product Image">
+                    </div>
+                    <div class="code-snippet">
+                        <pre>background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+border-radius: 12px;
+box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.08);
+border: 1px solid rgba(4, 91, 150, 0.08);
+
+img {
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.12));
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+:hover img {
+  transform: scale(1.05);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.16));
+}</pre>
+                    </div>
+                </div>
+                
+                <!-- Modal Image Style (Updated) -->
+                <div class="image-card">
+                    <h3>🖼️ Modal Image Style (Updated)</h3>
+                    <div class="image-preview">
+                        <img src="https://via.placeholder.com/150x150/FFD700/000000?text=GOLD" alt="Modal Image">
+                    </div>
+                    <div class="code-snippet">
+                        <pre>background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+border-radius: 12px;
+box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.08);
+border: 1px solid rgba(4, 91, 150, 0.08);
+
+img {
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.12));
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+:hover img {
+  transform: scale(1.05);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.16));
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="checklist">
+            <h3>✅ Consistency Checklist</h3>
+            <ul>
+                <li>Background gradient matches (white to light gray)</li>
+                <li>Border radius is consistent (12px)</li>
+                <li>Box shadow depth is identical</li>
+                <li>Subtle blue border for brand consistency</li>
+                <li>Image drop shadow matches for white products</li>
+                <li>Hover effects are synchronized</li>
+                <li>Transition animations are smooth and consistent</li>
+                <li>Color palette aligns with overall design</li>
+            </ul>
+        </div>
+        
+        <div class="note">
+            <p><strong>💡 Design Note:</strong> The updated modal images now use the same visual language as product images, creating a seamless user experience when transitioning from product browsing to variant selection.</p>
+        </div>
+        
+        <div class="comparison-section" style="margin-top: 3rem;">
+            <div class="section-title">
+                <i class="fas fa-palette"></i>
+                <span>Color Palette Consistency</span>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); border-radius: 8px; border: 2px solid #e0e0e0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <div style="font-size: 0.8rem; color: #666;">Background</div>
+                    <div style="font-size: 0.7rem; color: #999;">#ffffff → #f8f9fa</div>
+                </div>
+                <div style="width: 100px; height: 100px; background: rgba(4, 91, 150, 0.08); border-radius: 8px; border: 2px solid #e0e0e0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <div style="font-size: 0.8rem; color: #666;">Border</div>
+                    <div style="font-size: 0.7rem; color: #999;">rgba(4,91,150,0.08)</div>
+                </div>
+                <div style="width: 100px; height: 100px; background: #045b96; border-radius: 8px; border: 2px solid #e0e0e0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;">
+                    <div style="font-size: 0.8rem;">Brand Color</div>
+                    <div style="font-size: 0.7rem;">#045b96</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</body>
+</html>

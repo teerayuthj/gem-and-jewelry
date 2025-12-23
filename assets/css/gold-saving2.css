@@ -2390,6 +2390,8 @@ body.modal-open {
     padding: 1.5rem;
     max-height: calc(80vh - 70px);
     overflow-y: auto;
+    /* Subtle gradient background to match overall design */
+    background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
 }
 
 .variant-count-info {
@@ -2449,6 +2451,12 @@ body.modal-open {
     box-shadow: 0 8px 25px rgba(4, 91, 150, 0.15);
 }
 
+.variant-item:hover .variant-img img {
+    /* Match product image hover effect - slight scale and enhanced shadow */
+    transform: scale(1.05);
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.16));
+}
+
 .variant-img {
     flex-shrink: 0;
     width: 70px;
@@ -2456,22 +2464,26 @@ body.modal-open {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Soft gradient background instead of pure white */
+    /* Match product image styling - soft gradient background for better contrast with white images */
     background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     border-radius: 12px;
     padding: 0.5rem;
-    /* Subtle shadow and border for depth */
+    /* Match product image shadow and border for consistent depth */
     box-shadow:
         0 0 0 1px rgba(0, 0, 0, 0.06),
         0 2px 8px rgba(0, 0, 0, 0.08);
+    /* Add subtle border to match product card styling */
+    border: 1px solid rgba(4, 91, 150, 0.08);
 }
 
 .variant-img img {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    /* Add subtle drop shadow for white products */
-    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.08));
+    /* Match product image drop shadow for white products - enhanced for better visibility */
+    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.12));
+    /* Add smooth transition for hover effects */
+    transition: filter 0.3s ease, transform 0.3s ease;
 }
 
 .variant-info {
