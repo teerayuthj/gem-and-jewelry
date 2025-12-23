@@ -1730,10 +1730,11 @@ body.modal-open {
     position: relative;
     width: min(980px, 100%);
     max-height: 90vh;
-    background: #0b0f14;
+    background: #f7f9fb;
+    border: 1px solid rgba(0, 0, 0, 0.06);
     border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.35);
     display: flex;
     flex-direction: column;
 }
@@ -1743,13 +1744,14 @@ body.modal-open {
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 1rem;
-    color: #fff;
-    background: rgba(255, 255, 255, 0.06);
+    color: #1f2a37;
+    background: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .img-lightbox-title {
     flex: 1;
-    font-size: 0.95rem;
+    font-size: 1.2rem;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
@@ -1763,8 +1765,9 @@ body.modal-open {
 
 .img-lightbox-close {
     border: none;
-    background: rgba(255, 255, 255, 0.14);
-    color: #fff;
+    background: rgba(15, 23, 42, 0.08);
+    color: #1f2a37;
+    border: 1px solid rgba(15, 23, 42, 0.12);
     width: 36px;
     height: 36px;
     border-radius: 10px;
@@ -1784,28 +1787,22 @@ body.modal-open {
     justify-content: center;
     padding: 0.75rem;
     user-select: none;
-    /* Subtle checkerboard pattern for white images */
-    background-image:
-        linear-gradient(45deg, rgba(255, 255, 255, 0.03) 25%, transparent 25%),
-        linear-gradient(-45deg, rgba(255, 255, 255, 0.03) 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.03) 75%),
-        linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.03) 75%);
-    background-size: 20px 20px;
-    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    /* Match product image background for white products */
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
 }
 
 .img-lightbox-img {
     max-width: 100%;
     max-height: calc(90vh - 120px);
     object-fit: contain;
-    /* Soft gradient background instead of pure white */
+    /* Match product image card styling */
     background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     border-radius: 14px;
     padding: 2rem;
     /* Add subtle shadow for depth */
     box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.1),
-        0 10px 40px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(0, 0, 0, 0.06),
+        0 10px 40px rgba(15, 23, 42, 0.12),
         inset 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
@@ -1817,8 +1814,9 @@ body.modal-open {
     height: 44px;
     border-radius: 14px;
     border: none;
-    background: rgba(255, 255, 255, 0.14);
-    color: #fff;
+    background: rgba(15, 23, 42, 0.08);
+    color: #1f2a37;
+    border: 1px solid rgba(15, 23, 42, 0.12);
     font-size: 1.6rem;
     line-height: 1;
     display: flex;
@@ -1826,6 +1824,7 @@ body.modal-open {
     justify-content: center;
     cursor: pointer;
     backdrop-filter: blur(6px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
 }
 
 .img-lightbox-nav.prev {
@@ -1848,12 +1847,12 @@ body.modal-open {
     height: 8px;
     border-radius: 999px;
     border: none;
-    background: rgba(255, 255, 255, 0.35);
+    background: rgba(15, 23, 42, 0.28);
     cursor: pointer;
 }
 
 .img-lightbox-dot.active {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(15, 23, 42, 0.8);
 }
 
 @media (max-width: 768px) {
