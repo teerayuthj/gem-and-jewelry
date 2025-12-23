@@ -215,10 +215,10 @@ window.UIRenderer = {
                         <div class="liquid-glass-card lg-profit-card" id="profitCard2" style="margin-top: 1.5rem;">
                             <div class="card-header">
                                 <i class="fas fa-chart-line"></i>
-                                <span>${t('profitLoss')}</span>
+                                <span id="profitLossLabel2">${t('profitLoss')}</span>
                             </div>
                             <div class="value-row">
-                                <span class="value-label">${t('currentValue')}</span>
+                                <span class="value-label" id="currentValueLabel2">${t('currentValue')}</span>
                                 <span class="value-amount" id="currentValue2">0</span>
                             </div>
                             <div class="profit-result" id="profitResult2">

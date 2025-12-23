@@ -243,6 +243,29 @@ window.EventHandler = {
         const profitAmount = currentGoldValue - total;
         const profitPercent = total > 0 ? (profitAmount / total) * 100 : 0;
 
+        // Update labels with months information
+        const currentValueLabel = calculator.currentLang === 'th'
+            ? `มูลค่า (ย้อนหลัง ${calculator.months} เดือน)`
+            : calculator.currentLang === 'en'
+            ? `Value (${calculator.months} months ago)`
+            : `价值（${calculator.months}个月前）`;
+
+        const profitLossLabel = calculator.currentLang === 'th'
+            ? `กำไร/ขาดทุน (ย้อนหลัง ${calculator.months} เดือน)`
+            : calculator.currentLang === 'en'
+            ? `Profit/Loss (${calculator.months} months ago)`
+            : `盈亏（${calculator.months}个月前）`;
+
+        const currentValueLabelEl = document.getElementById('currentValueLabel2');
+        if (currentValueLabelEl) {
+            currentValueLabelEl.textContent = currentValueLabel;
+        }
+
+        const profitLossLabelEl = document.getElementById('profitLossLabel2');
+        if (profitLossLabelEl) {
+            profitLossLabelEl.textContent = profitLossLabel;
+        }
+
         // Update current value
         document.getElementById('currentValue2').textContent =
             `${calculator.formatNumber(Math.round(currentGoldValue))} ${calculator.t('baht')}`;
