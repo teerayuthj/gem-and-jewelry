@@ -213,24 +213,26 @@
     cursor: zoom-out;
 }
 
-/* Enhanced Close Button */
+/* Enhanced Close Button - อยู่บนรูปภาพ มุมบนขวา */
 .image-viewer-modal.enhanced-modal .image-viewer-close {
     position: absolute;
-    top: -60px;
-    right: 0;
-    background: linear-gradient(135deg, rgba(4, 91, 150, 0.8), rgba(4, 91, 150, 0.6));
-    border: 2px solid rgba(212, 175, 55, 0.4);
+    top: 18px;
+    right: 18px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
+    border: 2px solid rgba(255, 255, 255, 0.3);
     color: white;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    font-size: 18px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    z-index: 10;
+    backdrop-filter: blur(8px);
 }
 
 .image-viewer-modal.enhanced-modal .image-viewer-close:hover {
@@ -752,7 +754,14 @@
         max-height: 85vh;
     }
 
-    .image-viewer-modal.enhanced-modal .image-viewer-close,
+    .image-viewer-modal.enhanced-modal .image-viewer-close {
+        top: 12px;
+        right: 12px;
+        width: 38px;
+        height: 38px;
+        font-size: 16px;
+    }
+
     .image-viewer-modal.luxury-modal .image-viewer-close {
         top: -55px;
         width: 45px;

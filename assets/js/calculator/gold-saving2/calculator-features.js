@@ -167,6 +167,9 @@ window.EventHandler = {
         });
     },
 
+    // Flag to track if this is the first calculation (for milestone notifications)
+    isFirstCalculation: true,
+
     /**
      * Update calculation and UI
      * @param {Object} calculator - Calculator instance
@@ -229,9 +232,11 @@ window.EventHandler = {
             totalDaysEl.textContent = calculator.formatNumber(totalWorkingDays);
         }
 
-        // Check for milestones
+        // Check for milestones (skip notification on first load to avoid spam)
         if (typeof window.MilestoneTracker !== 'undefined') {
-            window.MilestoneTracker.check(totalGoldBaht, total);
+            window.MilestoneTracker.check(totalGoldBaht, total, this.isFirstCalculation);
+            // Reset flag after first calculation
+            this.isFirstCalculation = false;
         }
 
         // Debug: แสดงข้อมูลการซื้อรายวัน

@@ -280,7 +280,7 @@ const GoldProducts = {
                 const imageUrl = resolvedImages[0] ||
                     (item.image_1 ? this.resolveImageUrl(item.product_id, item.image_1) : '') ||
                     'http://www.ausiris.co.th/content/dam/ausirisgold/stamped-gold/01-ausiris.png';
-                const productLink = `https://express.ausiris.co.th/product/${item.sku || item.product_id}.html`;
+                const productLink = item.product_url || `https://express.ausiris.co.th/product/${item.sku || item.product_id}.html`;
 
                 const variantObj = {
                     id: `api-${item.product_id}`,

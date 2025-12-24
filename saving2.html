@@ -230,13 +230,12 @@
                 <div class="image-viewer-content">
                     <div class="image-viewer-image-wrapper">
                         <img class="image-viewer-image" src="${imgSrc}" alt="${title}" onerror="this.src='https://via.placeholder.com/800x600/045b96/ffffff?text=Gold+Bar'">
+                        <button class="image-viewer-close">✕</button>
                     </div>
-                    <button class="image-viewer-close">✕</button>
                     <div class="image-viewer-info">
                         <span><span class="info-icon">📦</span> ${title}</span>
                         ${price ? `<span><span class="info-icon">💰</span> ${price}</span>` : ''}
                     </div>
-                    <div class="zoom-hint">คลิกเพื่อซูมรูป</div>
                 </div>
             `;
 

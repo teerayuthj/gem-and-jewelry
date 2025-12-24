@@ -627,68 +627,141 @@ window.MouseGlowEffect = {
 
 window.MilestoneTracker = {
     milestones: {
-        firstPurchase: { threshold: 1, name: 'การซื้อครั้งแรก', icon: 'fa-star' },
-        oneBaht: { threshold: 1, name: '1 บาททอง', icon: 'fa-coins' },
-        fiveBaht: { threshold: 5, name: '5 บาททอง', icon: 'fa-gem' },
-        tenBaht: { threshold: 10, name: '10 บาททอง', icon: 'fa-trophy' },
-        firstHundredThousand: { threshold: 100000, name: 'ออมเกิน 1 แสน', icon: 'fa-piggy-bank' },
-        firstMillion: { threshold: 1000000, name: 'ออมเกิน 1 ล้าน', icon: 'fa-sack-dollar' }
+        firstPurchase: { threshold: 1, name: 'การซื้อครั้งแรก', icon: 'fa-star', emoji: '⭐' },
+        oneBaht: { threshold: 1, name: '1 บาททอง', icon: 'fa-coins', emoji: '🪙' },
+        fiveBaht: { threshold: 5, name: '5 บาททอง', icon: 'fa-gem', emoji: '💎' },
+        tenBaht: { threshold: 10, name: '10 บาททอง', icon: 'fa-trophy', emoji: '🏆' },
+        firstHundredThousand: { threshold: 100000, name: 'ออมเกิน 1 แสน', icon: 'fa-piggy-bank', emoji: '🐷' },
+        firstMillion: { threshold: 1000000, name: 'ออมเกิน 1 ล้าน', icon: 'fa-sack-dollar', emoji: '💰' }
     },
 
     achievedMilestones: new Set(),
+    storageKey: 'goldSaving_achievedMilestones',
+    isInitialized: false,
+    notificationQueue: [],
+    isProcessingQueue: false,
+
+    /**
+     * Initialize milestone tracker from localStorage
+     */
+    init() {
+        if (this.isInitialized) return;
+
+        try {
+            const stored = localStorage.getItem(this.storageKey);
+            if (stored) {
+                const data = JSON.parse(stored);
+                data.forEach(id => this.achievedMilestones.add(id));
+            }
+        } catch (e) {
+            console.warn('Failed to load milestones from storage:', e);
+        }
+        this.isInitialized = true;
+    },
+
+    /**
+     * Save achieved milestones to localStorage
+     */
+    save() {
+        try {
+            localStorage.setItem(this.storageKey, JSON.stringify([...this.achievedMilestones]));
+        } catch (e) {
+            console.warn('Failed to save milestones to storage:', e);
+        }
+    },
 
     /**
      * Check and trigger milestones
      * @param {number} goldBaht - Gold weight in baht
      * @param {number} totalAmount - Total amount saved
+     * @param {boolean} skipNotification - Skip notifications (for initial load)
      */
-    check(goldBaht, totalAmount) {
+    check(goldBaht, totalAmount, skipNotification = false) {
+        // Initialize on first check
+        if (!this.isInitialized) {
+            this.init();
+        }
+
         const newMilestones = [];
 
         // Check gold milestones
         if (goldBaht >= 1 && !this.achievedMilestones.has('oneBaht')) {
             this.achievedMilestones.add('oneBaht');
-            newMilestones.push(this.milestones.oneBaht);
+            newMilestones.push({ ...this.milestones.oneBaht, id: 'oneBaht' });
         }
 
         if (goldBaht >= 5 && !this.achievedMilestones.has('fiveBaht')) {
             this.achievedMilestones.add('fiveBaht');
-            newMilestones.push(this.milestones.fiveBaht);
+            newMilestones.push({ ...this.milestones.fiveBaht, id: 'fiveBaht' });
         }
 
         if (goldBaht >= 10 && !this.achievedMilestones.has('tenBaht')) {
             this.achievedMilestones.add('tenBaht');
-            newMilestones.push(this.milestones.tenBaht);
+            newMilestones.push({ ...this.milestones.tenBaht, id: 'tenBaht' });
         }
 
         // Check amount milestones
         if (totalAmount >= 100000 && !this.achievedMilestones.has('firstHundredThousand')) {
             this.achievedMilestones.add('firstHundredThousand');
-            newMilestones.push(this.milestones.firstHundredThousand);
+            newMilestones.push({ ...this.milestones.firstHundredThousand, id: 'firstHundredThousand' });
         }
 
         if (totalAmount >= 1000000 && !this.achievedMilestones.has('firstMillion')) {
             this.achievedMilestones.add('firstMillion');
-            newMilestones.push(this.milestones.firstMillion);
+            newMilestones.push({ ...this.milestones.firstMillion, id: 'firstMillion' });
         }
 
-        // Trigger celebrations for new milestones
-        newMilestones.forEach(milestone => {
-            this.celebrate(milestone);
-        });
+        // Save new milestones to storage
+        if (newMilestones.length > 0) {
+            this.save();
+        }
+
+        // Trigger celebrations for new milestones (skip if on page load)
+        if (!skipNotification && newMilestones.length > 0) {
+            newMilestones.forEach(milestone => {
+                this.notificationQueue.push(milestone);
+            });
+            this.processNotificationQueue();
+        }
 
         return newMilestones;
     },
 
     /**
-     * Celebrate a milestone achievement
+     * Process notification queue with staggered timing
+     */
+    processNotificationQueue() {
+        if (this.isProcessingQueue || this.notificationQueue.length === 0) {
+            return;
+        }
+
+        this.isProcessingQueue = true;
+
+        const showNext = () => {
+            if (this.notificationQueue.length === 0) {
+                this.isProcessingQueue = false;
+                return;
+            }
+
+            const milestone = this.notificationQueue.shift();
+            this.celebrate(milestone);
+
+            // Show next notification after a delay
+            setTimeout(showNext, 2500);
+        };
+
+        showNext();
+    },
+
+    /**
+     * Celebrate a milestone achievement with beautiful notification
      */
     celebrate(milestone) {
-        // Show toast notification
-        ToastNotifications.success(`🎉 ยินดีด้วย! คุณถึงเป้าหมาย "${milestone.name}" แล้ว!`);
+        // Show beautiful milestone notification
+        MilestoneToast.show(milestone);
 
         // Trigger confetti
-        ConfettiEffect.trigger({ count: 100, origin: 'top' });
+        ConfettiEffect.trigger({ count: 80, origin: 'top' });
     },
 
     /**
@@ -696,6 +769,100 @@ window.MilestoneTracker = {
      */
     reset() {
         this.achievedMilestones.clear();
+        this.save();
+    }
+};
+
+// ============================================================================
+// MILESTONE TOAST NOTIFICATION
+// ============================================================================
+
+window.MilestoneToast = {
+    container: null,
+
+    /**
+     * Initialize milestone toast container
+     */
+    init() {
+        let container = document.querySelector('.milestone-toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'milestone-toast-container';
+            document.body.appendChild(container);
+        }
+        this.container = container;
+    },
+
+    /**
+     * Show milestone toast notification
+     * @param {Object} milestone - Milestone object with name, icon, emoji
+     */
+    show(milestone) {
+        if (!this.container) {
+            this.init();
+        }
+
+        // Check for reduced motion preference
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = 'milestone-toast';
+
+        toast.innerHTML = `
+            <div class="milestone-toast-icon">${milestone.emoji}</div>
+            <div class="milestone-toast-content">
+                <div class="milestone-toast-title">ยินดีด้วย!</div>
+                <div class="milestone-toast-message">คุณถึงเป้าหมาย "${milestone.name}" แล้ว</div>
+            </div>
+            <div class="milestone-toast-close">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="milestone-toast-progress"></div>
+        `;
+
+        // Add close button functionality
+        const closeBtn = toast.querySelector('.milestone-toast-close');
+        closeBtn.addEventListener('click', () => {
+            this.dismiss(toast);
+        });
+
+        this.container.appendChild(toast);
+
+        // Trigger entrance animation
+        requestAnimationFrame(() => {
+            toast.classList.add('milestone-toast-show');
+        });
+
+        // Auto dismiss after 4 seconds
+        const duration = prefersReducedMotion ? 5000 : 4000;
+        setTimeout(() => {
+            this.dismiss(toast);
+        }, duration);
+    },
+
+    /**
+     * Dismiss a toast notification
+     */
+    dismiss(toast) {
+        if (!toast || toast.classList.contains('milestone-toast-dismissing')) return;
+
+        toast.classList.add('milestone-toast-dismissing');
+        toast.classList.remove('milestone-toast-show');
+
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 400);
+    },
+
+    /**
+     * Dismiss all active toasts
+     */
+    dismissAll() {
+        const toasts = this.container?.querySelectorAll('.milestone-toast');
+        toasts?.forEach(toast => this.dismiss(toast));
     }
 };
 
@@ -731,6 +898,7 @@ window.VisualEffects = {
     Counter: AnimatedCounter,
     ProgressRing: ProgressRing,
     Toast: ToastNotifications,
+    MilestoneToast: MilestoneToast,
     Ripple: RippleEffect,
     Glow: MouseGlowEffect,
     Milestones: MilestoneTracker
