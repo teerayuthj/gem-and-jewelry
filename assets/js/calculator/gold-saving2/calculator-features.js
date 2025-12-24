@@ -613,8 +613,8 @@ window.ImageLoader = {
         const renderNavigation = () => {
             if (images.length <= 1) return '';
             return `
-                <button class="image-viewer-nav prev" aria-label="Previous">‹</button>
-                <button class="image-viewer-nav next" aria-label="Next">›</button>
+                <button class="image-viewer-nav prev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+                <button class="image-viewer-nav next" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
             `;
         };
 
@@ -638,7 +638,7 @@ window.ImageLoader = {
                     <img class="image-viewer-image" src="${images[index]}" alt="${title || 'Image'}"
                          onerror="this.src='https://via.placeholder.com/800x600/045b96/ffffff?text=Gold+Bar'">
                 </div>
-                <button class="image-viewer-close" aria-label="Close">✕</button>
+                <button class="image-viewer-close" aria-label="Close"><i class="fas fa-times"></i></button>
                 ${renderDots()}
             </div>
         `;

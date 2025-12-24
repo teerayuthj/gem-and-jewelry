@@ -639,6 +639,9 @@ window.ProductRenderer = {
             const variantKey = String(variant.sku || variant.id);
             const imageCount = Array.isArray(variant.images) ? variant.images.length : 0;
             const imageCountBadge = imageCount > 1 ? `<span class="img-count-badge">${imageCount}</span>` : '';
+            const buyBtnHtml = variant.link && !isLocked
+                ? `<a href="${variant.link}" target="_blank" class="variant-buy-btn" onclick="event.stopPropagation();">ซื้อเลย</a>`
+                : '';
             return `
                 <div class="variant-item" data-variant-key="${variantKey}" tabindex="0" role="link">
                     <button type="button" class="variant-img js-img-preview" data-variant-key="${variantKey}" aria-label="ดูรูปภาพ">
@@ -650,6 +653,7 @@ window.ProductRenderer = {
                     <div class="variant-info">
                         <h4 class="variant-name">${variant.name}</h4>
                         <p class="variant-price">${formatNumber(variant.price)} ${t('baht')}</p>
+                        ${buyBtnHtml}
                     </div>
                 </div>
             `;

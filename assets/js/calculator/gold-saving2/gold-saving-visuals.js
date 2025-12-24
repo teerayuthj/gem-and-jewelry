@@ -627,12 +627,12 @@ window.MouseGlowEffect = {
 
 window.MilestoneTracker = {
     milestones: {
-        firstPurchase: { threshold: 1, name: 'การซื้อครั้งแรก', icon: 'fa-star', emoji: '⭐' },
-        oneBaht: { threshold: 1, name: '1 บาททอง', icon: 'fa-coins', emoji: '🪙' },
-        fiveBaht: { threshold: 5, name: '5 บาททอง', icon: 'fa-gem', emoji: '💎' },
-        tenBaht: { threshold: 10, name: '10 บาททอง', icon: 'fa-trophy', emoji: '🏆' },
-        firstHundredThousand: { threshold: 100000, name: 'ออมเกิน 1 แสน', icon: 'fa-piggy-bank', emoji: '🐷' },
-        firstMillion: { threshold: 1000000, name: 'ออมเกิน 1 ล้าน', icon: 'fa-sack-dollar', emoji: '💰' }
+        firstPurchase: { threshold: 1, name: 'การซื้อครั้งแรก', icon: 'fa-star' },
+        oneBaht: { threshold: 1, name: '1 บาททอง', icon: 'fa-coins' },
+        fiveBaht: { threshold: 5, name: '5 บาททอง', icon: 'fa-gem' },
+        tenBaht: { threshold: 10, name: '10 บาททอง', icon: 'fa-trophy' },
+        firstHundredThousand: { threshold: 100000, name: 'ออมเกิน 1 แสน', icon: 'fa-piggy-bank' },
+        firstMillion: { threshold: 1000000, name: 'ออมเกิน 1 ล้าน', icon: 'fa-sack-dollar' }
     },
 
     achievedMilestones: new Set(),
@@ -810,7 +810,7 @@ window.MilestoneToast = {
         toast.className = 'milestone-toast';
 
         toast.innerHTML = `
-            <div class="milestone-toast-icon">${milestone.emoji}</div>
+            <div class="milestone-toast-icon"><i class="fas ${milestone.icon}"></i></div>
             <div class="milestone-toast-content">
                 <div class="milestone-toast-title">ยินดีด้วย!</div>
                 <div class="milestone-toast-message">คุณถึงเป้าหมาย "${milestone.name}" แล้ว</div>

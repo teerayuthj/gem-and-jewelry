@@ -74,6 +74,12 @@
     <link rel="stylesheet" href="./assets/css/calculator/gold-saving2/gold-saving2.css" />
 
     <!-- ============================================
+         Variant Modal - Enhanced Edition
+         สำหรับเลือกลายทองคำแท่ง
+         ============================================ -->
+    <link rel="stylesheet" href="./assets/css/variant-modal-enhanced.css" />
+
+    <!-- ============================================
          Image Viewer Modal - Enhanced Edition
          สำหรับดูรูปภาพสินค้าขนาดใหญ่แบบสวยหรู
          ============================================ -->
@@ -230,11 +236,15 @@
                 <div class="image-viewer-content">
                     <div class="image-viewer-image-wrapper">
                         <img class="image-viewer-image" src="${imgSrc}" alt="${title}" onerror="this.src='https://via.placeholder.com/800x600/045b96/ffffff?text=Gold+Bar'">
-                        <button class="image-viewer-close">✕</button>
+                        <button class="image-viewer-close"><i class="fas fa-times"></i></button>
                     </div>
                     <div class="image-viewer-info">
-                        <span><span class="info-icon">📦</span> ${title}</span>
-                        ${price ? `<span><span class="info-icon">💰</span> ${price}</span>` : ''}
+                        <span><span class="info-icon"><i class="fas fa-cube"></i></span> ${title}</span>
+                        ${price ? `<span><span class="info-icon"><i class="fas fa-coins"></i></span> ${price}</span>` : ''}
+                        <a href="https://www.ausirisgold.com/content/index/gold-product/all.html" target="_blank" class="buy-now-btn">
+                            <span class="btn-icon"><i class="fas fa-shopping-cart"></i></span>
+                            <span class="btn-text">ซื้อเลย</span>
+                        </a>
                     </div>
                 </div>
             `;
