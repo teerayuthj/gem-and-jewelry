@@ -306,30 +306,70 @@ window.EventHandler = {
         document.getElementById('currentValue2').textContent =
             `${calculator.formatNumber(Math.round(currentGoldValue))} ${calculator.t('baht')}`;
 
-        // Update profit/loss display (Liquid Glass)
+        // Update profit/loss display (Liquid Glass) with animation
         const profitResult = document.getElementById('profitResult2');
         const profitCard = document.getElementById('profitCard2');
 
+        // Update card classes
         if (profitAmount > 0) {
             profitCard.classList.add('profit');
             profitCard.classList.remove('loss');
-            profitResult.innerHTML = `
-                <div class="profit-amount">+${calculator.formatNumber(Math.round(profitAmount))} ${calculator.t('baht')}</div>
-                <div class="profit-percent">+${profitPercent.toFixed(2)}%</div>
-            `;
         } else if (profitAmount < 0) {
             profitCard.classList.add('loss');
             profitCard.classList.remove('profit');
-            profitResult.innerHTML = `
-                <div class="profit-amount">${calculator.formatNumber(Math.round(profitAmount))} ${calculator.t('baht')}</div>
-                <div class="profit-percent">${profitPercent.toFixed(2)}%</div>
-            `;
         } else {
             profitCard.classList.remove('profit', 'loss');
+        }
+
+        // Ensure the profit result elements exist
+        let profitAmountEl = profitResult.querySelector('.profit-amount');
+        let profitPercentEl = profitResult.querySelector('.profit-percent');
+
+        if (!profitAmountEl || !profitPercentEl) {
             profitResult.innerHTML = `
                 <div class="profit-amount">0 ${calculator.t('baht')}</div>
                 <div class="profit-percent">0%</div>
             `;
+            profitAmountEl = profitResult.querySelector('.profit-amount');
+            profitPercentEl = profitResult.querySelector('.profit-percent');
+        }
+
+        // Animate profit amount with counter animation
+        const roundedProfitAmount = Math.round(profitAmount);
+        const bahtSuffix = ` ${calculator.t('baht')}`;
+
+        // Format function handles the sign to ensure correct display during animation
+        const formatProfitAmount = (num) => {
+            const rounded = Math.round(num);
+            const sign = rounded >= 0 ? '+' : '';
+            return sign + calculator.formatNumber(rounded);
+        };
+
+        if (animateNumbers && typeof window.AnimatedCounter !== 'undefined') {
+            window.AnimatedCounter.animate(profitAmountEl, roundedProfitAmount, {
+                duration: 800,
+                suffix: bahtSuffix,
+                format: formatProfitAmount
+            });
+        } else {
+            profitAmountEl.textContent = `${formatProfitAmount(roundedProfitAmount)}${bahtSuffix}`;
+        }
+
+        // Animate profit percent with counter animation
+        // Format function handles the sign to ensure correct display during animation
+        const formatProfitPercent = (num) => {
+            const sign = num >= 0 ? '+' : '';
+            return sign + num.toFixed(2);
+        };
+
+        if (animateNumbers && typeof window.AnimatedCounter !== 'undefined') {
+            window.AnimatedCounter.animate(profitPercentEl, profitPercent, {
+                duration: 800,
+                suffix: '%',
+                format: formatProfitPercent
+            });
+        } else {
+            profitPercentEl.textContent = `${formatProfitPercent(profitPercent)}%`;
         }
 
         // Update products
