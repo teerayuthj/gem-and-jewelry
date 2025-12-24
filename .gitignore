@@ -1,2 +1,11 @@
 .claude
 .DS_Store
+/node_modules
+
+# Gold Saving 2 - Source files (use bundled version instead)
+/assets/js/calculator/gold-saving2/
+/assets/css/calculator/gold-saving2/
+/assets/css/gold-saving2*.css
+/assets/css/liquid-glass-cards.css
+/assets/css/variant-modal-enhanced.css
+/assets/css/image-viewer-enhanced.css

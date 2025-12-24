@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ออมทอง สร้างอนาคต | Gold Saving Calculator V2</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- External CSS Libraries -->
+    <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/style.css" />
+    <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/swiper.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.min.css" />
+    <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/bootstrap-select.css" />
+
+    <!-- External JS Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.2.7/js/swiper.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.0/d3.min.js"></script>
+    <script src="https://use.fontawesome.com/21df7b781f.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="http://www.ausiris.co.th/etc/designs/ausiris-gold/js/bootstrap-select.min.js"></script>
+    <script src="http://www.ausiris.co.th/etc/designs/ausiris-gold/js/lodash.min.js"></script>
+
+    <!-- Cookie Consent -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.wpcc.io/lib/1.0.2/cookieconsent.min.css" />
+    <script src="https://cdn.wpcc.io/lib/1.0.2/cookieconsent.min.js" defer></script>
+    <script>
+        window.addEventListener("load", function () {
+            if (typeof window.wpcc === 'undefined') return;
+            window.wpcc.init({
+                colors: {
+                    popup: { background: "#222222", text: "#ffffff", border: "#f9f9f9" },
+                    button: { background: "#f9f9f9", text: "#000000" }
+                },
+                transparency: "10",
+                fontsize: "small",
+                content: {
+                    href: "http://www.ausiris.co.th/content/index/aboutus/cookies-policy.html",
+                    message: "เว็บไซต์นี้มีการเก็บข้อมูลใช้คุกกี้ (Cookies) เพื่อการพัฒนาและปรับปรุงเว็บไซต์ หากท่านใช้บริการเว็บไซต์นี้โดยไม่มีการปรับตั้งค่าใดๆ แสดงว่าท่านยินยอมที่จะรับคุกกี้บนเว็บไซต์ และนโยบายสิทธิส่วนบุคคลของเรา",
+                    link: "นโยบายการใช้คุกกี้",
+                    button: "ให้ความยินยอม"
+                },
+                position: "bottom",
+                padding: "small",
+                margin: "small",
+                corners: "small"
+            });
+        });
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <!-- ============================================
+         BUNDLED CSS - Gold Saving Calculator 2
+         รวม CSS ทั้งหมดเป็น 1 ไฟล์
+         Build: npm run build:saving2
+         ============================================ -->
+    <link rel="stylesheet" href="./dist/gold-saving2/gold-saving2.bundle.css" />
+</head>
+
+<body style="background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%); min-height: 100vh;">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm" style="position: sticky; top: 0; z-index: 100">
+        <div class="max-w-6xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <a href="page.html" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>กลับหน้าหลัก</span>
+                </a>
+                <div class="flex items-center gap-2">
+                    <img src="http://www.ausiris.co.th/content/dam/ausirisgold/brand/logo-ausiris-gold.svg"
+                        alt="Ausiris Gold" class="h-8" onerror="this.style.display='none'" />
+                </div>
+                <!-- Language Switcher -->
+                <div class="flex gap-2" id="langSwitcher">
+                    <button class="lang-btn2 active" data-lang="th">TH</button>
+                    <button class="lang-btn2" data-lang="en">EN</button>
+                    <button class="lang-btn2" data-lang="cn">CN</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Gold Saving Calculator Section -->
+    <section id="goldSavingSection2" class="py-8">
+        <div id="gold-saving-app2">
+            <div style="text-align: center; padding: 3rem">
+                <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: #045b96"></i>
+                <p style="margin-top: 1rem; color: #666">กำลังโหลด...</p>
+            </div>
+        </div>
+    </section>
+    <!-- ============================================
+         BUNDLED JS - Gold Saving Calculator 2
+         รวม JS ทั้งหมดเป็น 1 ไฟล์ (รวม initialization แล้ว)
+         Build: npm run build:saving2
+         ============================================ -->
+    <script src="./dist/gold-saving2/gold-saving2.bundle.js"></script>
+</body>
+
+</html>

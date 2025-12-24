@@ -6,8 +6,12 @@
   "scripts": {
     "build": "node build.js",
     "build:version": "node build.js --version",
+    "build:saving2": "node build-saving2.js",
+    "build:saving2:dev": "node build-saving2.js --dev",
     "dev": "npm run build && open dist/demo.html",
+    "dev:saving2": "npm run build:saving2 && open saving-build.html",
     "watch": "nodemon -e css,js,json,html --ignore dist/ --exec 'npm run build'",
+    "watch:saving2": "nodemon -e css,js --watch assets/ --ignore dist/ --exec 'npm run build:saving2'",
     "release": "npm run build && git add dist/ && git commit -m 'Build: Update component bundle' && git push",
     "tag": "npm version patch && git push origin master --tags"
   },
@@ -41,6 +45,7 @@
   },
   "homepage": "https://github.com/teerayuthj/gem-and-jewelry#readme",
   "devDependencies": {
+    "esbuild": "^0.27.2",
     "nodemon": "^3.0.0"
   },
   "engines": {
