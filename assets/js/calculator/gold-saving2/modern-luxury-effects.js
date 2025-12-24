@@ -1,33 +1,42 @@
 /**
  * Modern Luxury Effects - Interactive JavaScript
- * PERFORMANCE OPTIMIZED VERSION
+ * PERFORMANCE OPTIMIZED VERSION v2
  *
  * Optimizations:
- * - RequestAnimationFrame for smooth animations
- * - Throttled mousemove events
- * - Scroll detection to pause effects
- * - Reduced motion support
- * - IntersectionObserver for viewport detection
+ * - Single RAF loop for all effects
+ * - Increased throttle for better performance
+ * - Scroll-aware effect pausing
+ * - Low-end device detection
+ * - Removed duplicate mouse tracking (using MouseGlowEffect instead)
  */
 
 class ModernLuxuryEffects {
     constructor() {
         this.spotlightEnabled = true;
-        this.tiltEnabled = false; // DISABLED by default - heavy effect
+        this.tiltEnabled = false; // DISABLED - too heavy
         this.counterEnabled = true;
-        this.magneticEnabled = true;
+        this.magneticEnabled = false; // DISABLED by default - heavy effect
 
         // Performance optimization flags
         this.isScrolling = false;
         this.scrollTimeout = null;
         this.rafId = null;
         this.lastMoveTime = 0;
-        this.THROTTLE_MS = 32; // ~30fps for mouse events
+        this.THROTTLE_MS = 50; // Increased to ~20fps for better performance
 
         // Check for reduced motion preference
         this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+        // Check for low-end device
+        this.isLowEnd = this.detectLowEndDevice();
+
         this.init();
+    }
+
+    detectLowEndDevice() {
+        return navigator.hardwareConcurrency <= 2 ||
+               (navigator.deviceMemory && navigator.deviceMemory <= 2) ||
+               /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
 
     /**
@@ -52,13 +61,30 @@ class ModernLuxuryEffects {
             return;
         }
 
+        // Skip heavy effects on low-end devices
+        if (this.isLowEnd) {
+            console.log('ModernLuxuryEffects: Low-end device detected, using minimal effects');
+            this.spotlightEnabled = false;
+            this.magneticEnabled = false;
+        }
+
         // Setup scroll detection for performance
         this.setupScrollDetection();
 
-        this.setupSpotlightEffect();
-        this.setup3DTiltEffect();
+        // Only setup spotlight if enabled (MouseGlowEffect handles glow separately)
+        if (this.spotlightEnabled) {
+            this.setupSpotlightEffect();
+        }
+
+        // Counter animation is lightweight
         this.setupCounterAnimation();
-        this.setupMagneticButtons();
+
+        // Magnetic buttons disabled by default
+        if (this.magneticEnabled) {
+            this.setupMagneticButtons();
+        }
+
+        // Shimmer overlay is CSS-only, lightweight
         this.setupShimmerOverlay();
 
         // Observe for dynamically added elements
@@ -209,32 +235,109 @@ class ModernLuxuryEffects {
     setupCounterAnimation() {
         if (!this.counterEnabled) return;
 
-        // Find all price elements
+        // Find all price elements in products grid
         const prices = document.querySelectorAll('#productsGrid2 .supporting-price, #productsGrid2 .hero-price');
-
         prices.forEach(priceEl => {
-            // Add counter class
             const value = this.parsePrice(priceEl.textContent);
             if (value > 0) {
                 this.animateCounter(priceEl, value);
             }
         });
+
+        // Total Amount counter
+        const totalAmountEl = document.getElementById('totalAmount2');
+        if (totalAmountEl) {
+            const totalValue = this.parsePrice(totalAmountEl.textContent);
+            if (totalValue > 0) {
+                this.animateCounter(totalAmountEl, totalValue);
+            }
+        }
+
+        // Gold Weight counter
+        const goldWeightEl = document.getElementById('goldWeight2');
+        if (goldWeightEl) {
+            const weightValue = parseFloat(goldWeightEl.textContent) || 0;
+            if (weightValue > 0) {
+                this.animateCounter(goldWeightEl, weightValue, true); // isDecimal = true
+            }
+        }
+
+        // Current Value counter
+        const currentValueEl = document.getElementById('currentValue2');
+        if (currentValueEl) {
+            const currentValue = this.parsePrice(currentValueEl.textContent);
+            if (currentValue > 0) {
+                this.animateCounter(currentValueEl, currentValue);
+            }
+        }
+
+        // Profit Amount counter
+        const profitAmountEl = document.querySelector('#profitResult2 .profit-amount');
+        if (profitAmountEl) {
+            const profitText = profitAmountEl.textContent.trim();
+            const profitValue = this.parsePrice(profitText);
+            if (profitValue !== 0) {
+                this.animateCounter(profitAmountEl, profitValue);
+            }
+        }
+
+        // Profit Percent counter
+        const profitPercentEl = document.querySelector('#profitResult2 .profit-percent');
+        if (profitPercentEl) {
+            const percentText = profitPercentEl.textContent.trim();
+            const percentValue = this.parsePercent(percentText);
+            if (percentValue !== 0) {
+                this.animatePercentCounter(profitPercentEl, percentValue);
+            }
+        }
     }
 
     /**
      * Parse price string to number
+     * Handles formats like: "+123,456 บาท", "-123,456 บาท", "123,456"
      */
     parsePrice(text) {
-        return parseInt(text.replace(/[^0-9]/g, '')) || 0;
+        if (!text) return 0;
+        const cleaned = text.replace(/,/g, '').replace(/[^\-0-9]/g, '');
+        const value = parseInt(cleaned) || 0;
+
+        // Check if original text had negative sign
+        const isNegative = text.trim().startsWith('-');
+        return isNegative ? -Math.abs(value) : value;
+    }
+
+    /**
+     * Parse percent string to number
+     * Handles formats like: "+7.78%", "-7.78%", "7.78%"
+     */
+    parsePercent(text) {
+        if (!text) return 0;
+        const cleaned = text.replace(/,/g, '').replace(/[^\-0-9.]/g, '');
+        const value = parseFloat(cleaned) || 0;
+
+        // Check if original text had negative sign
+        const isNegative = text.trim().startsWith('-');
+        return isNegative ? -Math.abs(value) : value;
     }
 
     /**
      * Animate counter from 0 to value
+     * @param {HTMLElement} element - Target element
+     * @param {number} targetValue - Target value to animate to
+     * @param {boolean|number} isDecimal - Whether to show decimals (or number of decimal places)
+     * @param {number} duration - Animation duration in ms
      */
-    animateCounter(element, targetValue, duration = 1500) {
+    animateCounter(element, targetValue, isDecimal = false, duration = 1500) {
         const startTime = performance.now();
         const startValue = 0;
         const formatOriginal = element.innerHTML;
+
+        // Handle negative values for profit/loss
+        const isNegative = targetValue < 0;
+        const absTargetValue = Math.abs(targetValue);
+
+        // Determine decimal places
+        const decimalPlaces = typeof isDecimal === 'number' ? isDecimal : (isDecimal ? 2 : 0);
 
         const updateCounter = (currentTime) => {
             const elapsed = currentTime - startTime;
@@ -243,21 +346,83 @@ class ModernLuxuryEffects {
             // Easing function (easeOutExpo)
             const easeOut = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
 
-            const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOut);
+            const currentValue = startValue + (absTargetValue - startValue) * easeOut;
 
-            // Format number with commas
-            const formatted = currentValue.toLocaleString('th-TH');
+            // Format number with commas and decimals
+            let formatted;
+            if (decimalPlaces > 0) {
+                // Use toLocaleString for both integer and decimal parts to get commas
+                const parts = currentValue.toFixed(decimalPlaces).split('.');
+                parts[0] = parseInt(parts[0]).toLocaleString('th-TH');
+                formatted = parts.join('.');
+            } else {
+                formatted = Math.floor(currentValue).toLocaleString('th-TH');
+            }
 
-            // Preserve original formatting
+            // Add negative sign if needed
+            if (isNegative) {
+                formatted = '-' + formatted;
+            }
+
+            // Preserve original formatting (currency suffix like "บาท")
             if (formatOriginal.includes('<')) {
                 // Has HTML (currency span)
                 const currencyMatch = formatOriginal.match(/<span[^>]*>(.*?)<\/span>/);
                 if (currencyMatch) {
                     element.innerHTML = `${formatted}<span class="currency">${currencyMatch[1]}</span>`;
                 }
+            } else if (formatOriginal.trim().match(/\s+[\u0E01-\u0E5B\s]+$/)) {
+                // Check if original text ends with Thai text (like " บาท")
+                const suffixMatch = formatOriginal.trim().match(/(\s+[\u0E01-\u0E5B\s]+)$/);
+                if (suffixMatch) {
+                    element.textContent = formatted + suffixMatch[1];
+                } else {
+                    element.textContent = formatted;
+                }
             } else {
                 element.textContent = formatted;
             }
+
+            if (progress < 1) {
+                requestAnimationFrame(updateCounter);
+            } else {
+                element.classList.add('counted');
+                this.triggerCompletionEffect(element);
+            }
+        };
+
+        element.classList.add('counter-number');
+        requestAnimationFrame(updateCounter);
+    }
+
+    /**
+     * Animate percent counter from 0 to value
+     * @param {HTMLElement} element - Target element
+     * @param {number} targetValue - Target value to animate to (e.g., 7.78)
+     * @param {number} duration - Animation duration in ms
+     */
+    animatePercentCounter(element, targetValue, duration = 1500) {
+        const startTime = performance.now();
+        const startValue = 0;
+
+        // Handle negative values for profit/loss
+        const isNegative = targetValue < 0;
+        const absTargetValue = Math.abs(targetValue);
+
+        const updateCounter = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // Easing function (easeOutExpo)
+            const easeOut = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+
+            const currentValue = startValue + (absTargetValue - startValue) * easeOut;
+
+            // Format with sign and % symbol
+            const sign = isNegative ? '' : '+';
+            const formatted = `${sign}${currentValue.toFixed(2)}%`;
+
+            element.textContent = formatted;
 
             if (progress < 1) {
                 requestAnimationFrame(updateCounter);
@@ -394,57 +559,27 @@ class ModernLuxuryEffects {
     }
 
     /**
-     * Trigger celebration effect (confetti) - OPTIMIZED
-     * Reduced particle count for better performance
+     * Trigger celebration effect - OPTIMIZED v2
+     * Uses ConfettiEffect from gold-saving-visuals.js
      */
     triggerCelebration() {
-        // Skip if reduced motion preferred
-        if (this.prefersReducedMotion) return;
+        // Skip if reduced motion preferred or low-end device
+        if (this.prefersReducedMotion || this.isLowEnd) return;
 
-        // Create celebration overlay
-        let overlay = document.querySelector('.celebration-overlay');
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.className = 'celebration-overlay';
-            document.body.appendChild(overlay);
+        // Use centralized ConfettiEffect instead of creating own confetti
+        if (window.ConfettiEffect) {
+            window.ConfettiEffect.trigger({
+                count: 40, // Reduced count
+                duration: 3000
+            });
         }
 
-        // Reduced confetti count (was 100)
-        const colors = ['#ffd700', '#d4af37', '#045b96', '#4caf50'];
-        const confettiCount = 30;
-
-        for (let i = 0; i < confettiCount; i++) {
-            setTimeout(() => {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-
-                confetti.style.cssText = `
-                    left: ${Math.random() * 100}%;
-                    background-color: ${colors[Math.floor(Math.random() * colors.length)]};
-                    animation-duration: ${Math.random() * 1.5 + 2}s;
-                `;
-
-                overlay.appendChild(confetti);
-                confetti.classList.add('falling');
-
-                // Remove after animation
-                setTimeout(() => confetti.remove(), 3500);
-            }, i * 50);
-        }
-
-        // Add pulse effect to affordable cards
+        // Add pulse effect to affordable cards (lightweight CSS animation)
         const affordableCards = document.querySelectorAll('#productsGrid2 .supporting-card.affordable');
         affordableCards.forEach(card => {
             card.classList.add('celebration-pulse');
             setTimeout(() => card.classList.remove('celebration-pulse'), 1000);
         });
-
-        // Clean up overlay
-        setTimeout(() => {
-            if (overlay && overlay.children.length === 0) {
-                overlay.remove();
-            }
-        }, 4000);
     }
 
     /**
@@ -605,39 +740,6 @@ class ModernLuxuryEffects {
                 this.magneticEnabled = enabled;
                 break;
         }
-    }
-
-    /**
-     * Performance Mode - Disable all heavy effects
-     */
-    setPerformanceMode(enabled) {
-        if (enabled) {
-            // Disable all effects
-            this.spotlightEnabled = false;
-            this.tiltEnabled = false;
-            this.magneticEnabled = false;
-            document.body.classList.add('performance-mode');
-            console.log('ModernLuxuryEffects: Performance mode enabled');
-        } else {
-            // Re-enable light effects only
-            this.spotlightEnabled = true;
-            this.magneticEnabled = true;
-            document.body.classList.remove('performance-mode');
-            console.log('ModernLuxuryEffects: Performance mode disabled');
-        }
-    }
-
-    /**
-     * Check if device likely needs performance mode
-     */
-    static shouldUsePerformanceMode() {
-        // Check for low-end device indicators
-        const isLowEnd =
-            navigator.hardwareConcurrency <= 2 ||
-            navigator.deviceMemory <= 2 ||
-            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-        return isLowEnd;
     }
 }
 

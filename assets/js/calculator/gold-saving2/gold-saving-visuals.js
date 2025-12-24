@@ -1,10 +1,16 @@
 /**
  * Gold Saving Calculator 2 - Visual Effects Module
  * Particles, Confetti, Animated Counter, Progress Rings
+ *
+ * OPTIMIZED VERSION:
+ * - Reduced particle count for better performance
+ * - Consolidated mouse tracking with single RAF
+ * - Passive event listeners
+ * - CSS containment for better rendering
  */
 
 // ============================================================================
-// PARTICLES BACKGROUND
+// PARTICLES BACKGROUND (OPTIMIZED)
 // ============================================================================
 
 window.ParticlesBackground = {
@@ -12,24 +18,26 @@ window.ParticlesBackground = {
     particles: [],
     animationId: null,
     isEnabled: true,
+    lastOptions: null,
 
     /**
      * Initialize particles background
      * @param {Object} options - Configuration options
-     * @param {number} options.count - Number of particles (default: 30)
-     * @param {number} options.minSize - Minimum particle size (default: 4)
-     * @param {number} options.maxSize - Maximum particle size (default: 12)
-     * @param {number} options.minDuration - Minimum animation duration (default: 15)
-     * @param {number} options.maxDuration - Maximum animation duration (default: 35)
      */
     init(options = {}) {
-        const {
-            count = 30,
-            minSize = 4,
-            maxSize = 12,
-            minDuration = 15,
-            maxDuration = 35
-        } = options;
+        const defaults = {
+            count: 15, // Reduced from 30 for better performance
+            minSize: 4,
+            maxSize: 10, // Reduced from 12
+            minDuration: 20, // Increased for smoother animation
+            maxDuration: 40
+        };
+
+        const settings = { ...defaults, ...options };
+        const { count, minSize, maxSize, minDuration, maxDuration } = settings;
+        this.lastOptions = settings;
+
+        if (!this.isEnabled) return;
 
         // Check for reduced motion preference
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -37,8 +45,8 @@ window.ParticlesBackground = {
             return;
         }
 
-        // Don't initialize on mobile devices
-        if (window.innerWidth < 768) {
+        // Don't initialize on mobile or low-end devices
+        if (window.innerWidth < 768 || navigator.hardwareConcurrency <= 2) {
             this.isEnabled = false;
             return;
         }
@@ -51,20 +59,24 @@ window.ParticlesBackground = {
         if (!container) {
             container = document.createElement('div');
             container.className = 'particles-container';
+            // Add CSS containment for better performance
+            container.style.contain = 'strict';
             wrapper.appendChild(container);
         }
         this.container = container;
 
-        // Clear existing particles
-        container.innerHTML = '';
+        // Use DocumentFragment for batch DOM insertion
+        const fragment = document.createDocumentFragment();
         this.particles = [];
 
-        // Create particles
         for (let i = 0; i < count; i++) {
             const particle = this.createParticle(minSize, maxSize, minDuration, maxDuration);
-            container.appendChild(particle);
+            fragment.appendChild(particle);
             this.particles.push(particle);
         }
+
+        container.innerHTML = '';
+        container.appendChild(fragment);
     },
 
     /**
@@ -104,6 +116,18 @@ window.ParticlesBackground = {
     },
 
     /**
+     * Enable or disable particles
+     */
+    setEnabled(enabled) {
+        this.isEnabled = enabled;
+        if (!enabled) {
+            this.destroy();
+            return;
+        }
+        this.init(this.lastOptions || {});
+    },
+
+    /**
      * Stop and remove particles
      */
     destroy() {
@@ -122,18 +146,19 @@ window.ParticlesBackground = {
 window.ConfettiEffect = {
     container: null,
     confetti: [],
+    isRunning: false,
 
     /**
-     * Trigger confetti celebration
+     * Trigger confetti celebration (OPTIMIZED)
      * @param {Object} options - Configuration options
-     * @param {number} options.count - Number of confetti pieces (default: 150)
-     * @param {number} options.duration - Duration in ms (default: 4000)
-     * @param {string} options.origin - Origin of confetti ('top' or 'center', default: 'top')
      */
     trigger(options = {}) {
+        // Prevent multiple simultaneous confetti bursts
+        if (this.isRunning) return;
+
         const {
-            count = 150,
-            duration = 4000,
+            count = 60, // Reduced from 150
+            duration = 3500,
             origin = 'top'
         } = options;
 
@@ -142,34 +167,36 @@ window.ConfettiEffect = {
             return;
         }
 
+        this.isRunning = true;
+
         // Find or create container
         let container = document.querySelector('.confetti-container');
         if (!container) {
             container = document.createElement('div');
             container.className = 'confetti-container';
+            container.style.contain = 'strict';
             document.body.appendChild(container);
         }
         this.container = container;
+        container.innerHTML = '';
 
-        // Clear existing confetti after a delay
-        if (this.confetti.length > 0) {
-            setTimeout(() => {
-                this.container.innerHTML = '';
-                this.confetti = [];
-            }, 100);
-        }
+        // Use DocumentFragment for batch insertion
+        const fragment = document.createDocumentFragment();
+        this.confetti = [];
 
-        // Create confetti pieces
         for (let i = 0; i < count; i++) {
             const confetti = this.createConfetti(origin);
-            container.appendChild(confetti);
+            fragment.appendChild(confetti);
             this.confetti.push(confetti);
         }
+
+        container.appendChild(fragment);
 
         // Clean up after duration
         setTimeout(() => {
             container.innerHTML = '';
             this.confetti = [];
+            this.isRunning = false;
         }, duration);
     },
 
@@ -595,29 +622,109 @@ window.RippleEffect = {
 };
 
 // ============================================================================
-// MOUSE TRACKING FOR GLOW EFFECTS
+// MOUSE TRACKING FOR GLOW EFFECTS (OPTIMIZED)
 // ============================================================================
 
 window.MouseGlowEffect = {
-    /**
-     * Initialize mouse tracking glow effect
-     * @param {string} selector - Card selector (default: '.liquid-glass-card, .lg-profit-card')
-     */
-    init(selector = '.liquid-glass-card, .lg-profit-card') {
-        document.addEventListener('mousemove', (e) => {
-            const cards = document.querySelectorAll(selector);
-            cards.forEach(card => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
+    isEnabled: true,
+    selector: '.liquid-glass-card, .lg-profit-card',
+    rafId: null,
+    lastX: 0,
+    lastY: 0,
+    currentCard: null,
+    handler: null,
+    THROTTLE_MS: 50, // Throttle to ~20fps for mouse glow
 
-                // Check if mouse is over the card
-                if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
-                    card.style.setProperty('--mouse-x', `${x}px`);
-                    card.style.setProperty('--mouse-y', `${y}px`);
+    init(selector = '.liquid-glass-card, .lg-profit-card') {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            this.isEnabled = false;
+            return;
+        }
+
+        // Skip on low-end devices
+        if (navigator.hardwareConcurrency <= 2) {
+            this.isEnabled = false;
+            return;
+        }
+
+        this.selector = selector;
+        this.isEnabled = true;
+
+        if (this.handler) return;
+
+        let lastTime = 0;
+
+        this.handler = (e) => {
+            if (!this.isEnabled) return;
+
+            // Throttle updates
+            const now = performance.now();
+            if (now - lastTime < this.THROTTLE_MS) return;
+            lastTime = now;
+
+            const target = e.target;
+            if (!(target instanceof Element)) return;
+
+            const card = target.closest(this.selector);
+
+            // Clear previous card if mouse moved to different card
+            if (this.currentCard && this.currentCard !== card) {
+                this.currentCard.style.removeProperty('--mouse-x');
+                this.currentCard.style.removeProperty('--mouse-y');
+            }
+
+            if (!card) {
+                this.currentCard = null;
+                return;
+            }
+
+            this.currentCard = card;
+            this.lastX = e.clientX;
+            this.lastY = e.clientY;
+
+            if (this.rafId) return;
+
+            this.rafId = requestAnimationFrame(() => {
+                this.rafId = null;
+                if (!this.currentCard) return;
+
+                const rect = this.currentCard.getBoundingClientRect();
+                const x = this.lastX - rect.left;
+                const y = this.lastY - rect.top;
+
+                if (x >= 0 && y >= 0 && x <= rect.width && y <= rect.height) {
+                    this.currentCard.style.setProperty('--mouse-x', `${x}px`);
+                    this.currentCard.style.setProperty('--mouse-y', `${y}px`);
                 }
             });
-        });
+        };
+
+        document.addEventListener('pointermove', this.handler, { passive: true });
+    },
+
+    setEnabled(enabled) {
+        this.isEnabled = enabled;
+        if (!enabled) {
+            this.destroy();
+            return;
+        }
+        this.init(this.selector);
+    },
+
+    destroy() {
+        if (this.handler) {
+            document.removeEventListener('pointermove', this.handler);
+        }
+        if (this.rafId) {
+            cancelAnimationFrame(this.rafId);
+        }
+        if (this.currentCard) {
+            this.currentCard.style.removeProperty('--mouse-x');
+            this.currentCard.style.removeProperty('--mouse-y');
+        }
+        this.handler = null;
+        this.rafId = null;
+        this.currentCard = null;
     }
 };
 
@@ -867,29 +974,48 @@ window.MilestoneToast = {
 };
 
 // ============================================================================
-// INITIALIZATION
+// INITIALIZATION (OPTIMIZED - Lazy loading)
 // ============================================================================
 
-// Initialize all visual effects when DOM is ready
+// Initialize visual effects when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize particles background
-    ParticlesBackground.init({
-        count: 25,
-        minSize: 4,
-        maxSize: 12,
-        minDuration: 15,
-        maxDuration: 35
-    });
-
-    // Initialize ripple effect
-    RippleEffect.init();
-
-    // Initialize mouse glow effect
-    MouseGlowEffect.init();
+    // Delay heavy effects initialization for better initial load
+    requestIdleCallback ? requestIdleCallback(initEffects) : setTimeout(initEffects, 100);
 });
 
-// Initialize toast notifications on first use
-ToastNotifications.init();
+function initEffects() {
+    // Skip on low-end devices
+    const isLowEnd = navigator.hardwareConcurrency <= 2 ||
+                     (navigator.deviceMemory && navigator.deviceMemory <= 2);
+
+    if (!isLowEnd) {
+        // Initialize particles with reduced count
+        ParticlesBackground.init({
+            count: 12,
+            minSize: 4,
+            maxSize: 10,
+            minDuration: 20,
+            maxDuration: 40
+        });
+
+        // Initialize mouse glow effect
+        MouseGlowEffect.init();
+    }
+
+    // Ripple effect is lightweight, always enable
+    RippleEffect.init();
+}
+
+// Initialize toast notifications on first use (lazy)
+let toastInitialized = false;
+const originalShow = ToastNotifications.show.bind(ToastNotifications);
+ToastNotifications.show = function(...args) {
+    if (!toastInitialized) {
+        ToastNotifications.init();
+        toastInitialized = true;
+    }
+    return originalShow(...args);
+};
 
 // Export for use in other modules
 window.VisualEffects = {

@@ -288,42 +288,51 @@
 
         // เพิ่ม event listener สำหรับรูปภาพสินค้าหลังจาก DOM โหลดเสร็จ
         document.addEventListener('DOMContentLoaded', function() {
-            // เพิ่ม click handler ให้รูปภาพใน productsGrid2
+            const imageSelector = '#productsGrid2 .hero-card img, #productsGrid2 .supporting-card img';
+
+            const attachImageViewer = function(img) {
+                if (!img || img.dataset.imageViewerAttached) return;
+
+                // เพิ่ม cursor pointer
+                img.style.cursor = 'pointer';
+                img.title = 'คลิกเพื่อดูรูปขนาดใหญ่';
+                img.dataset.imageViewerAttached = 'true';
+
+                img.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // หาข้อมูลสินค้าจาก card
+                    const card = this.closest('.hero-card, .supporting-card');
+                    const title = card.querySelector('.product-name, .card-title, h3, h4')?.textContent || 'ทองคำแท่ง';
+                    const price = card.querySelector('.product-price, .card-price, .price')?.textContent || '';
+
+                    // เปิด modal
+                    openEnhancedImageViewer(this.src, title, price);
+                });
+            };
+
+            const processNode = function(node) {
+                if (!node || node.nodeType !== 1) return;
+
+                if (node.matches && node.matches(imageSelector)) {
+                    attachImageViewer(node);
+                }
+
+                const images = node.querySelectorAll ? node.querySelectorAll(imageSelector) : [];
+                images.forEach(attachImageViewer);
+            };
+
             const observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function(mutation) {
-                    if (mutation.addedNodes.length) {
-                        // ค้นหารูปภาพใน product cards ที่เพิ่งสร้าง
-                        const productImages = document.querySelectorAll('#productsGrid2 .hero-card img, #productsGrid2 .supporting-card img');
-                        productImages.forEach(function(img) {
-                            // เพิ่ม cursor pointer
-                            img.style.cursor = 'pointer';
-                            img.title = 'คลิกเพื่อดูรูปขนาดใหญ่';
-
-                            // ถ้ายังไม่มี click handler
-                            if (!img.dataset.imageViewerAttached) {
-                                img.dataset.imageViewerAttached = 'true';
-
-                                img.addEventListener('click', function(e) {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-
-                                    // หาข้อมูลสินค้าจาก card
-                                    const card = this.closest('.hero-card, .supporting-card');
-                                    const title = card.querySelector('.product-name, .card-title, h3, h4')?.textContent || 'ทองคำแท่ง';
-                                    const price = card.querySelector('.product-price, .card-price, .price')?.textContent || '';
-
-                                    // เปิด modal
-                                    openEnhancedImageViewer(this.src, title, price);
-                                });
-                            }
-                        });
-                    }
+                    mutation.addedNodes.forEach(processNode);
                 });
             });
 
             // เริ่ม observe productsGrid2
             const productsGrid = document.getElementById('productsGrid2');
             if (productsGrid) {
+                productsGrid.querySelectorAll(imageSelector).forEach(attachImageViewer);
                 observer.observe(productsGrid, { childList: true, subtree: true });
             }
         });

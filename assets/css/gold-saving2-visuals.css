@@ -1,6 +1,12 @@
 /**
  * Gold Saving Calculator 2 - Visual Enhancements
  * Neo-glassmorphism, Animations, Particles, Confetti
+ *
+ * OPTIMIZED VERSION:
+ * - Reduced blur values for better GPU performance
+ * - CSS containment for layout optimization
+ * - will-change hints for animated elements
+ * - Simplified gradients
  */
 
 /* ============================================
@@ -8,6 +14,25 @@
    ============================================ */
 .gold-saving2-wrapper {
     position: relative;
+    contain: layout style;
+}
+
+/* ============================================
+   SCROLL OPTIMIZATION
+   Pause animations during scroll for better performance
+   ============================================ */
+.is-scrolling .particle,
+.is-scrolling .confetti,
+.is-scrolling .shimmer-overlay,
+.is-scrolling .lg-total-card::before,
+.is-scrolling .lg-gold-card::before {
+    animation-play-state: paused !important;
+}
+
+/* Reduce effects on hover during scroll */
+.is-scrolling .liquid-glass-card:hover,
+.is-scrolling .supporting-card:hover {
+    transform: none !important;
 }
 
 /* Particle container */
@@ -72,25 +97,26 @@
 }
 
 /* ============================================
-   2. NEO-GLASSMORPHISM CARDS
-   Enhanced gradients and effects
+   2. NEO-GLASSMORPHISM CARDS (OPTIMIZED)
+   Reduced blur for better GPU performance
    ============================================ */
 .liquid-glass-card {
     position: relative;
     background: linear-gradient(135deg,
-            rgba(255, 255, 255, 0.95),
-            rgba(255, 255, 255, 0.85));
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+            rgba(255, 255, 255, 0.96),
+            rgba(255, 255, 255, 0.9));
+    backdrop-filter: blur(10px); /* Reduced from 20px */
+    -webkit-backdrop-filter: blur(10px);
     border-radius: 28px;
     border: 1px solid rgba(255, 255, 255, 0.6);
     box-shadow:
         0 8px 32px rgba(31, 38, 135, 0.12),
         0 2px 8px rgba(31, 38, 135, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.05);
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
+    contain: layout style paint;
+    will-change: transform;
 }
 
 /* Glowing border effect */
@@ -147,21 +173,21 @@
 }
 
 /* ============================================
-   3. ENHANCED TOTAL CARD (Blue Gradient)
+   3. ENHANCED TOTAL CARD (Blue Gradient) - OPTIMIZED
    ============================================ */
 .lg-total-card {
     background: linear-gradient(135deg,
         rgba(4, 91, 150, 0.98),
-        rgba(0, 46, 101, 0.95),
-        rgba(4, 91, 150, 0.92));
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+        rgba(0, 46, 101, 0.95));
+    backdrop-filter: blur(8px); /* Reduced from 20px */
+    -webkit-backdrop-filter: blur(8px);
     color: white;
     padding: 2.5rem;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.3);
     position: relative;
     overflow: hidden;
+    contain: layout style paint;
 }
 
 /* Animated shimmer overlay */
@@ -232,21 +258,21 @@
 }
 
 /* ============================================
-   4. ENHANCED GOLD CARD (Gold Gradient)
+   4. ENHANCED GOLD CARD (Gold Gradient) - OPTIMIZED
    ============================================ */
 .lg-gold-card {
     background: linear-gradient(135deg,
         rgba(212, 175, 55, 0.98),
-        rgba(184, 134, 11, 0.95),
-        rgba(212, 175, 55, 0.92));
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+        rgba(184, 134, 11, 0.95));
+    backdrop-filter: blur(8px); /* Reduced from 20px */
+    -webkit-backdrop-filter: blur(8px);
     color: white;
     padding: 2rem;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.4);
     position: relative;
     overflow: hidden;
+    contain: layout style paint;
 }
 
 /* Gold shimmer effect */
