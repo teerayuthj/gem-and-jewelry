@@ -8,18 +8,30 @@
 // ============================================================================
 
 window.EventHandler = {
+    // Debounce timer for slider input
+    _sliderDebounceTimer: null,
+    SLIDER_DEBOUNCE_MS: 150, // Debounce calculation by 150ms
+
     /**
      * Bind all calculator events
      * @param {Object} calculator - Calculator instance
      */
     bindEvents(calculator) {
-        // Amount slider
+        // Amount slider with DEBOUNCED calculation
         const slider = document.getElementById('amountSlider2');
         slider.addEventListener('input', (e) => {
             calculator.monthlyAmount = parseInt(e.target.value);
+            // Update display immediately for responsive feel
             document.getElementById('amountDisplay2').textContent = calculator.formatNumber(calculator.monthlyAmount);
             this.updateQuickButtons(calculator);
-            this.updateCalculation(calculator);
+
+            // Debounce the heavy calculation
+            if (this._sliderDebounceTimer) {
+                clearTimeout(this._sliderDebounceTimer);
+            }
+            this._sliderDebounceTimer = setTimeout(() => {
+                this.updateCalculation(calculator);
+            }, this.SLIDER_DEBOUNCE_MS);
         });
 
         // Quick amount buttons (Liquid Glass)

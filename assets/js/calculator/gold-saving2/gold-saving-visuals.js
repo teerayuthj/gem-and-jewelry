@@ -128,6 +128,30 @@ window.ParticlesBackground = {
     },
 
     /**
+     * Pause particles animation (when tab is hidden)
+     */
+    pause() {
+        if (this.container) {
+            this.container.style.animationPlayState = 'paused';
+            this.particles.forEach(p => {
+                p.style.animationPlayState = 'paused';
+            });
+        }
+    },
+
+    /**
+     * Resume particles animation (when tab is visible)
+     */
+    resume() {
+        if (this.container) {
+            this.container.style.animationPlayState = 'running';
+            this.particles.forEach(p => {
+                p.style.animationPlayState = 'running';
+            });
+        }
+    },
+
+    /**
      * Stop and remove particles
      */
     destroy() {
@@ -627,15 +651,20 @@ window.RippleEffect = {
 
 window.MouseGlowEffect = {
     isEnabled: true,
-    selector: '.liquid-glass-card, .lg-profit-card',
+    // Consolidated selector: includes both calculator cards AND product cards
+    selector: '.liquid-glass-card, .lg-profit-card, #productsGrid2 .supporting-card, #productsGrid2 .hero-card',
     rafId: null,
     lastX: 0,
     lastY: 0,
     currentCard: null,
     handler: null,
-    THROTTLE_MS: 50, // Throttle to ~20fps for mouse glow
+    THROTTLE_MS: 80, // Increased throttle to ~12fps for better performance
 
-    init(selector = '.liquid-glass-card, .lg-profit-card') {
+    init(selector) {
+        // Use provided selector or default consolidated selector
+        if (!selector) {
+            selector = '.liquid-glass-card, .lg-profit-card, #productsGrid2 .supporting-card, #productsGrid2 .hero-card';
+        }
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             this.isEnabled = false;
             return;
@@ -988,18 +1017,31 @@ function initEffects() {
     const isLowEnd = navigator.hardwareConcurrency <= 2 ||
                      (navigator.deviceMemory && navigator.deviceMemory <= 2);
 
-    if (!isLowEnd) {
-        // Initialize particles with reduced count
+    // Check screen size for particle count adjustment
+    const isMobile = window.innerWidth < 768;
+    const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+
+    if (!isLowEnd && !isMobile) {
+        // Initialize particles with minimal count for better performance
         ParticlesBackground.init({
-            count: 12,
+            count: isTablet ? 6 : 8, // Reduced: tablet=6, desktop=8
             minSize: 4,
-            maxSize: 10,
-            minDuration: 20,
-            maxDuration: 40
+            maxSize: 8, // Reduced from 10
+            minDuration: 25, // Slower = less repaints
+            maxDuration: 45
         });
 
-        // Initialize mouse glow effect
+        // Initialize mouse glow effect (consolidated with product cards)
         MouseGlowEffect.init();
+
+        // Pause particles when tab is not visible
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                ParticlesBackground.pause();
+            } else {
+                ParticlesBackground.resume();
+            }
+        });
     }
 
     // Ripple effect is lightweight, always enable

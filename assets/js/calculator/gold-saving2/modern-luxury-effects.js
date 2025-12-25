@@ -12,7 +12,8 @@
 
 class ModernLuxuryEffects {
     constructor() {
-        this.spotlightEnabled = true;
+        // DISABLED - Now handled by consolidated MouseGlowEffect in gold-saving-visuals.js
+        this.spotlightEnabled = false;
         this.tiltEnabled = false; // DISABLED - too heavy
         this.counterEnabled = true;
         this.magneticEnabled = false; // DISABLED by default - heavy effect
@@ -71,10 +72,10 @@ class ModernLuxuryEffects {
         // Setup scroll detection for performance
         this.setupScrollDetection();
 
-        // Only setup spotlight if enabled (MouseGlowEffect handles glow separately)
-        if (this.spotlightEnabled) {
-            this.setupSpotlightEffect();
-        }
+        // Spotlight DISABLED - Now handled by MouseGlowEffect in gold-saving-visuals.js
+        // if (this.spotlightEnabled) {
+        //     this.setupSpotlightEffect();
+        // }
 
         // Counter animation is lightweight
         this.setupCounterAnimation();
@@ -84,11 +85,11 @@ class ModernLuxuryEffects {
             this.setupMagneticButtons();
         }
 
-        // Shimmer overlay is CSS-only, lightweight
-        this.setupShimmerOverlay();
+        // Shimmer overlay DISABLED - continuous CSS animation hurts performance
+        // this.setupShimmerOverlay();
 
-        // Observe for dynamically added elements
-        this.observeChanges();
+        // MutationObserver DISABLED - no card effects to setup anymore
+        // this.observeChanges();
     }
 
     /**
@@ -535,27 +536,15 @@ class ModernLuxuryEffects {
 
     /**
      * Setup effects for a single card (OPTIMIZED)
+     * NOTE: Spotlight and Shimmer are DISABLED for performance
+     * Mouse glow is now handled by consolidated MouseGlowEffect
      */
     setupCardEffects(card) {
-        // Skip if reduced motion
-        if (this.prefersReducedMotion) return;
-
-        // Add spotlight
-        if (this.spotlightEnabled && !card.querySelector('.spotlight')) {
-            const spotlight = document.createElement('div');
-            spotlight.className = 'spotlight';
-            card.appendChild(spotlight);
-        }
-
-        // Add shimmer
-        if (!card.querySelector('.shimmer-overlay')) {
-            const shimmer = document.createElement('div');
-            shimmer.className = 'shimmer-overlay';
-            card.appendChild(shimmer);
-        }
-
-        // 3D tilt is disabled by default for performance
-        // Enable with: modernLuxuryEffects.toggleEffect('tilt', true)
+        // All card effects disabled for performance optimization
+        // - Spotlight: handled by MouseGlowEffect in gold-saving-visuals.js
+        // - Shimmer: disabled (continuous CSS animation)
+        // - 3D tilt: disabled by default
+        return;
     }
 
     /**

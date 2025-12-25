@@ -66,6 +66,10 @@ class GoldSavingCalculator2 {
         this._productsGridClickHandler = null;
         this._productsGridKeyHandler = null;
 
+        // Render cache
+        this._lastRenderGoldBaht = null;
+        this._lastRenderPrice = null;
+
         // Restore saved state
         this.restoreLocalState();
 
@@ -272,8 +276,22 @@ class GoldSavingCalculator2 {
 
     /**
      * Render products (delegated to ProductRenderer)
+     * OPTIMIZED: Skip re-render if goldBaht hasn't changed significantly
      */
     renderProducts({ goldBaht, estimatePrice }) {
+        // Round goldBaht to 4 decimal places for comparison
+        const roundedGoldBaht = Math.round(goldBaht * 10000) / 10000;
+
+        // Skip re-render if values haven't changed significantly
+        if (this._lastRenderGoldBaht === roundedGoldBaht &&
+            this._lastRenderPrice === estimatePrice) {
+            return; // No need to re-render
+        }
+
+        // Update cache
+        this._lastRenderGoldBaht = roundedGoldBaht;
+        this._lastRenderPrice = estimatePrice;
+
         const { html, productsByKey } = ProductRenderer.renderProducts({
             goldBaht,
             estimatePrice,
