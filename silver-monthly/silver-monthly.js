@@ -21,7 +21,7 @@
     var MARKUP =
         '<div class="sm-container">' +
             '<div class="sm-page-header">' +
-                '<div class="sm-page-title">📊 Silver Monthly History</div>' +
+                '<div class="sm-page-title">Silver Monthly History</div>' +
                 '<div class="sm-page-sub">ราคาปิดสิ้นเดือนและการเปลี่ยนแปลง</div>' +
             '</div>' +
             '<div class="sm-hero">' +
