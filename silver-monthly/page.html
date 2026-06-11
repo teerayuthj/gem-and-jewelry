@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silver Monthly History — Demo</title>
+    	<!-- CSS Library -->
+        <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/style.css">
+        <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/swiper.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.min.css">
+          <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/bootstrap.min.css">
+          <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/bootstrap-select.css">
+    
+        <!-- CSS Library -->
+    
+        <!-- JS Library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.2.7/js/swiper.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.0/d3.min.js"></script>
+        <script src="https://use.fontawesome.com/21df7b781f.js"></script>
+    
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script src="http://www.ausiris.co.th/etc/designs/ausiris-gold/js/bootstrap-select.min.js"></script>
+        <script src="http://www.ausiris.co.th/etc/designs/ausiris-gold/js/lodash.min.js"></script>
+    
+        <link rel="stylesheet" type="text/css" href="https://cdn.wpcc.io/lib/1.0.2/cookieconsent.min.css"/>
+        <script src="https://cdn.wpcc.io/lib/1.0.2/cookieconsent.min.js" defer></script><script>window.addEventListener("load", function(){window.wpcc.init({"colors":{"popup":{"background":"#222222","text":"#ffffff","border":"#f9f9f9"},"button":{"background":"#f9f9f9","text":"#000000"}},"transparency":"10","fontsize":"small","content":{"href":"http://www.ausiris.co.th/content/index/aboutus/cookies-policy.html","message":"เว็บไซต์นี้มีการเก็บข้อมูลใช้คุกกี้ (Cookies) เพื่อการพัฒนาและปรับปรุงเว็บไซต์ หากท่านใช้บริการเว็บไซต์นี้โดยไม่มีการปรับตั้งค่าใดๆ แสดงว่าท่านยินยอมที่จะรับคุกกี้บนเว็บไซต์ และนโยบายสิทธิส่วนบุคคลของเรา","link":"นโยบายการใช้คุกกี้","button":"ให้ความยินยอม"},"position":"bottom","padding":"small","margin":"small","corners":"small"})});</script>
+    
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+
+    <!-- DEV: ใช้ไฟล์ในเครื่อง / PROD: เปลี่ยนเป็น jsDelivr (ดู silver-monthly-component.html) -->
+    <link rel="stylesheet" href="./silver-monthly.css">
+    <style> body { background: #f0f4f8; margin: 0; } </style>
+</head>
+<body>
+
+    <!-- ===== Silver Monthly History Component ===== -->
+    <div class="sm-container">
+        <div class="sm-page-header">
+            <div class="sm-page-title">📊 Silver Monthly History</div>
+            <div class="sm-page-sub">ราคาปิดสิ้นเดือนและการเปลี่ยนแปลง</div>
+        </div>
+
+        <div class="sm-hero">
+            <div class="sm-hero-main">
+                <div class="sm-hero-label">ราคาเงินล่าสุด (Offer)</div>
+                <div class="sm-hero-price" id="smHeroPrice">—</div>
+                <div class="sm-hero-change" id="smHeroChange"></div>
+            </div>
+            <div class="sm-hero-side">
+                <div class="sm-hero-row"><span>Bid</span><b id="smHeroBid">—</b></div>
+                <div class="sm-hero-row"><span>Spot (Offer)</span><b id="smHeroSpot">—</b></div>
+                <div class="sm-hero-row"><span>อัปเดตเมื่อ</span><b id="smHeroTime">—</b></div>
+            </div>
+        </div>
+
+        <div class="sm-perf" id="smPerf"></div>
+
+        <div class="sm-controls">
+            <div class="sm-field">
+                <label>From</label>
+                <select id="smFromMonth"></select>
+            </div>
+            <div class="sm-field">
+                <label>To</label>
+                <select id="smToMonth"></select>
+            </div>
+            <div class="sm-field">
+                <label>Side</label>
+                <div class="sm-side-tabs" id="smSideTabs">
+                    <button data-side="bid">Bid</button>
+                    <button data-side="offer" class="sm-active">Offer</button>
+                    <button data-side="bidspot">Spot Bid</button>
+                    <button data-side="offerspot">Spot Offer</button>
+                </div>
+            </div>
+            <div class="sm-field">
+                <label>&nbsp;</label>
+                <button id="smApplyBtn">Apply</button>
+            </div>
+        </div>
+
+        <div class="sm-summary" id="smSummary"></div>
+
+        <div class="sm-table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th class="sm-num">Close Price</th>
+                        <th class="sm-num">Δ Change</th>
+                        <th class="sm-num">Δ %</th>
+                    </tr>
+                </thead>
+                <tbody id="smTbody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- DEV: ใช้ไฟล์ในเครื่อง / PROD: เปลี่ยนเป็น jsDelivr -->
+    <script src="./silver-monthly.js"></script>
+</body>
+</html>
