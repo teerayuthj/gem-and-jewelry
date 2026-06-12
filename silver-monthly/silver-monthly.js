@@ -145,6 +145,16 @@
         var arrow = pct > 0 ? '▲' : (pct < 0 ? '▼' : '');
         return { cls: cls, text: arrow + ' ' + fmtSigned(pct) + '%' };
     }
+    var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    // "2026-03-23".."2026-03-29" -> "23-29 Mar 2026"  (ข้ามเดือน/ปีจัดให้อ่านง่าย)
+    function fmtWeekLabel(r) {
+        var s = (r.start_date || '').split('-'), e = (r.end_date || '').split('-');
+        if (s.length !== 3 || e.length !== 3) return r.period || '';
+        var sy = +s[0], sm = +s[1], sd = +s[2], ey = +e[0], em = +e[1], ed = +e[2];
+        if (sy === ey && sm === em) return sd + '-' + ed + ' ' + MON[sm - 1] + ' ' + sy;
+        if (sy === ey) return sd + ' ' + MON[sm - 1] + ' - ' + ed + ' ' + MON[em - 1] + ' ' + sy;
+        return sd + ' ' + MON[sm - 1] + ' ' + sy + ' - ' + ed + ' ' + MON[em - 1] + ' ' + ey;
+    }
 
     // ===== Headline (latest price + performance) =====
     async function loadHeadline() {
@@ -206,7 +216,7 @@
         var tbody = $('smTbody');
         var summary = $('smSummary');
         var key = 'close_' + currentSide;
-        var labelKey = currentPeriod === 'weekly' ? 'period' : 'month';
+        var label = function (r) { return currentPeriod === 'weekly' ? fmtWeekLabel(r) : r.month; };
         var emptyText = currentPeriod === 'weekly'
             ? 'ไม่มีข้อมูลรายสัปดาห์ในช่วงที่เลือก'
             : 'ไม่มีข้อมูลรายเดือนในช่วงที่เลือก';
@@ -226,7 +236,7 @@
             var dir = r.change == null ? 'sm-flat' : (r.change > 0 ? 'sm-up' : (r.change < 0 ? 'sm-down' : 'sm-flat'));
             var arrow = dir === 'sm-up' ? '▲' : (dir === 'sm-down' ? '▼' : '');
             return '<tr>' +
-                '<td class="sm-month">' + r[labelKey] + '</td>' +
+                '<td class="sm-month">' + label(r) + '</td>' +
                 '<td class="sm-num">' + fmt(r.close) + '</td>' +
                 '<td class="sm-num">' + fmtSigned(r.change) + '</td>' +
                 '<td class="sm-num">' +
@@ -241,8 +251,8 @@
         var arrow = net > 0 ? '▲' : (net < 0 ? '▼' : '');
         summary.innerHTML =
             '<div class="sm-summary-item"><span class="sm-lbl">Side</span><span class="sm-val">' + SIDE_LABEL[currentSide] + '</span></div>' +
-            '<div class="sm-summary-item"><span class="sm-lbl">Start ' + periodLabel + ' (' + first[labelKey] + ')</span><span class="sm-val">' + fmt(first.close) + '</span></div>' +
-            '<div class="sm-summary-item"><span class="sm-lbl">End ' + periodLabel + ' (' + last[labelKey] + ')</span><span class="sm-val">' + fmt(last.close) + '</span></div>' +
+            '<div class="sm-summary-item"><span class="sm-lbl">Start ' + periodLabel + ' (' + label(first) + ')</span><span class="sm-val">' + fmt(first.close) + '</span></div>' +
+            '<div class="sm-summary-item"><span class="sm-lbl">End ' + periodLabel + ' (' + label(last) + ')</span><span class="sm-val">' + fmt(last.close) + '</span></div>' +
             '<div class="sm-summary-item"><span class="sm-lbl">Net Change</span><span class="sm-val ' + dir + '">' + arrow + ' ' + fmtSigned(net) + ' (' + fmtSigned(netPct) + '%)</span></div>';
     }
 
