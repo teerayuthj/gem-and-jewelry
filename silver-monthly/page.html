@@ -42,68 +42,8 @@
 </head>
 <body>
 
-    <!-- ===== Silver Monthly History Component ===== -->
-    <div class="sm-container">
-        <div class="sm-page-header">
-            <div class="sm-page-title">Silver Monthly History</div>
-            <div class="sm-page-sub">ราคาปิดสิ้นเดือนและการเปลี่ยนแปลง</div>
-        </div>
-
-        <div class="sm-hero">
-            <div class="sm-hero-main">
-                <div class="sm-hero-label">ราคาเงินล่าสุด (Offer)</div>
-                <div class="sm-hero-price" id="smHeroPrice">—</div>
-                <div class="sm-hero-change" id="smHeroChange"></div>
-            </div>
-            <div class="sm-hero-side">
-                <div class="sm-hero-row"><span>Bid</span><b id="smHeroBid">—</b></div>
-                <div class="sm-hero-row"><span>Spot (Offer)</span><b id="smHeroSpot">—</b></div>
-                <div class="sm-hero-row"><span>อัปเดตเมื่อ</span><b id="smHeroTime">—</b></div>
-            </div>
-        </div>
-
-        <div class="sm-perf" id="smPerf"></div>
-
-        <div class="sm-controls">
-            <div class="sm-field">
-                <label>From</label>
-                <select id="smFromMonth"></select>
-            </div>
-            <div class="sm-field">
-                <label>To</label>
-                <select id="smToMonth"></select>
-            </div>
-            <div class="sm-field">
-                <label>Side</label>
-                <div class="sm-side-tabs" id="smSideTabs">
-                    <button data-side="bid">Bid</button>
-                    <button data-side="offer" class="sm-active">Offer</button>
-                    <button data-side="bidspot">Spot Bid</button>
-                    <button data-side="offerspot">Spot Offer</button>
-                </div>
-            </div>
-            <div class="sm-field">
-                <label>&nbsp;</label>
-                <button id="smApplyBtn">Apply</button>
-            </div>
-        </div>
-
-        <div class="sm-summary" id="smSummary"></div>
-
-        <div class="sm-table-card">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Month</th>
-                        <th class="sm-num">Close Price</th>
-                        <th class="sm-num">Δ Change</th>
-                        <th class="sm-num">Δ %</th>
-                    </tr>
-                </thead>
-                <tbody id="smTbody"></tbody>
-            </table>
-        </div>
-    </div>
+    <!-- ===== Silver Monthly History Component (auto-mount) ===== -->
+    <div id="silver-monthly"></div>
 
     <!-- DEV: ใช้ไฟล์ในเครื่อง / PROD: เปลี่ยนเป็น jsDelivr -->
     <script src="./silver-monthly.js"></script>

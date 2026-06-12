@@ -9,12 +9,14 @@
     var API_HOST = 'http://27.254.3.9';
 
     var MONTHLY_BASE = API_HOST + '/api/v1/history/silver/monthly';
+    var WEEKLY_URL = API_HOST + '/api/v1/history/silver/weekly';
     var LATEST_URL = API_HOST + '/api/v1/prices/silver';
     var YESTERDAY_URL = API_HOST + '/api/v1/prices/silver-yesterday';
     var DAILY_URL = API_HOST + '/api/v1/history/silver/daily';
 
     var SIDE_LABEL = { bid: 'Bid', offer: 'Offer', bidspot: 'Spot Bid', offerspot: 'Spot Offer' };
     var currentSide = 'offer';
+    var currentPeriod = 'monthly';   // 'monthly' | 'weekly'
     var monthlyFull = [];   // ราคารายเดือนทั้งหมด (ascending) สำหรับ headline
 
     // ===== Markup (JS inject เอง — ผู้ใช้แค่วาง <div id="silver-monthly"></div>) =====
@@ -22,7 +24,7 @@
         '<div class="sm-container">' +
             '<div class="sm-page-header">' +
                 '<div class="sm-page-title">Silver Monthly History</div>' +
-                '<div class="sm-page-sub">ราคาปิดสิ้นเดือนและการเปลี่ยนแปลง</div>' +
+                '<div class="sm-page-sub">ราคาปิดรายเดือนของราคาเงิน</div>' +
             '</div>' +
             '<div class="sm-hero">' +
                 '<div class="sm-hero-main">' +
@@ -38,8 +40,14 @@
             '</div>' +
             '<div class="sm-perf" id="smPerf"></div>' +
             '<div class="sm-controls">' +
-                '<div class="sm-field"><label>From</label><select id="smFromMonth"></select></div>' +
-                '<div class="sm-field"><label>To</label><select id="smToMonth"></select></div>' +
+                '<div class="sm-field"><label>Period</label>' +
+                    '<div class="sm-side-tabs sm-view-tabs" id="smPeriodTabs">' +
+                        '<button data-period="weekly">Weekly</button>' +
+                        '<button data-period="monthly" class="sm-active">Monthly</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="sm-field sm-monthly-field"><label>From</label><select id="smFromMonth"></select></div>' +
+                '<div class="sm-field sm-monthly-field"><label>To</label><select id="smToMonth"></select></div>' +
                 '<div class="sm-field"><label>Side</label>' +
                     '<div class="sm-side-tabs" id="smSideTabs">' +
                         '<button data-side="bid">Bid</button>' +
@@ -52,7 +60,7 @@
             '</div>' +
             '<div class="sm-summary" id="smSummary"></div>' +
             '<div class="sm-table-card"><table>' +
-                '<thead><tr>' +
+                '<thead><tr id="smTableHead">' +
                     '<th>Month</th>' +
                     '<th class="sm-num">Close Price</th>' +
                     '<th class="sm-num">Δ Change</th>' +
@@ -101,6 +109,11 @@
     async function fetchMonthly(from, to) {
         var res = await fetch(MONTHLY_BASE + '?from=' + from + '-01&to=' + lastDayOf(to));
         if (!res.ok) throw new Error('monthly ' + res.status);
+        return res.json();
+    }
+    async function fetchWeekly(from, to) {
+        var res = await fetch(WEEKLY_URL + '?from=' + from + '-01&to=' + lastDayOf(to));
+        if (!res.ok) throw new Error('weekly ' + res.status);
         return res.json();
     }
 
@@ -184,16 +197,22 @@
     }
 
     // ===== Render table + summary =====
-    function render(rows) {
+    function renderEmpty(message) {
+        $('smTbody').innerHTML = '<tr><td colspan="4" class="sm-empty">' + message + '</td></tr>';
+        $('smSummary').innerHTML = '';
+    }
+
+    function renderHistory(rows) {
         var tbody = $('smTbody');
         var summary = $('smSummary');
         var key = 'close_' + currentSide;
+        var labelKey = currentPeriod === 'weekly' ? 'period' : 'month';
+        var emptyText = currentPeriod === 'weekly'
+            ? 'ไม่มีข้อมูลรายสัปดาห์ในช่วงที่เลือก'
+            : 'ไม่มีข้อมูลรายเดือนในช่วงที่เลือก';
+        var periodLabel = currentPeriod === 'weekly' ? 'Week' : 'Month';
 
-        if (!rows.length) {
-            tbody.innerHTML = '<tr><td colspan="4" class="sm-empty">ไม่มีข้อมูลในช่วงที่เลือก</td></tr>';
-            summary.innerHTML = '';
-            return;
-        }
+        if (!rows.length) { renderEmpty(emptyText); return; }
 
         var enriched = rows.map(function (r, i) {
             var prev = i > 0 ? rows[i - 1][key] : null;
@@ -207,7 +226,7 @@
             var dir = r.change == null ? 'sm-flat' : (r.change > 0 ? 'sm-up' : (r.change < 0 ? 'sm-down' : 'sm-flat'));
             var arrow = dir === 'sm-up' ? '▲' : (dir === 'sm-down' ? '▼' : '');
             return '<tr>' +
-                '<td class="sm-month">' + r.month + '</td>' +
+                '<td class="sm-month">' + r[labelKey] + '</td>' +
                 '<td class="sm-num">' + fmt(r.close) + '</td>' +
                 '<td class="sm-num">' + fmtSigned(r.change) + '</td>' +
                 '<td class="sm-num">' +
@@ -222,8 +241,8 @@
         var arrow = net > 0 ? '▲' : (net < 0 ? '▼' : '');
         summary.innerHTML =
             '<div class="sm-summary-item"><span class="sm-lbl">Side</span><span class="sm-val">' + SIDE_LABEL[currentSide] + '</span></div>' +
-            '<div class="sm-summary-item"><span class="sm-lbl">Start (' + first.month + ')</span><span class="sm-val">' + fmt(first.close) + '</span></div>' +
-            '<div class="sm-summary-item"><span class="sm-lbl">End (' + last.month + ')</span><span class="sm-val">' + fmt(last.close) + '</span></div>' +
+            '<div class="sm-summary-item"><span class="sm-lbl">Start ' + periodLabel + ' (' + first[labelKey] + ')</span><span class="sm-val">' + fmt(first.close) + '</span></div>' +
+            '<div class="sm-summary-item"><span class="sm-lbl">End ' + periodLabel + ' (' + last[labelKey] + ')</span><span class="sm-val">' + fmt(last.close) + '</span></div>' +
             '<div class="sm-summary-item"><span class="sm-lbl">Net Change</span><span class="sm-val ' + dir + '">' + arrow + ' ' + fmtSigned(net) + ' (' + fmtSigned(netPct) + '%)</span></div>';
     }
 
@@ -257,13 +276,25 @@
         async function apply() {
             if (fromSel.value > toSel.value) { alert('From ต้องไม่มากกว่า To'); return; }
             try {
-                var rows = await fetchMonthly(fromSel.value, toSel.value);
-                render(rows);
+                var rows = currentPeriod === 'weekly'
+                    ? await fetchWeekly(fromSel.value, toSel.value)
+                    : await fetchMonthly(fromSel.value, toSel.value);
+                renderHistory(rows);
             } catch (e) {
-                $('smTbody').innerHTML = '<tr><td colspan="4" class="sm-empty">โหลดข้อมูลไม่สำเร็จ: ' + e.message + '</td></tr>';
+                renderEmpty('โหลดข้อมูลไม่สำเร็จ: ' + e.message);
             }
         }
 
+        Array.prototype.forEach.call($('smPeriodTabs').querySelectorAll('button'), function (btn) {
+            btn.addEventListener('click', function () {
+                Array.prototype.forEach.call($('smPeriodTabs').querySelectorAll('button'), function (b) { b.classList.remove('sm-active'); });
+                btn.classList.add('sm-active');
+                currentPeriod = btn.getAttribute('data-period');
+                $('smTableHead').firstElementChild.textContent =
+                    currentPeriod === 'weekly' ? 'Week' : 'Month';
+                apply();
+            });
+        });
         $('smApplyBtn').addEventListener('click', apply);
         Array.prototype.forEach.call($('smSideTabs').querySelectorAll('button'), function (btn) {
             btn.addEventListener('click', function () {

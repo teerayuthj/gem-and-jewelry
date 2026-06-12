@@ -57,6 +57,18 @@
     font-family: inherit; font-size: 0.95em; padding: 8px 12px;
     border: 1px solid var(--sm-border); border-radius: 8px; background: #fff; color: var(--sm-ink);
 }
+.sm-field select {
+    -webkit-appearance: none; -moz-appearance: none; appearance: none;
+    min-width: 130px; padding-right: 34px; cursor: pointer; font-weight: 500;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+    transition: border-color .15s, box-shadow .15s;
+}
+.sm-field select:hover { border-color: var(--sm-accent); }
+.sm-field select:focus {
+    outline: none; border-color: var(--sm-accent);
+    box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+}
 .sm-field button {
     background: var(--sm-accent); color: #fff; border-color: var(--sm-accent);
     cursor: pointer; font-weight: 500; padding: 8px 20px;
@@ -69,6 +81,8 @@
     cursor: pointer; font-family: inherit; font-size: 0.85em; color: var(--sm-muted);
 }
 .sm-side-tabs button.sm-active { background: #fff; color: var(--sm-accent-dark); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+.sm-view-tabs button { min-width: 96px; }
+.sm-field.sm-hidden { display: none; }
 
 /* Summary */
 .sm-summary {
