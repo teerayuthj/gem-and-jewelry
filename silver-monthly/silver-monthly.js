@@ -232,7 +232,8 @@
             return Object.assign({}, r, { close: cur, change: change, pct: pct });
         });
 
-        tbody.innerHTML = enriched.map(function (r) {
+        // แสดงใหม่สุดขึ้นบน (กลับลำดับเฉพาะตอน render — enriched ยังเรียงเก่า→ใหม่ ไว้คำนวณ summary)
+        tbody.innerHTML = enriched.slice().reverse().map(function (r) {
             var dir = r.change == null ? 'sm-flat' : (r.change > 0 ? 'sm-up' : (r.change < 0 ? 'sm-down' : 'sm-flat'));
             var arrow = dir === 'sm-up' ? '▲' : (dir === 'sm-down' ? '▼' : '');
             return '<tr>' +
