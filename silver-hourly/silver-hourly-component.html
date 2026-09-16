@@ -1,0 +1,45 @@
+<!-- ===== Silver Hourly History — วาง 3 บรรทัดนี้ จบ ===== -->
+
+<!-- 1) ใน <head> -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.9.0/silver-hourly/silver-hourly.css">
+
+<!-- 2) ใน <body> ตำแหน่งที่อยากให้แสดง -->
+<div id="silver-hourly"></div>
+
+<!-- 3) ก่อนปิด </body> -->
+<script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.9.0/silver-hourly/silver-hourly.js"></script>
+
+<!-- หมายเหตุ: font Prompt ถูก @import ในไฟล์ CSS แล้ว ไม่ต้องใส่เพิ่ม -->
+
+
+<!-- ===== (ไม่บังคับ) ปรับค่าได้ โดยวางก่อน silver-hourly.js =====
+<script>
+window.SILVER_HOURLY_CONFIG = {
+
+    // ---------- ข้อความ ----------
+    title:      'Silver รายชั่วโมง',
+    subtitle:   'แท่งเงินออสสิริส 99.99% · THB/kg',   // ใส่ '' = ซ่อนบรรทัดนี้
+
+    // ย่อหน้าอธิบายใต้การ์ดราคา — ไม่ตั้งค่า = ไม่แสดงกล่องนี้เลย
+    // ใส่ HTML ได้: <b> <br> <a href> <ul><li>
+    description:
+        '<b>ราคาย้อนหลังรายชั่วโมง</b> ระบบบันทึกราคาแท่งเงินออสสิริสความบริสุทธิ์ 99.99% ' +
+        'อัตโนมัติทุกต้นชั่วโมง เก็บทั้งราคารับซื้อ ราคาขายออก และ Silver Spot<br>' +
+        'ราคาที่แสดงเป็นราคาอ้างอิง ณ เวลาที่บันทึก ' +
+        '<a href="/content/index/contact.html">สอบถามราคาซื้อขายจริง</a>',
+
+    rangeTitle: 'ช่วงเวลา',                         // ป้ายหน้าปุ่มลัด
+    chartTitle: 'ราคาขายรวม VAT 7% ย้อนหลัง',
+    listTitle:  'รายการรายชั่วโมง',
+    footNote:   'บันทึกอัตโนมัติทุกชั่วโมง',
+
+    // ---------- การทำงาน ----------
+    apiHost: 'https://api-price.ausiris.co.th',  // host ของ API
+    defaultRange: 7,                             // ช่วงเริ่มต้น (วัน)
+    presets: [1, 2, 7, 14, 30],                  // ปุ่มลัดช่วงเวลา
+    apiRanges: [7, 30],                          // ค่า range ที่ endpoint รองรับจริง
+    pageSize: 48,                                // จำนวนแถวต่อการกด "แสดงเพิ่ม"
+    refreshMs: 300000                            // ดึงข้อมูลใหม่ทุกกี่ ms
+};
+</script>
+-->

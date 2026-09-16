@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silver Hourly History — Demo</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- DEV: ใช้ไฟล์ในเครื่อง / PROD: เปลี่ยนเป็น jsDelivr (ดู silver-hourly-component.html) -->
+    <link rel="stylesheet" href="./silver-hourly.css">
+    <style> body { background: #f0f4f8; margin: 0; } </style>
+</head>
+<body>
+
+    <!-- ===== Silver Hourly History Component (auto-mount) ===== -->
+    <div id="silver-hourly"></div>
+
+    <!-- ตัวอย่างการตั้งข้อความเอง — ต้องวางก่อน silver-hourly.js (ลบทิ้งได้ถ้าใช้ค่าเริ่มต้น) -->
+    <script>
+    window.SILVER_HOURLY_CONFIG = {
+        title: 'ราคาเงินแท่งย้อนหลัง รายชั่วโมง',
+        subtitle: 'แท่งเงินออสสิริส 99.99% · หน่วย บาท/กิโลกรัม',
+        description:
+            '<b>ราคาย้อนหลังรายชั่วโมง</b> ระบบบันทึกราคาอัตโนมัติทุกต้นชั่วโมง ' +
+            'เก็บทั้งราคารับซื้อ ราคาขายออก ราคารวม VAT 7% และ Silver Spot (USD/oz)<br>' +
+            'ราคาที่แสดงเป็นราคาอ้างอิง ณ เวลาที่บันทึก ไม่ใช่ราคาซื้อขายจริง ณ ปัจจุบัน'
+    };
+    </script>
+
+    <!-- DEV: ใช้ไฟล์ในเครื่อง / PROD: เปลี่ยนเป็น jsDelivr -->
+    <script src="./silver-hourly.js"></script>
+</body>
+</html>
