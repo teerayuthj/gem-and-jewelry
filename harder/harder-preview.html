@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview: dropdown เลือกระบบซื้อขายทองคำแท่ง</title>
+<style>
+    body { font-family: "Helvetica Neue", Arial, "Tahoma", sans-serif; margin: 0; background: #f5f5f5; }
+    .fake-header {
+        background: #fff; border-bottom: 1px solid #e5e5e5; padding: 14px 24px;
+        display: flex; align-items: center; justify-content: flex-end; gap: 22px;
+    }
+    .fake-header .link { color: #333; text-decoration: none; font-size: 15px; }
+    .btn-w {
+        display: inline-block; padding: 8px 22px; border-radius: 4px; color: #fff;
+        text-decoration: none; font-size: 15px;
+        background: linear-gradient(180deg, #c9a679 0%, #a9814f 100%);
+    }
+    /* จำลองเมนูมือถือ (header-slide) ที่ลิงก์มาจาก menu-list-user.jsp */
+    .fake-mobile-menu { background: #2b2b2b; padding: 10px 0; }
+    .fake-mobile-menu a {
+        display: block; padding: 13px 22px; color: #eee; text-decoration: none;
+        font-size: 15px; border-bottom: 1px solid #3a3a3a;
+    }
+    .note { padding: 24px; color: #666; font-size: 14px; line-height: 1.7; }
+</style>
+</head>
+<body>
+
+<div class="fake-header">
+    <a class="link" href="#">ติดต่อเรา</a>
+    <a href="https://ausirisnext.com/" target="_blank" class="btn-w js-trade-choice">ระบบซื้อขายทองคำแท่ง</a>
+</div>
+
+<div class="fake-mobile-menu">
+    <a href="/content/index/gold-price.html">ราคาทองคำ</a>
+    <!-- ลิงก์นี้ "ไม่มี" class js-trade-choice เลย - จำลองของจริงในเมนูมือถือ -->
+    <a href="/content/index/redirect.html">ระบบซื้อขายทองคำแท่ง</a>
+    <a href="https://express.ausiris.co.th/">ออสสิริสเอ็กซ์เพรส</a>
+</div>
+
+<p class="note">
+    หน้าทดสอบ dropdown<br>
+    1. ปุ่มทองมุมขวาบน = ปุ่ม desktop (มี class)<br>
+    2. เมนูดำด้านล่าง = จำลองเมนูมือถือ ลิงก์ "ระบบซื้อขายทองคำแท่ง" ชี้ไป redirect.html และ<b>ไม่มี class</b> -> ต้องเปิด dropdown ได้เหมือนกัน
+</p>
+
+<!-- ===== Dropdown เลือกระบบซื้อขายทองคำแท่ง ===== -->
+<div class="ags-dd" id="agsTradeDropdown">
+    <a class="ags-dd-item" href="https://www.ausirisgoldtrading.com/" target="_blank" rel="noopener">
+        <span class="ags-dd-name">Ausiris Gold Trading</span>
+        <span class="ags-dd-desc">ระบบซื้อขายทองคำแท่งออนไลน์</span>
+    </a>
+    <a class="ags-dd-item" href="https://ausirisnext.com/trade/auth/login" target="_blank" rel="noopener">
+        <span class="ags-dd-name">Ausiris Next</span>
+        <span class="ags-dd-desc">ระบบซื้อขายทองคำแท่งรูปแบบใหม่</span>
+    </a>
+    <a class="ags-dd-item" href="https://www.mygoldplus.in.th/" target="_blank" rel="noopener">
+        <span class="ags-dd-name">MyGOLD Plus</span>
+        <span class="ags-dd-desc">ช้อป ออม ลงทุนทองคำ ผ่านแอปพลิเคชัน</span>
+    </a>
+</div>
+<style type="text/css">
+    .ags-dd {
+        display: none; position: fixed; top: 0; left: 0; z-index: 99999;
+        min-width: 240px; background: #fff; border: 1px solid #e6e6e6; border-radius: 8px;
+        box-shadow: 0 8px 22px rgba(0,0,0,.16); padding: 6px 0; text-align: left;
+    }
+    .ags-dd.is-open { display: block; }
+    .ags-dd:before {
+        content: ""; position: absolute; top: -6px; right: 22px;
+        width: 10px; height: 10px; background: #fff;
+        border-left: 1px solid #e6e6e6; border-top: 1px solid #e6e6e6;
+        -webkit-transform: rotate(45deg); transform: rotate(45deg);
+    }
+    .ags-dd.is-up:before {
+        top: auto; bottom: -6px;
+        border-left: 0; border-top: 0;
+        border-right: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6;
+    }
+    .ags-dd-item {
+        display: block; padding: 10px 20px; text-decoration: none; color: #333;
+        border-bottom: 1px solid #f2f2f2;
+    }
+    .ags-dd-item:last-child { border-bottom: 0; }
+    .ags-dd-item:hover, .ags-dd-item:focus { background: #faf6ef; text-decoration: none; color: #333; }
+    .ags-dd-name { display: block; font-size: 15px; color: #002458; line-height: 1.4; }
+    .ags-dd-desc { display: block; font-size: 12px; color: #999; line-height: 1.4; }
+</style>
+<script type="text/javascript">
+(function () {
+    if (window.__agsTradeDropdown) { return; }
+    window.__agsTradeDropdown = true;
+
+    var TRIGGER = 'js-trade-choice';
+    // ลิงก์ที่ให้เปิด dropdown ด้วย แม้จะอยู่ในไฟล์อื่น (เช่น เมนูมือถือ menu-list-user.jsp)
+    var HREF = /\/redirect\.html($|[?#])|^https?:\/\/(www\.)?ausirisnext\.com\/?($|[?#])/i;
+    var current = null;
+    var closeTimer = null;
+    // เปิดด้วย hover เฉพาะเครื่องที่ใช้เมาส์จริง (มือถือ/แท็บเล็ตยังใช้แตะเหมือนเดิม)
+    var HOVER = !!(window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches);
+
+    function menu() { return document.getElementById('agsTradeDropdown'); }
+
+    function hasClass(el, name) {
+        return el.className && (' ' + el.className + ' ').indexOf(' ' + name + ' ') > -1;
+    }
+
+    function isTrigger(el) {
+        if (hasClass(el, TRIGGER)) { return true; }
+        var h = el.getAttribute ? el.getAttribute('href') : null;
+        return !!(h && HREF.test(h));
+    }
+
+    function closestTrigger(el) {
+        while (el && el !== document) {
+            if (isTrigger(el)) { return el; }
+            el = el.parentNode;
+        }
+        return null;
+    }
+
+    function inMenu(el) {
+        var m = menu();
+        while (el && el !== document) {
+            if (el === m) { return true; }
+            el = el.parentNode;
+        }
+        return false;
+    }
+
+    function cancelClose() {
+        if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
+    }
+
+    function close() {
+        cancelClose();
+        var m = menu();
+        if (m) { m.className = 'ags-dd'; }
+        current = null;
+    }
+
+    // หน่วงก่อนปิด เผื่อเมาส์กำลังเลื่อนจากปุ่มข้ามช่องว่างลงมาในเมนู
+    function closeLater() {
+        cancelClose();
+        closeTimer = setTimeout(close, 250);
+    }
+
+    function openUnder(btn) {
+        var m = menu();
+        if (!m) { return false; }
+        cancelClose();
+        m.className = 'ags-dd is-open';
+
+        var r = btn.getBoundingClientRect();
+        var left = r.right - m.offsetWidth;      // ชิดขอบขวาของปุ่ม
+        if (left < 8) { left = 8; }              // กันตกขอบจอ (มือถือ)
+
+        var h = m.offsetHeight;
+        var top = r.bottom + 10;                 // ปกติเปิดลงล่าง
+        if (top + h > window.innerHeight - 8 && r.top - 10 - h > 8) {
+            top = r.top - 10 - h;                // ล่างไม่พอ -> เด้งขึ้นบน
+            m.className = 'ags-dd is-open is-up';
+        }
+        m.style.top = top + 'px';
+        m.style.left = left + 'px';
+        current = btn;
+        return true;
+    }
+
+    document.addEventListener('click', function (e) {
+        if (inMenu(e.target)) { return; }   // คลิกตัวเลือกในเมนู -> ไปตามลิงก์ปกติ
+        var btn = closestTrigger(e.target);
+        if (btn) {
+            if (current === btn) {
+                e.preventDefault();
+                // บนเมาส์เมนูเปิดค้างจาก hover อยู่แล้ว คลิกซ้ำไม่ต้องปิด
+                if (!HOVER) { close(); }
+                return;
+            }
+            // ถ้าเมนูไม่ถูกโหลด ให้ลิงก์เดิมทำงานตามปกติ
+            if (openUnder(btn)) { e.preventDefault(); }
+            return;
+        }
+        close();
+    }, false);
+
+    if (HOVER) {
+        document.addEventListener('mouseover', function (e) {
+            if (inMenu(e.target)) { cancelClose(); return; }
+            var btn = closestTrigger(e.target);
+            if (!btn) { return; }
+            if (current === btn) { cancelClose(); return; }
+            openUnder(btn);
+        }, false);
+
+        document.addEventListener('mouseout', function (e) {
+            if (!current) { return; }
+            if (!inMenu(e.target) && !closestTrigger(e.target)) { return; }
+            var to = e.relatedTarget;
+            // ยังวนอยู่ในปุ่มเดิมหรือในเมนู -> ไม่ต้องปิด
+            if (to && (inMenu(to) || closestTrigger(to) === current)) { return; }
+            closeLater();
+        }, false);
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.keyCode === 27) { close(); }
+    }, false);
+
+    // ให้เมนูเลื่อนตามปุ่มเสมอ (กรณี header เลื่อน/ย่อจอ)
+    function reposition() {
+        if (current) { openUnder(current); }
+    }
+    window.addEventListener('resize', reposition, false);
+    window.addEventListener('scroll', reposition, true);
+}());
+</script>
+<!-- ===== จบส่วน Dropdown เลือกระบบซื้อขายทองคำแท่ง ===== -->
+
+
+</body>
+</html>
