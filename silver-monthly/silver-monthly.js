@@ -6,13 +6,21 @@
     'use strict';
 
     // ===== Config: แก้ host ตรงนี้ที่เดียว =====
-    var API_HOST = 'http://27.254.3.9';
+    // override จากหน้า host ได้:
+    //   <script>window.SILVER_MONTHLY_CONFIG = { apiHost: 'https://...' };</script>  (ต้องวางก่อน silver-monthly.js)
+    var CFG = window.SILVER_MONTHLY_CONFIG || {};
 
-    var MONTHLY_BASE = API_HOST + '/api/v1/history/silver/monthly';
-    var WEEKLY_URL = API_HOST + '/api/v1/history/silver/weekly';
+    // gateway ใหม่เป็น https ทั้งหมด — ไม่มี URL http เหลือในไฟล์นี้ จึงไม่มีทางเกิด mixed content
+    // (หน้า https เรียก api https = ปกติ / หน้า http เรียก api https ก็ได้ เบราว์เซอร์ไม่บล็อกขาขึ้น)
+    // CORS ฝั่ง gateway สะท้อน Origin ที่ส่งมา จึงใช้ได้ทั้งหน้า http และ https
+    var API_HOST = CFG.apiHost || 'https://api-price.ausiris.co.th';
+    var HISTORY_HOST = CFG.historyHost || API_HOST;
+
+    var MONTHLY_PATH = '/api/v1/history/silver/monthly';
+    var WEEKLY_PATH = '/api/v1/history/silver/weekly';
+    var DAILY_PATH = '/api/v1/history/silver/daily';
     var LATEST_URL = API_HOST + '/api/v1/prices/silver';
     var YESTERDAY_URL = API_HOST + '/api/v1/prices/silver-yesterday';
-    var DAILY_URL = API_HOST + '/api/v1/history/silver/daily';
 
     var SIDE_LABEL = { bid: 'Bid', offer: 'Offer', bidspot: 'Spot Bid', offerspot: 'Spot Offer' };
     var currentSide = 'offer';
@@ -39,7 +47,7 @@
                 '</div>' +
             '</div>' +
             '<div class="sm-perf" id="smPerf"></div>' +
-            '<div class="sm-controls">' +
+            '<div class="sm-controls" id="smControls">' +
                 '<div class="sm-field"><label>Period</label>' +
                     '<div class="sm-side-tabs sm-view-tabs" id="smPeriodTabs">' +
                         '<button data-period="weekly">Weekly</button>' +
@@ -59,7 +67,8 @@
                 '<div class="sm-field"><label>&nbsp;</label><button id="smApplyBtn">Apply</button></div>' +
             '</div>' +
             '<div class="sm-summary" id="smSummary"></div>' +
-            '<div class="sm-table-card"><table>' +
+            '<div class="sm-notice" id="smNotice" hidden></div>' +
+            '<div class="sm-table-card" id="smTableCard"><table>' +
                 '<thead><tr id="smTableHead">' +
                     '<th>Month</th>' +
                     '<th class="sm-num">Close Price</th>' +
@@ -80,41 +89,32 @@
     }
 
     // ===== Fetch =====
-    async function fetchRange() {
-        var res = await fetch(MONTHLY_BASE + '/range');
-        if (!res.ok) throw new Error('range ' + res.status);
+    async function fetchJson(url, what) {
+        var res = await fetch(url);
+        if (!res.ok) throw new Error(what + ' ' + res.status);
         return res.json();
     }
-    async function fetchLatest() {
-        var res = await fetch(LATEST_URL);
-        if (!res.ok) throw new Error('latest ' + res.status);
-        return res.json();
-    }
-    async function fetchYesterday() {
-        var res = await fetch(YESTERDAY_URL);
-        if (!res.ok) throw new Error('yesterday ' + res.status);
-        return res.json();
-    }
-    async function fetchDaily(range) {
-        var res = await fetch(DAILY_URL + '?range=' + range);
-        if (!res.ok) throw new Error('daily ' + res.status);
-        return res.json();
-    }
+    function fetchLatest() { return fetchJson(LATEST_URL, 'latest'); }
+    function fetchYesterday() { return fetchJson(YESTERDAY_URL, 'yesterday'); }
+
+    // ตั้งเมื่อ range ล้มเหลว → เลิกยิง history ซ้ำใน loadHeadline ที่วนทุก 30 วิ
+    var historyDown = false;
+
+    function fetchHistory(path, what) { return fetchJson(HISTORY_HOST + path, what); }
+
     // คืนวันสุดท้ายของเดือน (YYYY-MM -> YYYY-MM-DD) กัน 400 จากเดือนที่ไม่มีวันที่ 31
     function lastDayOf(ym) {
         var parts = ym.split('-').map(Number);
         var last = new Date(parts[0], parts[1], 0).getDate();
         return ym + '-' + String(last).padStart(2, '0');
     }
-    async function fetchMonthly(from, to) {
-        var res = await fetch(MONTHLY_BASE + '?from=' + from + '-01&to=' + lastDayOf(to));
-        if (!res.ok) throw new Error('monthly ' + res.status);
-        return res.json();
+    function fetchRange() { return fetchHistory(MONTHLY_PATH + '/range', 'range'); }
+    function fetchDaily(range) { return fetchHistory(DAILY_PATH + '?range=' + range, 'daily'); }
+    function fetchMonthly(from, to) {
+        return fetchHistory(MONTHLY_PATH + '?from=' + from + '-01&to=' + lastDayOf(to), 'monthly');
     }
-    async function fetchWeekly(from, to) {
-        var res = await fetch(WEEKLY_URL + '?from=' + from + '-01&to=' + lastDayOf(to));
-        if (!res.ok) throw new Error('weekly ' + res.status);
-        return res.json();
+    function fetchWeekly(from, to) {
+        return fetchHistory(WEEKLY_PATH + '?from=' + from + '-01&to=' + lastDayOf(to), 'weekly');
     }
 
     // ===== Helpers =====
@@ -176,9 +176,12 @@
             if (!isFinite(yClose)) yClose = null;
         } catch (e) { /* ignore */ }
 
-        // อ้างอิง 7 วัน จาก daily history
+        // อ้างอิง 7 วัน จาก daily history — ข้ามไปเลยถ้ารู้แล้วว่า history ใช้ไม่ได้
+        // (loadHeadline วนทุก 30 วิ ถ้าไม่ข้ามจะยิงทิ้งทุกรอบจน console เต็ม)
         var daily = [];
-        try { daily = await fetchDaily('7d'); } catch (e) { /* ignore */ }
+        if (!historyDown) {
+            try { daily = await fetchDaily('7d'); } catch (e) { /* ignore */ }
+        }
         var ref7 = daily.length ? daily[0].close_offer : null;
 
         var chEl = $('smHeroChange');
@@ -198,7 +201,10 @@
         var ref1 = m.length >= 2 ? m[m.length - 2].close_offer : null;
         var ref3 = m.length >= 4 ? m[m.length - 4].close_offer : null;
         var refAll = m.length ? m[0].close_offer : null;
-        var defs = [['7 วัน', ref7], ['1 เดือน', ref1], ['3 เดือน', ref3], ['ทั้งหมด', refAll]];
+        // ตัดช่วงที่ไม่มีข้อมูลอ้างอิงทิ้ง (เช่น history ล่ม) ดีกว่าโชว์ '—' เรียงกัน
+        var defs = [['7 วัน', ref7], ['1 เดือน', ref1], ['3 เดือน', ref3], ['ทั้งหมด', refAll]]
+            .filter(function (d) { return d[1] != null; });
+        $('smPerf').hidden = !defs.length;
         $('smPerf').innerHTML = defs.map(function (d) {
             var p = pctCell(offer, d[1]);
             return '<div class="sm-perf-item"><div class="sm-lbl">' + d[0] +
@@ -257,18 +263,40 @@
             '<div class="sm-summary-item"><span class="sm-lbl">Net Change</span><span class="sm-val ' + dir + '">' + arrow + ' ' + fmtSigned(net) + ' (' + fmtSigned(netPct) + '%)</span></div>';
     }
 
+    // ปิดเฉพาะส่วน history แล้วขึ้นข้อความแทน — hero + performance ด้านบนยังทำงานต่อ
+    function disableHistory(message) {
+        ['smControls', 'smSummary', 'smTableCard'].forEach(function (id) {
+            var el = $(id);
+            if (el) el.hidden = true;
+        });
+        var note = $('smNotice');
+        if (note) { note.textContent = message; note.hidden = false; }
+    }
+
     // ===== Init =====
     async function init() {
         if (!mount()) return; // ไม่มี mount point บนหน้านี้
-        var range;
-        try {
-            range = await fetchRange();
-        } catch (e) {
-            $('smTbody').innerHTML = '<tr><td colspan="4" class="sm-empty">โหลดข้อมูลไม่สำเร็จ: ' + e.message + '</td></tr>';
-            return;
+
+        var range = null, rangeErr = null;
+        try { range = await fetchRange(); } catch (e) { rangeErr = e; historyDown = true; }
+
+        var hasRange = !!(range && range.min && range.max);
+        if (hasRange) {
+            try { monthlyFull = await fetchMonthly(range.min, range.max); } catch (e) { monthlyFull = []; }
         }
-        if (!range.min || !range.max) {
-            $('smTbody').innerHTML = '<tr><td colspan="4" class="sm-empty">ยังไม่มีข้อมูลประวัติรายเดือน</td></tr>';
+
+        // hero/performance ไม่ได้พึ่ง history — เรียกก่อนเช็ค error เสมอ
+        loadHeadline();
+        setInterval(loadHeadline, 30000);
+
+        if (!hasRange) {
+            if (rangeErr) {
+                // รายละเอียดทางเทคนิคไว้ใน console — บนหน้าเว็บโชว์ข้อความอ่านง่ายพอ
+                console.warn('[silver-monthly] history ใช้ไม่ได้:', rangeErr.message, '| host:', HISTORY_HOST);
+            }
+            disableHistory(rangeErr
+                ? 'ยังดูราคาย้อนหลังไม่ได้ในขณะนี้ — ราคาล่าสุดด้านบนยังอัปเดตตามปกติ'
+                : 'ยังไม่มีข้อมูลประวัติรายเดือน');
             return;
         }
 
@@ -279,10 +307,6 @@
         toSel.innerHTML = opts;
         fromSel.value = months[0];
         toSel.value = months[months.length - 1];
-
-        try { monthlyFull = await fetchMonthly(range.min, range.max); } catch (e) { monthlyFull = []; }
-        loadHeadline();
-        setInterval(loadHeadline, 30000);
 
         async function apply() {
             if (fromSel.value > toSel.value) { alert('From ต้องไม่มากกว่า To'); return; }

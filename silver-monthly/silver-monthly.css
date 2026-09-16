@@ -124,6 +124,15 @@
 
 .sm-empty { padding: 40px; text-align: center; color: var(--sm-muted); }
 
+/* ข้อความแทนตาราง ตอน history ใช้ไม่ได้ */
+.sm-notice {
+    background: var(--sm-card); border: 1px dashed var(--sm-border); border-radius: 12px;
+    padding: 24px; text-align: center; font-size: 0.9em; color: var(--sm-muted);
+}
+
+/* [hidden] ต้องชนะ display ของ .sm-controls/.sm-summary/.sm-perf ที่เป็น flex/grid */
+.sm-container [hidden] { display: none !important; }
+
 /* Latest price hero */
 .sm-hero {
     background: linear-gradient(135deg, var(--sm-accent-dark), var(--sm-accent));

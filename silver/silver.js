@@ -2,8 +2,8 @@ async function fetchSilverPrice() {
     try {
         await new Promise(resolve => setTimeout(resolve, 1500));
 
-        const slvResp = await fetch('http://27.254.3.9/api/v1/prices/silver');
-        const slvRespYest = await fetch('http://27.254.3.9/api/v1/prices/silver-yesterday');
+        const slvResp = await fetch('https://api-price.ausiris.co.th/api/v1/prices/silver');
+        const slvRespYest = await fetch('https://api-price.ausiris.co.th/api/v1/prices/silver-yesterday');
 
         const slvTyd = await slvResp.json();
         const slvYest = await slvRespYest.json();
@@ -151,5 +151,5 @@ function fmtThDate(isoDateTime, monthFormat = 'short') {
     return formattedDate;
 }
 
-setInterval(fetchSilverPrice, 2000);
+setInterval(fetchSilverPrice, 1000);
 fetchSilverPrice();
