@@ -81,11 +81,32 @@
 
     // ฉีด markup ลง mount point ถ้ายังไม่มี (รองรับทั้งแบบวาง div ว่าง และแบบวาง markup เอง)
     function mount() {
-        if (document.getElementById('smTbody')) return true; // มี markup อยู่แล้ว
+        if (document.getElementById('smTbody')) { watchVW(); return true; } // มี markup อยู่แล้ว
         var host = document.getElementById('silver-monthly')
                 || document.querySelector('[data-silver-monthly]');
-        if (host) { host.innerHTML = MARKUP; return true; }
+        if (host) { host.innerHTML = MARKUP; watchVW(); return true; }
         return false;
+    }
+
+    // ===== full-bleed กันล้นขวา =====
+    // CSS ใช้ var(--sm-vw) แทน 100vw เพราะ 100vw รวมความกว้าง scrollbar
+    // ป้อนค่าจาก documentElement.clientWidth (ความกว้างจริงที่ไม่รวม scrollbar) ให้แทน
+    var lastVW = -1;
+    function syncVW() {
+        var el = document.querySelector('.sm-container');
+        if (!el) return;
+        var w = document.documentElement.clientWidth;
+        if (w === lastVW) return;           // กัน ResizeObserver วนซ้ำ
+        lastVW = w;
+        el.style.setProperty('--sm-vw', w + 'px');
+    }
+    function watchVW() {
+        syncVW();
+        window.addEventListener('resize', syncVW);
+        // scrollbar โผล่/หายตอนเนื้อหาโหลดเสร็จก็ทำให้ clientWidth เปลี่ยน — resize ไม่ยิง
+        if (window.ResizeObserver) {
+            try { new ResizeObserver(syncVW).observe(document.documentElement); } catch (e) {}
+        }
     }
 
     // ===== Fetch =====
@@ -216,6 +237,7 @@
     function renderEmpty(message) {
         $('smTbody').innerHTML = '<tr><td colspan="4" class="sm-empty">' + message + '</td></tr>';
         $('smSummary').innerHTML = '';
+        syncVW();   // ความสูงเปลี่ยน -> scrollbar อาจโผล่/หาย -> ความกว้างจริงเปลี่ยน
     }
 
     function renderHistory(rows) {
@@ -261,6 +283,7 @@
             '<div class="sm-summary-item"><span class="sm-lbl">Start ' + periodLabel + ' (' + label(first) + ')</span><span class="sm-val">' + fmt(first.close) + '</span></div>' +
             '<div class="sm-summary-item"><span class="sm-lbl">End ' + periodLabel + ' (' + label(last) + ')</span><span class="sm-val">' + fmt(last.close) + '</span></div>' +
             '<div class="sm-summary-item"><span class="sm-lbl">Net Change</span><span class="sm-val ' + dir + '">' + arrow + ' ' + fmtSigned(net) + ' (' + fmtSigned(netPct) + '%)</span></div>';
+        syncVW();   // ความสูงเปลี่ยน -> scrollbar อาจโผล่/หาย -> ความกว้างจริงเปลี่ยน
     }
 
     // ปิดเฉพาะส่วน history แล้วขึ้นข้อความแทน — hero + performance ด้านบนยังทำงานต่อ
@@ -271,6 +294,7 @@
         });
         var note = $('smNotice');
         if (note) { note.textContent = message; note.hidden = false; }
+        syncVW();
     }
 
     // ===== Init =====

@@ -24,13 +24,17 @@
     --sh-gold-bg: #fffbeb;
 
     /* full-bleed: ทะลุ .container ของ host ออกเต็มจอ — scope เฉพาะ .sh-container
-       ไม่กระทบ .container global หรือ section อื่นของเว็บ */
-    width: 100vw;
-    max-width: 100vw;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
+       ไม่กระทบ .container global หรือ section อื่นของเว็บ
+       --sh-vw = ความกว้างจอจริง ไม่รวม scrollbar (JS เซ็ตจาก documentElement.clientWidth)
+       ห้ามใช้ 100vw ตรง ๆ เพราะ 100vw รวมความกว้าง scrollbar -> ล้นขวา ~15px
+       ทำให้หน้าเลื่อนแนวนอนได้ และเห็นแถบว่างข้าง footer  */
+    --sh-vw: 100vw;   /* fallback ก่อน JS ทำงาน */
+    width: var(--sh-vw);
+    max-width: var(--sh-vw);
+    margin-left: calc(50% - var(--sh-vw) / 2);
+    margin-right: calc(50% - var(--sh-vw) / 2);
     /* desktop: จำกัดเนื้อหากว้างสุด 1000px กึ่งกลาง / mobile: เต็มกว้าง เหลือ gutter 16px */
-    padding: 28px max(16px, calc(50vw - 500px));
+    padding: 28px max(16px, calc(var(--sh-vw) / 2 - 500px));
     font-family: 'Prompt', sans-serif;
     font-size: 16px;   /* pin base กัน host (bootstrap ฯลฯ) ย่อ em ของ component */
     line-height: 1.5;

@@ -120,7 +120,29 @@
         var host = document.getElementById('silver-hourly') || document.querySelector('[data-silver-hourly]');
         if (!host) return false;
         host.innerHTML = MARKUP;
+        watchVW();
         return true;
+    }
+
+    // ===== full-bleed กันล้นขวา =====
+    // CSS ใช้ var(--sh-vw) แทน 100vw เพราะ 100vw รวมความกว้าง scrollbar
+    // ป้อนค่าจาก documentElement.clientWidth (ความกว้างจริงที่ไม่รวม scrollbar) ให้แทน
+    var lastVW = -1;
+    function syncVW() {
+        var el = document.querySelector('.sh-container');
+        if (!el) return;
+        var w = document.documentElement.clientWidth;
+        if (w === lastVW) return;           // กัน ResizeObserver วนซ้ำ
+        lastVW = w;
+        el.style.setProperty('--sh-vw', w + 'px');
+    }
+    function watchVW() {
+        syncVW();
+        window.addEventListener('resize', syncVW);
+        // scrollbar โผล่/หายตอนเนื้อหาโหลดเสร็จก็ทำให้ clientWidth เปลี่ยน — resize ไม่ยิง
+        if (window.ResizeObserver) {
+            try { new ResizeObserver(syncVW).observe(document.documentElement); } catch (e) {}
+        }
     }
 
     // ===== Helpers =====
@@ -503,6 +525,7 @@
         $('shCount').textContent = 'แสดง ' + shown.length.toLocaleString() + ' จาก ' + list.length.toLocaleString() + ' รายการ';
         $('shMore').hidden = shown.length >= list.length;
         $('shMore').textContent = 'แสดงเพิ่ม (เหลืออีก ' + (list.length - shown.length).toLocaleString() + ' ชั่วโมง)';
+        syncVW();   // ความสูงเปลี่ยน -> scrollbar อาจโผล่/หาย -> ความกว้างจริงเปลี่ยน
     }
 
     // บรรทัดสรุปใต้ปุ่มช่วงเวลา — แทนที่ข้อมูลที่เดิมต้องไปอ่านเอาจากช่อง date input
