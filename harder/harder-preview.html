@@ -11,6 +11,7 @@
         display: flex; align-items: center; justify-content: flex-end; gap: 22px;
     }
     .fake-header .link { color: #333; text-decoration: none; font-size: 15px; }
+    .fake-header #nav { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; gap: 22px; }
     .btn-w {
         display: inline-block; padding: 8px 22px; border-radius: 4px; color: #fff;
         text-decoration: none; font-size: 15px;
@@ -28,7 +29,12 @@
 <body>
 
 <div class="fake-header">
-    <a class="link" href="#">ติดต่อเรา</a>
+    <!-- จำลองแถบเมนู desktop ที่ AEM generate ออกมา (menu-list.jsp) -->
+    <ul class="menu-list" id="nav">
+        <li><a class="link" href="/content/index/gold-price.html">ราคาทองคำ</a></li>
+        <li><a class="link" href="/content/index/aboutausiris.html">เกี่ยวกับเรา</a></li>
+        <li><a class="link" href="/content/index/Contact.html">ติดต่อเรา</a></li>
+    </ul>
     <a href="https://ausirisnext.com/" target="_blank" class="btn-w js-trade-choice">ระบบซื้อขายทองคำแท่ง</a>
 </div>
 
@@ -36,7 +42,7 @@
     <a href="/content/index/gold-price.html">ราคาทองคำ</a>
     <!-- ลิงก์นี้ "ไม่มี" class js-trade-choice เลย - จำลองของจริงในเมนูมือถือ -->
     <a href="/content/index/redirect.html">ระบบซื้อขายทองคำแท่ง</a>
-    <a href="https://express.ausiris.co.th/">ออสสิริสเอ็กซ์เพรส</a>
+    <a href="https://express.ausiris.co.th/">Ausiris Online Store</a>
 </div>
 
 <p class="note">
@@ -60,7 +66,25 @@
         <span class="ags-dd-desc">ช้อป ออม ลงทุนทองคำ ผ่านแอปพลิเคชัน</span>
     </a>
 </div>
+
+<!-- ===== Dropdown เกี่ยวกับเรา (รวม เกี่ยวกับเรา + ติดต่อเรา) =====
+     href จะถูก sync จากเมนูจริงของ AEM ตอนโหลด ดูสคริปต์ท้ายไฟล์ -->
+<div class="ags-dd" id="agsAboutDropdown">
+    <a class="ags-dd-item" href="/content/index/aboutausiris.html">
+        <span class="ags-dd-name">เกี่ยวกับออสสิริส</span>
+        <span class="ags-dd-desc">ประวัติและข้อมูลบริษัท</span>
+    </a>
+    <a class="ags-dd-item" href="/content/index/Contact.html">
+        <span class="ags-dd-name">ติดต่อเรา</span>
+        <span class="ags-dd-desc">ที่อยู่ เบอร์โทร และแผนที่</span>
+    </a>
+</div>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style type="text/css">
+    /* การ์ดใช้ฟอนต์ Prompt ชุดเดียวกับหน้าอื่นในเว็บ ไม่อิงฟอนต์ของ header */
+    .ags-dd, .ags-dd-item, .ags-dd-name, .ags-dd-desc {
+        font-family: 'Prompt', "Helvetica Neue", Arial, sans-serif;
+    }
     .ags-dd {
         display: none; position: fixed; top: 0; left: 0; z-index: 99999;
         min-width: 240px; background: #fff; border: 1px solid #e6e6e6; border-radius: 8px;
@@ -86,6 +110,13 @@
     .ags-dd-item:hover, .ags-dd-item:focus { background: #faf6ef; text-decoration: none; color: #333; }
     .ags-dd-name { display: block; font-size: 15px; color: #002458; line-height: 1.4; }
     .ags-dd-desc { display: block; font-size: 12px; color: #999; line-height: 1.4; }
+    /* การ์ดที่เปิดจากเมนูกลางแถบ ให้ชิดซ้ายของเมนู (ลูกศรย้ายตาม) */
+    .ags-dd.is-left:before { right: auto; left: 22px; }
+    /* ลูกศรเล็กๆ บอกว่าเมนูนี้กดแล้วมีเมนูย่อย */
+    .ags-has-dd:after {
+        content: ""; display: inline-block; margin-left: 6px; vertical-align: middle;
+        border: 4px solid transparent; border-bottom: 0; border-top-color: currentColor;
+    }
 </style>
 <script type="text/javascript">
 (function () {
@@ -95,20 +126,28 @@
     var TRIGGER = 'js-trade-choice';
     // ลิงก์ที่ให้เปิด dropdown ด้วย แม้จะอยู่ในไฟล์อื่น (เช่น เมนูมือถือ menu-list-user.jsp)
     var HREF = /\/redirect\.html($|[?#])|^https?:\/\/(www\.)?ausirisnext\.com\/?($|[?#])/i;
-    var current = null;
+    var MENU_ATTR = 'data-ags-dd';      // ปุ่มไหนเปิดการ์ดใบไหน (ไม่ใส่ = การ์ดซื้อขายทองคำแท่ง)
+    var DEFAULT_MENU = 'agsTradeDropdown';
+    var current = null;                 // ปุ่มที่เปิดอยู่
+    var currentMenu = null;             // การ์ดที่เปิดอยู่
     var closeTimer = null;
     // เปิดด้วย hover เฉพาะเครื่องที่ใช้เมาส์จริง (มือถือ/แท็บเล็ตยังใช้แตะเหมือนเดิม)
     var HOVER = !!(window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches);
-
-    function menu() { return document.getElementById('agsTradeDropdown'); }
 
     function hasClass(el, name) {
         return el.className && (' ' + el.className + ' ').indexOf(' ' + name + ' ') > -1;
     }
 
+    function menuFor(btn) {
+        var id = (btn.getAttribute && btn.getAttribute(MENU_ATTR)) || DEFAULT_MENU;
+        return document.getElementById(id);
+    }
+
     function isTrigger(el) {
+        if (!el.getAttribute) { return false; }
+        if (el.getAttribute(MENU_ATTR)) { return true; }
         if (hasClass(el, TRIGGER)) { return true; }
-        var h = el.getAttribute ? el.getAttribute('href') : null;
+        var h = el.getAttribute('href');
         return !!(h && HREF.test(h));
     }
 
@@ -121,9 +160,8 @@
     }
 
     function inMenu(el) {
-        var m = menu();
         while (el && el !== document) {
-            if (el === m) { return true; }
+            if (hasClass(el, 'ags-dd')) { return true; }
             el = el.parentNode;
         }
         return false;
@@ -135,9 +173,9 @@
 
     function close() {
         cancelClose();
-        var m = menu();
-        if (m) { m.className = 'ags-dd'; }
+        if (currentMenu) { currentMenu.className = 'ags-dd'; }
         current = null;
+        currentMenu = null;
     }
 
     // หน่วงก่อนปิด เผื่อเมาส์กำลังเลื่อนจากปุ่มข้ามช่องว่างลงมาในเมนู
@@ -147,24 +185,32 @@
     }
 
     function openUnder(btn) {
-        var m = menu();
+        var m = menuFor(btn);
         if (!m) { return false; }
         cancelClose();
-        m.className = 'ags-dd is-open';
+        if (currentMenu && currentMenu !== m) { currentMenu.className = 'ags-dd'; }
+
+        // ปุ่มมุมขวา -> ชิดขวา, เมนูกลางแถบ (data-ags-align="left") -> ชิดซ้าย
+        var alignLeft = btn.getAttribute && btn.getAttribute('data-ags-align') === 'left';
+        var cls = 'ags-dd is-open' + (alignLeft ? ' is-left' : '');
+        m.className = cls;
 
         var r = btn.getBoundingClientRect();
-        var left = r.right - m.offsetWidth;      // ชิดขอบขวาของปุ่ม
+        var w = m.offsetWidth;
+        var left = alignLeft ? r.left : r.right - w;
+        if (left + w > window.innerWidth - 8) { left = window.innerWidth - 8 - w; }
         if (left < 8) { left = 8; }              // กันตกขอบจอ (มือถือ)
 
         var h = m.offsetHeight;
         var top = r.bottom + 10;                 // ปกติเปิดลงล่าง
         if (top + h > window.innerHeight - 8 && r.top - 10 - h > 8) {
             top = r.top - 10 - h;                // ล่างไม่พอ -> เด้งขึ้นบน
-            m.className = 'ags-dd is-open is-up';
+            m.className = cls + ' is-up';
         }
         m.style.top = top + 'px';
         m.style.left = left + 'px';
         current = btn;
+        currentMenu = m;
         return true;
     }
 
@@ -214,6 +260,58 @@
     }
     window.addEventListener('resize', reposition, false);
     window.addEventListener('scroll', reposition, true);
+}());
+</script>
+
+<script type="text/javascript">
+// รวมเมนู "เกี่ยวกับเรา" + "ติดต่อเรา" ในแถบ desktop ให้เหลือรายการเดียว
+// (เมนู desktop generate จาก AEM ผ่าน menu-list.jsp เลยมาจับตอน render เสร็จแทนการแก้ JSP)
+// หมายเหตุ: เมนูมือถือ (.header-slide-list) ตั้งใจปล่อยให้แสดงแยกทั้ง 2 รายการตามเดิม
+(function () {
+    if (window.__agsAboutMerge) { return; }
+    window.__agsAboutMerge = true;
+
+    var ABOUT = /aboutausiris\.html($|[?#])/i;
+    var CONTACT = /contact\.html($|[?#])/i;
+
+    function ready(fn) {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fn, false);
+        } else {
+            fn();
+        }
+    }
+
+    ready(function () {
+        var nav = document.getElementById('nav');
+        var card = document.getElementById('agsAboutDropdown');
+        if (!nav || !card) { return; }
+
+        var links = nav.getElementsByTagName('a');
+        var about = null, contact = null;
+        for (var i = 0; i < links.length; i++) {
+            var h = links[i].getAttribute('href') || '';
+            if (!about && ABOUT.test(h)) { about = links[i]; }
+            else if (!contact && CONTACT.test(h)) { contact = links[i]; }
+        }
+        // โครงเมนูจาก AEM เปลี่ยน -> ปล่อยเมนูเดิมไว้ ดีกว่าทำพัง
+        if (!about || !contact) { return; }
+
+        // ให้ลิงก์ในการ์ดตรงกับที่ AEM สร้างจริงเสมอ
+        var items = card.getElementsByTagName('a');
+        if (items[0]) { items[0].setAttribute('href', about.getAttribute('href')); }
+        if (items[1]) { items[1].setAttribute('href', contact.getAttribute('href')); }
+
+        // "เกี่ยวกับเรา" กลายเป็นปุ่มเปิดการ์ด
+        about.setAttribute('data-ags-dd', 'agsAboutDropdown');
+        about.setAttribute('data-ags-align', 'left');
+        about.className = about.className ? about.className + ' ags-has-dd' : 'ags-has-dd';
+
+        // เอา <li> ของ "ติดต่อเรา" ออกจากแถบเมนู (ย้ายเข้าไปอยู่ในการ์ดแล้ว)
+        var li = contact;
+        while (li && li.parentNode && li.parentNode !== nav) { li = li.parentNode; }
+        if (li && li.parentNode === nav) { nav.removeChild(li); }
+    });
 }());
 </script>
 <!-- ===== จบส่วน Dropdown เลือกระบบซื้อขายทองคำแท่ง ===== -->
