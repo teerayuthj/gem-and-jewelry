@@ -18,9 +18,9 @@
                  %>
 
 <% if(session.getAttribute("user_id") != null){ %> 
-<li><a class="txt_color2" href="/content/index/redirect.html">ซื้อขายออนไลน์</a></li>
+<li><a class="txt_color2" href="/content/index/redirect.html">ระบบซื้อขายทองคำแท่ง</a></li>
 <% } else { %>
-<li><a class="txt_color2" href="/content/index/redirect.html">ซื้อขายออนไลน์</a></li>
+<li><a class="txt_color2" href="/content/index/redirect.html">ระบบซื้อขายทองคำแท่ง</a></li>
 <!-- <li><a class="txt_color2" href="/content/index/customer/register.html">เปิดบัญชีออนไลน์</a></li> -->
 <% } %>
 

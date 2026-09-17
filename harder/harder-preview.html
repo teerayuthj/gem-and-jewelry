@@ -32,10 +32,11 @@
     <!-- จำลองแถบเมนู desktop ที่ AEM generate ออกมา (menu-list.jsp) -->
     <ul class="menu-list" id="nav">
         <li><a class="link" href="/content/index/gold-price.html">ราคาทองคำ</a></li>
+        <li><a class="link" href="/content/index/silver.html">Silver</a></li>
         <li><a class="link" href="/content/index/aboutausiris.html">เกี่ยวกับเรา</a></li>
         <li><a class="link" href="/content/index/Contact.html">ติดต่อเรา</a></li>
     </ul>
-    <a href="https://ausirisnext.com/" target="_blank" class="btn-w js-trade-choice">ระบบซื้อขายทองคำแท่ง</a>
+    <a href="https://ausirisnext.com/" target="_blank" class="btn-w js-trade-choice ags-has-dd">ระบบซื้อขายทองคำแท่ง</a>
 </div>
 
 <div class="fake-mobile-menu">
@@ -77,6 +78,22 @@
     <a class="ags-dd-item" href="/content/index/Contact.html">
         <span class="ags-dd-name">ติดต่อเรา</span>
         <span class="ags-dd-desc">ที่อยู่ เบอร์โทร และแผนที่</span>
+    </a>
+</div>
+
+<!-- ===== Dropdown Silver (หน้าหลัก + ราคาย้อนหลัง 2 แบบ) ===== -->
+<div class="ags-dd" id="agsSilverDropdown">
+    <a class="ags-dd-item" href="/content/index/silver.html">
+        <span class="ags-dd-name">Silver</span>
+        <span class="ags-dd-desc">ภาพรวม ข่าวสาร และสินค้าเงินแท่ง 99.99%</span>
+    </a>
+    <a class="ags-dd-item" href="/content/index/silver/silver-history.html">
+        <span class="ags-dd-name">ราคาเงินแท่งย้อนหลัง</span>
+        <span class="ags-dd-desc">ราคาปิดรายเดือน ย้อนหลังหลายปี</span>
+    </a>
+    <a class="ags-dd-item" href="/content/index/silver/silver-hour.html">
+        <span class="ags-dd-name">ราคาเงินแท่งรายชั่วโมง</span>
+        <span class="ags-dd-desc">ความเคลื่อนไหวของราคาแบบรายชั่วโมง</span>
     </a>
 </div>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -218,6 +235,8 @@
         if (inMenu(e.target)) { return; }   // คลิกตัวเลือกในเมนู -> ไปตามลิงก์ปกติ
         var btn = closestTrigger(e.target);
         if (btn) {
+            // เมนูที่มีหน้าของตัวเอง (data-ags-nav) -> hover ดูการ์ดได้ แต่คลิกไปหน้านั้นเลย
+            if (btn.getAttribute('data-ags-nav')) { close(); return; }
             if (current === btn) {
                 e.preventDefault();
                 // บนเมาส์เมนูเปิดค้างจาก hover อยู่แล้ว คลิกซ้ำไม่ต้องปิด
@@ -311,6 +330,46 @@
         var li = contact;
         while (li && li.parentNode && li.parentNode !== nav) { li = li.parentNode; }
         if (li && li.parentNode === nav) { nav.removeChild(li); }
+    });
+}());
+</script>
+
+<script type="text/javascript">
+// เมนู "Silver" ในแถบ desktop -> เปิดการ์ด (หน้าหลัก + ราคาย้อนหลังรายเดือน/รายชั่วโมง)
+(function () {
+    if (window.__agsSilverMenu) { return; }
+    window.__agsSilverMenu = true;
+
+    var SILVER = /\/silver\.html($|[?#])/i;
+
+    function ready(fn) {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fn, false);
+        } else {
+            fn();
+        }
+    }
+
+    ready(function () {
+        var nav = document.getElementById('nav');
+        var card = document.getElementById('agsSilverDropdown');
+        if (!nav || !card) { return; }
+
+        var links = nav.getElementsByTagName('a');
+        var silver = null;
+        for (var i = 0; i < links.length; i++) {
+            if (SILVER.test(links[i].getAttribute('href') || '')) { silver = links[i]; break; }
+        }
+        if (!silver) { return; }
+
+        var items = card.getElementsByTagName('a');
+        if (items[0]) { items[0].setAttribute('href', silver.getAttribute('href')); }
+
+        silver.setAttribute('data-ags-dd', 'agsSilverDropdown');
+        silver.setAttribute('data-ags-align', 'left');
+        // Silver มีหน้าของตัวเอง: เอาเมาส์ชี้ = เห็นการ์ด, คลิก = เข้าหน้า Silver เลย
+        silver.setAttribute('data-ags-nav', '1');
+        silver.className = silver.className ? silver.className + ' ags-has-dd' : 'ags-has-dd';
     });
 }());
 </script>

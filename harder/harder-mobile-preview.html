@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mock UX: เมนูมือถือ (ก่อน / หลัง)</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* ---------- เปลือกของหน้า preview (ไม่ได้ใช้ในของจริง) ---------- */
+    body {
+        font-family: 'Prompt', "Helvetica Neue", Arial, sans-serif;
+        margin: 0; background: #eef0f4; color: #333;
+    }
+    .pv-head { padding: 26px 24px 6px; text-align: center; }
+    .pv-head h1 { font-size: 20px; font-weight: 600; color: #002458; margin: 0 0 6px; }
+    .pv-head p { font-size: 13px; color: #6b7280; margin: 0; line-height: 1.7; }
+    .pv-stage {
+        display: flex; flex-wrap: wrap; gap: 28px;
+        justify-content: center; align-items: flex-start; padding: 24px 16px 60px;
+    }
+    .pv-col { width: 340px; max-width: 100%; }
+    .pv-tag {
+        display: block; text-align: center; font-size: 13px; font-weight: 500;
+        margin-bottom: 10px; padding: 5px 0; border-radius: 999px;
+    }
+    .pv-tag.before { background: #e8eaee; color: #6b7280; }
+    .pv-tag.after  { background: #a9814f; color: #fff; }
+    .pv-phone {
+        height: 700px; background: #fff; border-radius: 28px; overflow: hidden;
+        border: 1px solid #dcdfe5; box-shadow: 0 14px 34px rgba(0, 0, 0, .12);
+        position: relative;
+    }
+    .pv-notch {
+        height: 32px; display: flex; align-items: center; justify-content: flex-end;
+        padding: 8px 20px 0;
+    }
+    .pv-close { font-size: 26px; line-height: 1; color: #002458; text-decoration: none; }
+    .pv-scroll { height: calc(100% - 40px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .pv-note { font-size: 12.5px; color: #6b7280; line-height: 1.8; margin: 12px 4px 0; }
+    .pv-note code { font-size: 11.5px; background: #e4e7ec; padding: 1px 5px; border-radius: 4px; }
+
+    /* ---------- ค่าจริงของเมนูมือถือใน AEM (คัดมาจาก CSS ที่ใช้อยู่บนเว็บ) ---------- */
+    .header-slide-list { list-style: none; margin: 10px 0 0; padding: 0 0 40px; }
+    .header-slide-list li a {
+        display: block; padding: 20px 0; color: #002458; text-align: center;
+        border-bottom: 1px solid rgba(12, 54, 72, .2); text-decoration: none;
+        font-family: 'Prompt', sans-serif; font-size: 20px; line-height: 18px; font-weight: 300;
+        -webkit-font-smoothing: antialiased;
+    }
+    .header-slide-list li:last-child a { border-bottom: none; }
+
+    /* ===== [ของจริง] เมนูย่อยบนมือถือ — ชุดเดียวกับใน harder.jsp ===== */
+    #header-slide .header-slide-list li.ags-m-item { position: relative; }
+    #header-slide .header-slide-list li.ags-m-item.is-open { background: #faf6ef; }
+    #header-slide .header-slide-list li.ags-m-item.is-open > a.ags-m-toggle { color: #a9814f; }
+    /* ปุ่มลูกศรฝั่งขวา สำหรับเมนูที่แตะชื่อแล้วไปหน้านั้นเลย (เช่น Silver) */
+    #header-slide .header-slide-list li a.ags-m-more {
+        position: absolute; top: 0; right: 0; width: 66px;
+        padding: 20px 0; line-height: 18px;   /* สูงเท่าแถวเมนูเดิม */
+        border-bottom: 0; text-align: center;
+    }
+    /* ลูกศรบอกว่ากดแล้วกางได้ (หมุนขึ้นเมื่อเปิด) */
+    #header-slide .ags-m-caret {
+        display: inline-block; width: 7px; height: 7px; margin: -4px 0 0 9px;
+        border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+        vertical-align: middle;
+        -webkit-transform: rotate(45deg); transform: rotate(45deg);
+        -webkit-transition: -webkit-transform .25s ease; transition: transform .25s ease;
+    }
+    #header-slide .ags-m-more .ags-m-caret { margin-left: 0; }
+    #header-slide .header-slide-list li.ags-m-item.is-open > a.ags-m-more { color: #a9814f; }
+    #header-slide .ags-m-item.is-open .ags-m-caret {
+        margin-top: 2px;
+        -webkit-transform: rotate(-135deg); transform: rotate(-135deg);
+    }
+    #header-slide .ags-m-panel {
+        max-height: 0; overflow: hidden;
+        -webkit-transition: max-height .3s ease; transition: max-height .3s ease;
+    }
+    #header-slide .ags-m-item.is-open > .ags-m-panel { max-height: 500px; }
+    /* กล่องขาวข้างใน = การ์ดชุดเดียวกับ desktop แต่วางอยู่ในลิสต์ */
+    #header-slide .ags-m-panel-inner {
+        margin: 2px 14px 14px; background: #fff; border: 1px solid #ece3d4;
+        border-radius: 10px; overflow: hidden;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, .06);
+        font-family: 'Prompt', "Helvetica Neue", Arial, sans-serif;
+    }
+    #header-slide .header-slide-list li a.ags-m-sub {
+        display: block; padding: 13px 16px; text-align: center; text-decoration: none;
+        border-bottom: 1px solid #f4efe6;
+    }
+    #header-slide .header-slide-list li a.ags-m-sub.is-last { border-bottom: 0; }
+    #header-slide .header-slide-list li a.ags-m-sub:active { background: #faf6ef; }
+    #header-slide .ags-m-name {
+        display: block; font-size: 15px; color: #002458; line-height: 1.45;
+    }
+    #header-slide .ags-m-desc {
+        display: block; font-size: 12px; color: #9a9a9a; line-height: 1.45; margin-top: 1px;
+    }
+    /* การ์ดลอยของ desktop ไม่ต้องโผล่ในหน้านี้ */
+    .ags-dd { display: none; }
+</style>
+</head>
+<body>
+
+<div class="pv-head">
+    <h1>เมนูมือถือ — เมนูย่อยแบบ accordion</h1>
+    <p>ซ้าย = ของเดิม (ลิสต์แบน ไม่มีเมนูย่อย) · ขวา = แบบใหม่ (กางการ์ดในลิสต์ เนื้อหาชุดเดียวกับการ์ด hover ฝั่ง desktop)<br>ลองกด “เกี่ยวกับเรา”, “ระบบซื้อขายทองคำแท่ง” และลูกศรขวาของ “Silver” ในเครื่องขวาได้เลย</p>
+</div>
+
+<div class="pv-stage">
+
+    <!-- ============ ก่อน ============ -->
+    <div class="pv-col">
+        <span class="pv-tag before">ก่อน — ของปัจจุบัน</span>
+        <div class="pv-phone">
+            <div class="pv-notch"><a href="javascript:void(0);" class="pv-close">&times;</a></div>
+            <div class="pv-scroll">
+                <ul class="header-slide-list">
+                    <li><a href="javascript:void(0);">ออมทอง</a></li>
+                    <li><a href="javascript:void(0);">ทองคำแท่ง</a></li>
+                    <li><a href="javascript:void(0);">Silver</a></li>
+                    <li><a href="javascript:void(0);">สินค้า</a></li>
+                    <li><a href="javascript:void(0);">บทวิเคราะห์</a></li>
+                    <li><a href="javascript:void(0);">ราคาทองวันนี้</a></li>
+                    <li><a href="javascript:void(0);">เกี่ยวกับเรา</a></li>
+                    <li><a href="javascript:void(0);">ติดต่อเรา</a></li>
+                    <li><a href="javascript:void(0);">บทความ</a></li>
+                    <li><a href="javascript:void(0);">ซื้อขายออนไลน์</a></li>
+                    <li><a href="javascript:void(0);">Ausiris Online Store</a></li>
+                </ul>
+            </div>
+        </div>
+        <p class="pv-note">
+            · ชื่อเมนูเป็น “ซื้อขายออนไลน์” ไม่ตรงกับปุ่ม “ระบบซื้อขายทองคำแท่ง” ฝั่ง desktop<br>
+            · พาไป <code>redirect.html</code> ตรงๆ ผู้ใช้ไม่เห็นว่ามี 3 ระบบให้เลือก<br>
+            · “เกี่ยวกับเรา / ติดต่อเรา” แยกคนละบรรทัด ไม่ตรงกับ desktop ที่รวมเป็นการ์ดเดียว<br>
+            · “Silver” ไม่มีทางเข้าหน้าราคาย้อนหลังทั้ง 2 หน้าที่เพิ่งเพิ่มเข้ามา
+        </p>
+    </div>
+
+    <!-- ============ หลัง ============ -->
+    <div class="pv-col">
+        <span class="pv-tag after">หลัง — แบบใหม่</span>
+        <div class="pv-phone">
+            <div class="pv-notch"><a href="javascript:void(0);" class="pv-close">&times;</a></div>
+            <div class="pv-scroll" id="header-slide">
+                <!-- โครง + href ชุดเดียวกับที่ AEM generate จริง -->
+                <ul class="header-slide-list header-margin">
+                    <li><a class="txt_color2" href="/content/index/saving.html">ออมทอง</a></li>
+                    <li><a class="txt_color2" href="/content/index/bullion.html">ทองคำแท่ง</a></li>
+                    <li><a class="txt_color2" href="/content/index/silver.html">Silver</a></li>
+                    <li><a class="txt_color2" href="/content/index/products.html">สินค้า</a></li>
+                    <li><a class="txt_color2" href="/content/index/research.html">บทวิเคราะห์</a></li>
+                    <li><a class="txt_color2" href="/content/index/goldprice.html">ราคาทองวันนี้</a></li>
+                    <li><a class="txt_color2" href="/content/index/aboutausiris.html">เกี่ยวกับเรา</a></li>
+                    <li><a class="txt_color2" href="/content/index/Contact.html">ติดต่อเรา</a></li>
+                    <li><a class="txt_color2" href="/content/index/blog.html">บทความ</a></li>
+                    <li><a class="txt_color2" href="/content/index/redirect.html">ระบบซื้อขายทองคำแท่ง</a></li>
+                    <li><a class="txt_color2" href="https://express.ausiris.co.th/">Ausiris Online Store</a></li>
+                </ul>
+            </div>
+        </div>
+        <p class="pv-note">
+            · <b>Silver</b> แตะที่ชื่อ = เข้าหน้า Silver เลย, แตะลูกศรขวา = กางราคาย้อนหลัง 2 หน้า<br>
+            · <b>เกี่ยวกับเรา / ระบบซื้อขายทองคำแท่ง</b> แตะทั้งแถว = กางการ์ด (ปลายทางเดิมอยู่เป็นรายการแรก)<br>
+            · เปิดได้ทีละอัน และเลื่อนตามให้อัตโนมัติถ้าการ์ดตกขอบล่าง<br>
+            · เนื้อหาอ่านจากการ์ด <code>.ags-dd</code> ชุดเดิม → แก้ที่เดียวได้ทั้ง desktop + mobile
+        </p>
+    </div>
+
+</div>
+
+<!-- ===== การ์ดต้นทาง (ชุดเดียวกับใน harder.jsp) ===== -->
+<div class="ags-dd" id="agsTradeDropdown">
+    <a class="ags-dd-item" href="https://www.ausirisgoldtrading.com/" target="_blank" rel="noopener">
+        <span class="ags-dd-name">Ausiris Gold Trading</span>
+        <span class="ags-dd-desc">ระบบซื้อขายทองคำแท่งออนไลน์</span>
+    </a>
+    <a class="ags-dd-item" href="https://ausirisnext.com/trade/auth/login" target="_blank" rel="noopener">
+        <span class="ags-dd-name">Ausiris Next</span>
+        <span class="ags-dd-desc">ระบบซื้อขายทองคำแท่งรูปแบบใหม่</span>
+    </a>
+    <a class="ags-dd-item" href="https://www.mygoldplus.in.th/" target="_blank" rel="noopener">
+        <span class="ags-dd-name">MyGOLD Plus</span>
+        <span class="ags-dd-desc">ช้อป ออม ลงทุนทองคำ ผ่านแอปพลิเคชัน</span>
+    </a>
+</div>
+
+<div class="ags-dd" id="agsAboutDropdown">
+    <a class="ags-dd-item" href="/content/index/aboutausiris.html">
+        <span class="ags-dd-name">เกี่ยวกับออสสิริส</span>
+        <span class="ags-dd-desc">ประวัติและข้อมูลบริษัท</span>
+    </a>
+    <a class="ags-dd-item" href="/content/index/Contact.html">
+        <span class="ags-dd-name">ติดต่อเรา</span>
+        <span class="ags-dd-desc">ที่อยู่ เบอร์โทร และแผนที่</span>
+    </a>
+</div>
+
+<div class="ags-dd" id="agsSilverDropdown">
+    <a class="ags-dd-item" href="/content/index/silver.html">
+        <span class="ags-dd-name">Silver</span>
+        <span class="ags-dd-desc">ภาพรวม ข่าวสาร และสินค้าเงินแท่ง 99.99%</span>
+    </a>
+    <a class="ags-dd-item" href="/content/index/silver/silver-history.html">
+        <span class="ags-dd-name">ราคาเงินแท่งย้อนหลัง</span>
+        <span class="ags-dd-desc">ราคาปิดรายเดือน ย้อนหลังหลายปี</span>
+    </a>
+    <a class="ags-dd-item" href="/content/index/silver/silver-hour.html">
+        <span class="ags-dd-name">ราคาเงินแท่งรายชั่วโมง</span>
+        <span class="ags-dd-desc">ความเคลื่อนไหวของราคาแบบรายชั่วโมง</span>
+    </a>
+</div>
+
+<script type="text/javascript">
+// ===== เมนูย่อยบนมือถือ (#header-slide) — สคริปต์ชุดเดียวกับใน harder.jsp =====
+(function () {
+    if (window.__agsMobileSubmenu) { return; }
+    window.__agsMobileSubmenu = true;
+
+    var ABOUT = /aboutausiris\.html($|[?#])/i;
+    var CONTACT = /contact\.html($|[?#])/i;
+    var SILVER = /\/silver\.html($|[?#])/i;
+    var TRADE = /\/redirect\.html($|[?#])|^https?:\/\/(www\.)?ausirisnext\.com\/?($|[?#])/i;
+
+    function ready(fn) {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fn, false);
+        } else {
+            fn();
+        }
+    }
+
+    function hasClass(el, name) {
+        return el.className && (' ' + el.className + ' ').indexOf(' ' + name + ' ') > -1;
+    }
+
+    // หา <span> ลูกที่เป็น class ที่ต้องการ (เลี่ยง querySelector เผื่อ browser เก่า)
+    function spanIn(el, name) {
+        var c = el.childNodes;
+        for (var i = 0; i < c.length; i++) {
+            if (c[i].nodeType === 1 && hasClass(c[i], name)) { return c[i]; }
+        }
+        return null;
+    }
+
+    function linkIn(list, re) {
+        var a = list.getElementsByTagName('a');
+        for (var i = 0; i < a.length; i++) {
+            if (re.test(a[i].getAttribute('href') || '')) { return a[i]; }
+        }
+        return null;
+    }
+
+    function liOf(el, list) {
+        while (el && el.parentNode && el.parentNode !== list) { el = el.parentNode; }
+        return (el && el.parentNode === list) ? el : null;
+    }
+
+    // แปลงการ์ดของ desktop -> panel ของ accordion
+    // skipHref: ตัดรายการที่ซ้ำกับตัวเมนูเองออก (เมนูที่แตะชื่อแล้วไปหน้านั้นอยู่แล้ว)
+    function panelFrom(cardId, skipHref) {
+        var card = document.getElementById(cardId);
+        if (!card) { return null; }
+        var items = card.getElementsByTagName('a');
+        if (!items.length) { return null; }
+
+        var panel = document.createElement('div');
+        panel.className = 'ags-m-panel';
+        var inner = document.createElement('div');
+        inner.className = 'ags-m-panel-inner';
+
+        for (var i = 0; i < items.length; i++) {
+            var src = items[i];
+            if (skipHref && src.getAttribute('href') === skipHref) { continue; }
+            var a = document.createElement('a');
+            a.className = 'ags-m-sub';
+            a.setAttribute('href', src.getAttribute('href') || '#');
+            if (src.getAttribute('target')) { a.setAttribute('target', src.getAttribute('target')); }
+            if (src.getAttribute('rel')) { a.setAttribute('rel', src.getAttribute('rel')); }
+
+            var name = spanIn(src, 'ags-dd-name');
+            var desc = spanIn(src, 'ags-dd-desc');
+            var n = document.createElement('span');
+            n.className = 'ags-m-name';
+            n.innerHTML = name ? name.innerHTML : src.innerHTML;
+            a.appendChild(n);
+            if (desc) {
+                var d = document.createElement('span');
+                d.className = 'ags-m-desc';
+                d.innerHTML = desc.innerHTML;
+                a.appendChild(d);
+            }
+            inner.appendChild(a);
+        }
+        if (!inner.childNodes.length) { return null; }
+        inner.childNodes[inner.childNodes.length - 1].className += ' is-last';
+        panel.appendChild(inner);
+        return panel;
+    }
+
+    // หา element ที่เลื่อนได้ที่ครอบอยู่ เผื่อการ์ดที่กางออกตกขอบล่างจอ
+    function scroller(el) {
+        while (el && el !== document.body) {
+            if (el.scrollHeight > el.clientHeight + 4) { return el; }
+            el = el.parentNode;
+        }
+        return null;
+    }
+
+    function keepInView(li) {
+        setTimeout(function () {
+            var over = li.getBoundingClientRect().bottom - window.innerHeight + 16;
+            if (over <= 0) { return; }
+            var sc = scroller(li.parentNode);
+            if (sc) { sc.scrollTop += over; }
+            else if (window.scrollBy) { window.scrollBy(0, over); }
+        }, 320);
+    }
+
+    // เปิดได้ทีละอัน ลิสต์จะได้ไม่ยาวเกินจอ
+    function toggle(list, li) {
+        var open = hasClass(li, 'is-open');
+        var all = list.childNodes;
+        for (var i = 0; i < all.length; i++) {
+            if (all[i].nodeType === 1 && hasClass(all[i], 'is-open')) {
+                all[i].className = all[i].className.replace(/\s*is-open/, '');
+                if (all[i].agsBtn) { all[i].agsBtn.setAttribute('aria-expanded', 'false'); }
+            }
+        }
+        if (open) { return; }
+        li.className = li.className + ' is-open';
+        if (li.agsBtn) { li.agsBtn.setAttribute('aria-expanded', 'true'); }
+        keepInView(li);
+    }
+
+    // เปลี่ยนลิงก์ธรรมดาในเมนูมือถือให้เป็นหัว accordion
+    // keepLink = true: แตะชื่อเมนู -> ไปหน้าเดิมเลย, เมนูย่อยกางด้วยปุ่มลูกศรฝั่งขวา
+    function accordion(list, link, cardId, keepLink) {
+        var li = liOf(link, list);
+        var href = link.getAttribute('href');
+        var panel = li && panelFrom(cardId, keepLink ? href : null);
+        if (!panel) { return null; }
+
+        li.className = li.className ? li.className + ' ags-m-item' : 'ags-m-item';
+
+        var caret = document.createElement('i');
+        caret.className = 'ags-m-caret';
+
+        var btn;
+        if (keepLink) {
+            // ปุ่มแยกฝั่งขวา ไม่ไปทับพื้นที่กดของชื่อเมนู
+            btn = document.createElement('a');
+            btn.className = 'ags-m-more';
+            btn.setAttribute('href', 'javascript:void(0);');
+            btn.setAttribute('aria-label', 'เมนูย่อย');
+            btn.appendChild(caret);
+            li.appendChild(btn);
+        } else {
+            // ทั้งแถวเป็นตัวกาง (ปลายทางเดิมของลิงก์ยังอยู่ เป็นรายการแรกในการ์ด)
+            btn = link;
+            btn.setAttribute('href', 'javascript:void(0);');
+            btn.removeAttribute('target');
+            btn.className = btn.className ? btn.className + ' ags-m-toggle' : 'ags-m-toggle';
+            btn.appendChild(caret);
+        }
+        btn.setAttribute('role', 'button');
+        btn.setAttribute('aria-expanded', 'false');
+        li.agsBtn = btn;
+
+        li.appendChild(panel);
+        btn.onclick = function (e) {
+            if (e && e.preventDefault) { e.preventDefault(); }
+            toggle(list, li);
+            return false;
+        };
+        return li;
+    }
+
+    ready(function () {
+        var slide = document.getElementById('header-slide');
+        if (!slide) { return; }
+        var lists = slide.getElementsByTagName('ul');
+        for (var i = 0; i < lists.length; i++) {
+            var list = lists[i];
+            if (!hasClass(list, 'header-slide-list')) { continue; }
+
+            // เกี่ยวกับเรา: รวม "ติดต่อเรา" เข้ามาให้เหมือนการ์ดฝั่ง desktop
+            var about = linkIn(list, ABOUT);
+            var contact = linkIn(list, CONTACT);
+            if (about && accordion(list, about, 'agsAboutDropdown') && contact) {
+                var cli = liOf(contact, list);
+                if (cli) { list.removeChild(cli); }
+            }
+
+            // Silver: แตะชื่อ = เข้าหน้า Silver เลย, แตะลูกศรขวา = ดูราคาย้อนหลังรายเดือน/รายชั่วโมง
+            var silver = linkIn(list, SILVER);
+            if (silver) { accordion(list, silver, 'agsSilverDropdown', true); }
+
+            // ระบบซื้อขายทองคำแท่ง: เห็นครบทั้ง 3 ระบบ แทนการยิงไป redirect.html ทันที
+            var trade = linkIn(list, TRADE);
+            if (trade) { accordion(list, trade, 'agsTradeDropdown'); }
+        }
+    });
+}());
+</script>
+</body>
+</html>
