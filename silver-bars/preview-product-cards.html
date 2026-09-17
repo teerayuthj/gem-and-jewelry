@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Silver Bars — การ์ดสินค้า เลื่อนแนวนอน (A / B / C)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap');
+
+/* ============ สำเนาจาก silver-bars.css ที่ยังใช้ต่อ ============ */
+.slb-container { font-family:'Prompt',sans-serif; color:#1e293b; width:100%; box-sizing:border-box; padding:16px 12px; }
+.slb-container * { box-sizing:border-box; }
+.slb-title { font-size:1.6em; font-weight:700; color:#002458; line-height:1.2; margin:0; }
+.slb-subtitle { color:#64748b; font-size:.95em; font-weight:500; margin-top:3px; }
+.slb-filters { display:flex; gap:8px; margin:16px 0 4px; flex-wrap:wrap; }
+.slb-filter { font-family:inherit; border:1px solid #cbd5e1; background:#fff; color:#334155; border-radius:20px;
+              padding:7px 16px; font-size:.88em; font-weight:600; cursor:pointer; transition:all .15s ease; }
+.slb-filter:hover { border-color:#94a3b8; }
+.slb-filter.slb-active { background:#13428f; color:#fff; border-color:#13428f; }
+.slb-table-card { background:#fff; border-radius:16px; box-shadow:0 4px 6px rgba(0,0,0,.08); overflow:hidden; }
+.slb-table { width:100%; border-collapse:collapse; font-size:.9em; }
+.slb-table th { background:#dbe4ee; color:#334155; font-weight:600; font-size:.85em; padding:12px 12px;
+                text-align:right; user-select:none; white-space:nowrap; }
+.slb-table th.slb-left { text-align:left; }
+.slb-table td { padding:12px; text-align:right; border-top:.5px solid #eef2f7; vertical-align:middle; }
+.slb-table tbody tr:nth-child(even) td { background:#f8fafc; }
+.slb-table td.slb-weight { text-align:left; }
+.slb-wname { color:#002458; font-weight:700; font-size:1.02em; line-height:1.25; }
+.slb-tag { display:inline-block; background:linear-gradient(135deg,#c0c0c0,#a8a8a8); color:#1e293b; border-radius:20px;
+           font-size:.72em; font-weight:700; padding:1px 7px; margin-left:5px; vertical-align:middle; }
+.slb-sell { color:#13428f; font-weight:700; white-space:nowrap; }
+
+/* =====================================================================
+   ↓↓↓ CSS ใหม่ — rail การ์ดสินค้า เลื่อนแนวนอนบนมือถือ
+   ===================================================================== */
+
+/* ---- rail: มือถือเลื่อนซ้ายขวา / เดสก์ท็อปกลายเป็น grid ---- */
+.slb-rail {
+  display:flex; gap:12px;
+  overflow-x:auto; overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  padding:12px 12px 16px;
+  margin:0 -12px;                       /* full-bleed ให้การ์ดชนขอบจอ */
+  scrollbar-width:none;                 /* Firefox */
+  overscroll-behavior-x:contain;        /* กันลากแล้วหน้าเว็บเด้ง */
+}
+.slb-rail::-webkit-scrollbar { display:none; }
+.slb-rail::after { content:''; flex:0 0 1px; }   /* กันการ์ดใบสุดท้ายชิดขอบ */
+
+.slb-card {
+  flex:0 0 62%;                         /* โผล่ใบถัดไปให้รู้ว่าเลื่อนได้ */
+  max-width:230px;
+  scroll-snap-align:start;
+  background:#fff; border-radius:16px;
+  box-shadow:0 4px 10px rgba(0,0,0,.08);
+  overflow:hidden; position:relative;
+  display:flex; flex-direction:column;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.slb-card:hover { transform:translateY(-3px); box-shadow:0 10px 22px rgba(0,0,0,.13); }
+
+@media (min-width:768px) {
+  .slb-rail {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+    overflow:visible; margin:0; padding:12px 0 4px;
+  }
+  .slb-card { flex:none; max-width:none; }
+  .slb-rail::after { display:none; }
+}
+
+/* ---- ส่วนรูป ---- */
+.slb-card-img {
+  background:linear-gradient(160deg,#f1f5f9 0%,#e2e8f0 100%);
+  aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; padding:10px;
+}
+.slb-card-img img, .slb-card-img svg { width:100%; height:100%; object-fit:contain; display:block; }
+
+/* ---- เนื้อการ์ด ---- */
+.slb-card-body { padding:12px 13px 13px; display:flex; flex-direction:column; gap:2px; flex:1; }
+.slb-card-name { color:#002458; font-weight:700; font-size:1em; line-height:1.3; }
+.slb-card-sub  { color:#94a3b8; font-size:.76em; font-weight:500; }
+.slb-card-price { color:#13428f; font-weight:800; font-size:1.32em; line-height:1.2; margin-top:8px; }
+.slb-card-price small { font-size:.55em; font-weight:600; color:#64748b; margin-left:3px; }
+.slb-card-btn {
+  margin-top:11px; background:#13428f; color:#fff; text-decoration:none; font-family:inherit;
+  border-radius:10px; padding:10px; font-weight:700; font-size:.87em; text-align:center;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  transition:background .15s ease;
+}
+.slb-card-btn:hover { background:#0d3272; }
+.slb-card-btn svg { width:14px; height:14px; flex:none; }
+
+/* ---- badge มุมการ์ด ---- */
+.slb-badge {
+  position:absolute; top:9px; left:9px; z-index:1;
+  background:#f59e0b; color:#fff; border-radius:20px;
+  font-size:.7em; font-weight:700; padding:3px 9px; letter-spacing:.2px;
+}
+.slb-badge.pattern { background:linear-gradient(135deg,#94a3b8,#64748b); }
+
+/* ---- hint + dots ---- */
+.slb-rail-hint { font-size:.78em; color:#94a3b8; display:flex; align-items:center; gap:5px; padding:0 2px; }
+@media (min-width:768px) { .slb-rail-hint { display:none; } }
+.slb-dots { display:flex; gap:5px; justify-content:center; margin-top:2px; }
+.slb-dots i { width:5px; height:5px; border-radius:50%; background:#cbd5e1; transition:all .2s ease; }
+.slb-dots i.on { background:#13428f; width:16px; border-radius:3px; }
+@media (min-width:768px) { .slb-dots { display:none; } }
+
+/* ---- B: การ์ดแบบไม่มีรูป (compact) ---- */
+.slb-card.nopic .slb-card-body { padding:15px 14px 14px; }
+.slb-card.nopic .slb-wt {
+  font-size:1.5em; font-weight:800; color:#002458; line-height:1.1;
+  padding-bottom:9px; border-bottom:1px solid #eef2f7; margin-bottom:9px;
+}
+.slb-card.nopic .slb-wt span { font-size:.5em; font-weight:600; color:#94a3b8; display:block; margin-top:3px; }
+.slb-card.nopic { flex-basis:48%; max-width:180px; }
+@media (min-width:768px) { .slb-card.nopic { flex-basis:auto; } }
+
+/* ---- C: ปุ่มในตาราง (sell อย่างเดียว) ---- */
+.slb-table td.slb-cta, .slb-table th.slb-cta-head { text-align:center; width:1%; white-space:nowrap; }
+.slb-buybtn {
+  display:inline-flex; align-items:center; gap:5px; background:#13428f; color:#fff; text-decoration:none;
+  border-radius:999px; padding:6px 15px; font-size:.82em; font-weight:700; font-family:inherit; white-space:nowrap;
+  transition:background .15s ease;
+}
+.slb-buybtn:hover { background:#0d3272; }
+.slb-buybtn svg { width:13px; height:13px; flex:none; }
+.slb-sechead { font-size:.95em; font-weight:700; color:#002458; margin:20px 0 0; display:flex; align-items:center; gap:8px; }
+.slb-sechead:before { content:''; width:3px; height:15px; background:#13428f; border-radius:2px; }
+
+/* ============ เปลือกหน้า preview (ไม่ใช่ส่วนของ component) ============ */
+body { font-family:'Prompt',sans-serif; background:#eef2f7; margin:0; padding:0 0 80px; color:#1e293b; }
+.pv-top { background:#002458; color:#fff; padding:22px 16px; text-align:center; }
+.pv-top h1 { margin:0; font-size:1.25em; font-weight:700; }
+.pv-top p { margin:6px 0 0; font-size:.85em; opacity:.75; }
+.pv-switch { display:flex; justify-content:center; gap:8px; margin:18px 0 4px; }
+.pv-switch button { font-family:inherit; border:1px solid #cbd5e1; background:#fff; color:#334155;
+                    border-radius:20px; padding:7px 18px; font-size:.85em; font-weight:600; cursor:pointer; }
+.pv-switch button.on { background:#13428f; color:#fff; border-color:#13428f; }
+.pv-grid { display:flex; flex-direction:column; gap:28px; padding:20px 12px; align-items:center; }
+.pv-case { width:100%; max-width:880px; background:#fff; border-radius:18px; box-shadow:0 6px 18px rgba(0,0,0,.07); overflow:hidden; }
+.pv-case > header { padding:16px 18px 12px; border-bottom:1px solid #eef2f7; }
+.pv-badge { display:inline-block; background:#13428f; color:#fff; width:26px; height:26px; line-height:26px;
+            text-align:center; border-radius:8px; font-weight:800; margin-right:8px; }
+.pv-case h2 { display:inline; font-size:1.05em; font-weight:700; color:#002458; }
+.pv-desc { margin:10px 0 0; font-size:.85em; color:#64748b; line-height:1.6; }
+.pv-desc b { color:#0f7a3d; } .pv-desc i { color:#b45309; font-style:normal; }
+.pv-stage { background:#f8fafc; padding:6px 0; overflow:hidden; }
+body.mobile .pv-stage .slb-container { max-width:390px; margin:0 auto; }
+/* บังคับให้ stage ทำตัวเป็นมือถือ (media query ใช้ความกว้างจอจริง จึงต้อง override) */
+body.mobile .pv-stage .slb-rail { display:flex !important; overflow-x:auto !important; margin:0 -12px !important; padding:12px 12px 16px !important; }
+body.mobile .pv-stage .slb-card { flex:0 0 62% !important; max-width:230px !important; }
+body.mobile .pv-stage .slb-card.nopic { flex-basis:48% !important; max-width:180px !important; }
+body.mobile .pv-stage .slb-rail-hint, body.mobile .pv-stage .slb-dots { display:flex !important; }
+</style>
+</head>
+<body>
+
+<div class="pv-top">
+  <h1>Silver Bars — การ์ดสินค้า เลื่อนแนวนอนบนมือถือ</h1>
+  <p>แสดงเฉพาะราคาขาย · เลื่อนด้วย CSS scroll-snap ไม่ต้องใช้ไลบรารี</p>
+</div>
+
+<div class="pv-switch">
+  <button id="btnMobile" class="on">📱 มือถือ (390px)</button>
+  <button id="btnDesktop">🖥 เดสก์ท็อป</button>
+</div>
+
+<div class="pv-grid">
+
+  <!-- ========== A ========== -->
+  <section class="pv-case">
+    <header>
+      <span class="pv-badge">A</span><h2>การ์ดมีรูป เลื่อนแนวนอน (แบบเลือกหนัง)</h2>
+      <p class="pv-desc">
+        มือถือ = rail เลื่อนซ้ายขวา snap ทีละใบ โผล่ใบถัดไป 38% ให้รู้ว่าเลื่อนได้ · เดสก์ท็อป = grid อัตโนมัติ เห็นครบ<br>
+        <b>ดี:</b> รู้สึกเป็น “สินค้า” ไม่ใช่ตารางราคา · ปุ่มซื้อใหญ่เต็มใบ · เดสก์ท็อปไม่ต้องเขียนโค้ดเพิ่ม<br>
+        <i>แลก:</i> ต้องมีรูปแท่งเงินรายน้ำหนัก · เทียบราคาข้ามน้ำหนักยากกว่าตาราง
+      </p>
+    </header>
+    <div class="pv-stage"><div class="slb-container">
+      <div class="slb-filters">
+        <button class="slb-filter slb-active" data-f="all">ทั้งหมด</button>
+        <button class="slb-filter" data-f="baht">แท่งบาท</button>
+        <button class="slb-filter" data-f="gram">แท่งกรัม</button>
+      </div>
+      <div class="slb-rail-hint">← เลื่อนดูน้ำหนักอื่น →</div>
+      <div class="slb-rail" id="railA"></div>
+      <div class="slb-dots" id="dotsA"></div>
+    </div></div>
+  </section>
+
+  <!-- ========== B ========== -->
+  <section class="pv-case">
+    <header>
+      <span class="pv-badge">B</span><h2>การ์ดไม่มีรูป (ถ้ายังไม่มีภาพสินค้า)</h2>
+      <p class="pv-desc">
+        rail เหมือนกันทุกอย่าง แต่แทนรูปด้วยตัวเลขน้ำหนักตัวใหญ่ การ์ดเล็กลง เห็นทีละ 2 ใบ<br>
+        <b>ดี:</b> เริ่มได้ทันทีโดยไม่ต้องรอถ่ายรูป · โหลดเร็ว ไม่มีภาพให้รอ<br>
+        <i>แลก:</i> ได้ความรู้สึก “ร้านค้า” น้อยกว่า A ชัดเจน — พอมีรูปแล้วสลับไป A ได้เลย โครงเดียวกัน
+      </p>
+    </header>
+    <div class="pv-stage"><div class="slb-container">
+      <div class="slb-rail-hint">← เลื่อนดูน้ำหนักอื่น →</div>
+      <div class="slb-rail" id="railB"></div>
+    </div></div>
+  </section>
+
+  <!-- ========== C ========== -->
+  <section class="pv-case">
+    <header>
+      <span class="pv-badge">C</span><h2>ผสม: rail ซื้อ + ตารางราคาเต็ม</h2>
+      <p class="pv-desc">
+        การ์ดไว้ “ซื้อ” ด้านบน แล้วตามด้วยตารางราคาขายทั้งหมดไว้ “เทียบ” (คอลัมน์รับซื้อถูกตัดออกแล้ว)<br>
+        <b>ดี:</b> ได้ทั้งสองงาน — คนอยากซื้อกดการ์ด คนอยากเทียบดูตาราง · ตารางเดิมเสียหายน้อยที่สุด<br>
+        <i>แลก:</i> หน้ายาวขึ้น · ราคาซ้ำสองที่ ต้องระวังให้มาจากแหล่งเดียวกัน
+      </p>
+    </header>
+    <div class="pv-stage"><div class="slb-container">
+      <div class="slb-sechead">สั่งซื้อแท่งเงิน</div>
+      <div class="slb-rail" id="railC"></div>
+      <div class="slb-sechead">ราคาขายทั้งหมด</div>
+      <div class="slb-table-card" style="margin-top:10px">
+        <table class="slb-table">
+          <thead><tr>
+            <th class="slb-left">น้ำหนัก</th>
+            <th>ราคาขาย (+VAT)</th>
+            <th class="slb-cta-head"></th>
+          </tr></thead>
+          <tbody id="bodyC"></tbody>
+        </table>
+      </div>
+    </div></div>
+  </section>
+
+</div>
+
+<script>
+/* ===== ข้อมูล: MOCK_DATA เดิม + image/link ตาม pattern ของ gold-products.js ===== */
+var SHOP = 'https://express.ausiris.co.th/';
+var ROWS = [
+  { name:'1 บาท',   sub:'15.24 กรัม', grams:15.24,  sell:1310,  kind:'baht', link:SHOP+'silver/1baht.html' },
+  { name:'5 บาท',   sub:'76.22 กรัม', grams:76.22,  sell:5900,  kind:'baht', link:SHOP+'silver/5baht.html' },
+  { name:'10 บาท',  sub:'152.44 กรัม',grams:152.44, sell:11260, kind:'baht', link:SHOP+'silver/10baht.html' },
+  { name:'10 กรัม', sub:'',           grams:10,     sell:970,   kind:'gram', link:SHOP+'silver/10g.html', badge:'ยอดนิยม' },
+  { name:'20 กรัม', sub:'',           grams:20,     sell:1730,  kind:'gram', link:SHOP+'silver/20g.html' },
+  { name:'50 กรัม', sub:'',           grams:50,     sell:4050,  kind:'gram', link:SHOP+'silver/50g.html' },
+  { name:'100 กรัม',sub:'',           grams:100,    sell:8000,  kind:'gram', link:SHOP+'silver/100g.html', badge:'ยอดนิยม' },
+  { name:'100 กรัม',sub:'ลวดลาย',     grams:100,    sell:8200,  kind:'gram', link:SHOP+'silver/100g-pattern.html', tag:'ลวดลาย' },
+  { name:'150 กรัม',sub:'',           grams:150,    sell:11090, kind:'gram', link:SHOP+'silver/150g.html' }
+];
+
+var f = function (n) { return Math.round(n).toLocaleString('en-US'); };
+var CART = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"/></svg>';
+
+/* รูปแท่งเงิน: เดโมวาดด้วย SVG (ของจริงเปลี่ยนเป็น <img src="...DAM..."> ได้เลย)
+   ขนาดแท่งขยับตามน้ำหนัก ให้เห็นความต่าง */
+function barSvg(g, pattern) {
+  var w = Math.min(96, 34 + Math.log(g + 1) * 15), h = w * 0.46;
+  var x = (140 - w) / 2, y = (105 - h) / 2 + 6;
+  return '<svg viewBox="0 0 140 105">' +
+    '<defs>' +
+      '<linearGradient id="sv' + g + (pattern ? 'p' : '') + '" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0%" stop-color="#ffffff"/><stop offset="42%" stop-color="#dfe6ee"/>' +
+        '<stop offset="100%" stop-color="#9aa8b8"/></linearGradient>' +
+    '</defs>' +
+    '<ellipse cx="70" cy="' + (y + h + 7) + '" rx="' + (w * 0.55) + '" ry="4.5" fill="#000" opacity=".10"/>' +
+    '<path d="M' + (x + w * .09) + ' ' + y + ' H' + (x + w * .91) + ' L' + (x + w) + ' ' + (y + h) +
+         ' H' + x + ' Z" fill="url(#sv' + g + (pattern ? 'p' : '') + ')" stroke="#8fa0b3" stroke-width="1"/>' +
+    '<path d="M' + (x + w * .09) + ' ' + y + ' H' + (x + w * .91) + ' L' + (x + w * .87) + ' ' + (y + h * .2) +
+         ' H' + (x + w * .13) + ' Z" fill="#fff" opacity=".55"/>' +
+    (pattern ? '<path d="M' + (x + w * .2) + ' ' + (y + h * .5) + ' q' + (w * .15) + ' -' + (h * .2) + ' ' + (w * .3) + ' 0 q' + (w * .15) + ' ' + (h * .2) + ' ' + (w * .3) + ' 0" fill="none" stroke="#8fa0b3" stroke-width="1.3" opacity=".8"/>' : '') +
+    '<text x="70" y="' + (y + h * .78) + '" text-anchor="middle" font-family="Prompt,sans-serif" font-size="' +
+      Math.max(6, w * .11) + '" font-weight="700" fill="#7d8ea1">AUSIRIS 999</text>' +
+  '</svg>';
+}
+
+function cardHtml(r, nopic) {
+  var badge = r.badge ? '<span class="slb-badge">' + r.badge + '</span>'
+            : (r.tag ? '<span class="slb-badge pattern">' + r.tag + '</span>' : '');
+  var pic = nopic ? '' :
+    '<div class="slb-card-img">' + barSvg(r.grams, !!r.tag) + '</div>';
+  var head = nopic
+    ? '<div class="slb-wt">' + r.name + '<span>' + (r.sub || '99.9% Silver') + '</span></div>'
+    : '<div class="slb-card-name">' + r.name + '</div>' +
+      '<div class="slb-card-sub">' + (r.sub || 'เงินแท่ง 99.9%') + '</div>';
+  return '<article class="slb-card' + (nopic ? ' nopic' : '') + '" data-kind="' + r.kind + '">' +
+      badge + pic +
+      '<div class="slb-card-body">' + head +
+        '<div class="slb-card-price">฿' + f(r.sell) + '<small>+VAT</small></div>' +
+        '<a class="slb-card-btn" href="' + r.link + '" target="_blank" rel="noopener noreferrer">' +
+          CART + 'สั่งซื้อ</a>' +
+      '</div>' +
+    '</article>';
+}
+
+document.getElementById('railA').innerHTML = ROWS.map(function (r) { return cardHtml(r, false); }).join('');
+document.getElementById('railB').innerHTML = ROWS.map(function (r) { return cardHtml(r, true);  }).join('');
+document.getElementById('railC').innerHTML = ROWS.filter(function (r) { return r.badge || r.kind === 'baht'; })
+                                                 .map(function (r) { return cardHtml(r, false); }).join('');
+
+document.getElementById('bodyC').innerHTML = ROWS.map(function (r) {
+  var tag = r.tag ? '<span class="slb-tag">' + r.tag + '</span>' : '';
+  var sub = r.sub && !r.tag ? ' <span style="color:#94a3b8;font-weight:500;font-size:.85em">(' + r.sub + ')</span>' : '';
+  return '<tr>' +
+    '<td class="slb-weight"><div class="slb-wname">' + r.name + tag + sub + '</div></td>' +
+    '<td class="slb-sell">' + f(r.sell) + '</td>' +
+    '<td class="slb-cta"><a class="slb-buybtn" href="' + r.link + '" target="_blank" rel="noopener noreferrer">' +
+      CART + 'ซื้อ</a></td></tr>';
+}).join('');
+
+/* filter ของ A ให้กดได้จริง */
+var railA = document.getElementById('railA');
+document.querySelectorAll('.slb-filter').forEach(function (b) {
+  b.addEventListener('click', function () {
+    document.querySelectorAll('.slb-filter').forEach(function (x) { x.classList.remove('slb-active'); });
+    b.classList.add('slb-active');
+    var fl = b.dataset.f;
+    railA.querySelectorAll('.slb-card').forEach(function (c) {
+      c.style.display = (fl === 'all' || c.dataset.kind === fl) ? '' : 'none';
+    });
+    railA.scrollLeft = 0; syncDots();
+  });
+});
+
+/* dots บอกตำแหน่งใน rail */
+var dotsA = document.getElementById('dotsA');
+function visibleCards() {
+  return Array.prototype.filter.call(railA.children, function (c) {
+    return c.classList && c.classList.contains('slb-card') && c.style.display !== 'none';
+  });
+}
+function syncDots() {
+  var cards = visibleCards();
+  if (!cards.length) { dotsA.innerHTML = ''; return; }
+  var per = cards[0].offsetWidth + 12;
+  var idx = Math.round(railA.scrollLeft / per);
+  dotsA.innerHTML = cards.map(function (_, i) { return '<i class="' + (i === idx ? 'on' : '') + '"></i>'; }).join('');
+}
+railA.addEventListener('scroll', syncDots, { passive:true });
+syncDots();
+
+/* สลับความกว้างพรีวิว */
+document.body.classList.add('mobile');
+document.getElementById('btnMobile').onclick = function () {
+  document.body.classList.add('mobile');
+  this.classList.add('on'); document.getElementById('btnDesktop').classList.remove('on'); syncDots();
+};
+document.getElementById('btnDesktop').onclick = function () {
+  document.body.classList.remove('mobile');
+  this.classList.add('on'); document.getElementById('btnMobile').classList.remove('on'); syncDots();
+};
+</script>
+</body>
+</html>

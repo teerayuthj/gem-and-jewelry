@@ -1,0 +1,73 @@
+<!-- ===== Silver Shop — การ์ดสินค้าแท่งเงิน · วาง 3 บรรทัดนี้ จบ ===== -->
+
+<!-- 1) ใน <head> -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@main/silver-bars/silver-shop.css">
+
+<!-- 2) ใน <body> ตำแหน่งที่อยากให้แสดง -->
+<div id="silver-shop"></div>
+
+<!-- 3) ก่อนปิด </body> -->
+<script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@main/silver-bars/silver-shop.js"></script>
+
+<!-- หมายเหตุ:
+     - แสดงเฉพาะราคาขาย ไม่มีราคารับซื้อ
+       ราคาบนการ์ดเป็น "8,200 บาท" ส่วนเรื่อง VAT บอกครั้งเดียวเป็นป้ายบนหัว
+     - การ์ดเลื่อนแนวนอนทั้งสองจอ (CSS scroll-snap ไม่ใช้ไลบรารี)
+       มือถือ = ปัดนิ้ว snap ทีละใบ + dots บอกตำแหน่ง
+       เดสก์ท็อป = ปุ่มลูกศรซ้าย-ขวา เลื่อนทีละหน้าพอดีจำนวนการ์ดที่เห็น
+                   (ลูกศรซ่อนเองเมื่อสุดทาง / เมื่อของเห็นครบไม่ต้องเลื่อน)
+                   + จับการ์ดลากด้วยเมาส์ได้ ลากแล้วปล่อยจะ snap เข้าใบใกล้สุดเอง
+                   (ลากเสร็จไม่เด้งไปหน้าสั่งซื้อ — คลิกหลังลากถูกกินไว้ให้แล้ว)
+     - font Prompt ถูก @import ในไฟล์ CSS แล้ว ไม่ต้องใส่เพิ่ม
+     - ใช้ prefix `sls-` แยกจาก `slb-` ของ silver-bars.css วางคู่กันในหน้าเดียวได้
+     - ไอคอนตะกร้า/ข้อมูล: ถ้าหน้านั้นโหลด Font Awesome ไว้จะใช้ FA อัตโนมัติ
+       ถ้าไม่มีจะถอยไปใช้ SVG ในตัว — ไม่ต้องตั้งอะไร และไม่พังทั้งสองแบบ
+
+     ตั้งค่า เลือกทางใดทางหนึ่ง:
+
+       ก) ใส่ที่ตัว div เลย
+          <div id="silver-shop"
+               data-api-url="https://api-price.ausiris.co.th/api/v1/prices/ausiris-silver"
+               data-shop-url="https://express.ausiris.co.th/"
+               data-refresh="30000"
+               data-icon="auto"></div>
+
+       ข) หรือประกาศ config ก่อนโหลด script
+          <script>
+            window.SILVER_SHOP_CONFIG = {
+              apiUrl: 'https://api-price.ausiris.co.th/api/v1/prices/ausiris-silver',
+              shopUrl: 'https://express.ausiris.co.th/',
+              refreshMs: 30000,
+
+              // ข้อความบนหน้า
+              title: 'เงินแท่งออสสิริส',
+              subtitle: 'โลหะเงินบริสุทธิ์ 99.99% — เลือกน้ำหนักที่ต้องการ',
+              vatNote: 'ราคาที่แสดงรวมภาษีมูลค่าเพิ่ม (VAT 7%) แล้ว',  // '' = ไม่แสดงป้าย
+
+              // ชื่อสินค้าบนการ์ด แสดง 2 บรรทัด: brand เล็กจาง / weightTemplate ตัวเด่น
+              brand: 'โลหะเงินออสสิริส 99.99%',
+              weightTemplate: 'น้ำหนัก {weight}',
+              priceUnit: 'บาท',
+
+              icon: 'auto'   // 'auto' | 'fa' | 'svg'
+            };
+          </script>
+
+     สินค้าที่มีหลายรูป — ใส่ images เป็น array ใน catalog (เรียงตามลำดับที่อยากให้เห็น)
+
+       { key: 'glory-three-forces', name: '...', price: 8440,
+         images: ['/path/รูป-หน้า.jpeg', '/path/รูป-หลัง.jpeg'],
+         imageFit: 'cover' }
+
+       - รูปเดียวยังใช้ image: '...' แบบเดิมได้ ไม่ต้องแก้ย้อนหลัง
+       - มีมากกว่า 1 รูปจะขึ้นจุดบอกจำนวนที่ขอบล่างของรูปให้อัตโนมัติ
+         เดสก์ท็อป: ชี้เมาส์ = แอบดูรูปถัดไป · ทุกจอ: แตะที่รูป = เลื่อนไปรูปถัดไป
+       - imageFit: 'cover' = ให้รูปเต็มกรอบสี่เหลี่ยมจัตุรัส (ครอปขอบ)
+         ไม่ใส่ = 'contain' เห็นทั้งรูปแต่มีขอบว่าง เหมาะกับรูปที่ตัดพื้นหลังมาแล้ว
+
+     ยังต้องเติมอีก 2 อย่างในตัวแปร PRODUCTS ใน silver-shop.js:
+       1. image — URL รูปแท่งเงินรายน้ำหนัก (ตอนนี้เว้นว่าง → วาดภาพ SVG แทนไปก่อน)
+                  ฝั่งทองเก็บที่ dam/ausirisgold/stamped-gold/ ใช้ที่เดียวกันได้
+       2. link  — URL หน้าสินค้ารายชิ้นที่ Ausiris Express
+                  (เว้นว่าง → ใช้ shopUrl เป็นปลายทางสำรอง)
+-->

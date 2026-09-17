@@ -1,0 +1,378 @@
+/* ===== Silver Shop — การ์ดสินค้าแท่งเงิน (โชว์เคสเลื่อนแนวนอน) =====
+   แสดงเฉพาะ "ราคาขาย" · แต่ละใบลิงก์ไปหน้าสินค้าที่ Ausiris Express
+   มือถือ = ปัดนิ้ว snap ทีละใบ + dots · เดสก์ท็อป = ปุ่มลูกศร + จับการ์ดลากด้วยเมาส์
+   prefix `sls-` แยกจาก `slb-` ของ silver-bars.css โดยสิ้นเชิง วางคู่กันได้
+   font Prompt ถูก @import ในไฟล์นี้แล้ว ไม่ต้องใส่เพิ่ม
+*/
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap');
+
+.sls-container {
+    font-family: 'Prompt', sans-serif;
+    color: #1e293b;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px 12px;
+}
+.sls-container * { box-sizing: border-box; }
+
+@media (min-width: 768px) {
+    .sls-container { max-width: 1000px; margin: 0 auto; padding: 28px 16px; }
+}
+
+/* ===== Header ===== */
+.sls-header { margin-bottom: 4px; }
+.sls-title {
+    font-size: 1.6em;
+    font-weight: 700;
+    color: #002458;
+    line-height: 1.2;
+    margin: 0;
+}
+@media (min-width: 768px) { .sls-title { font-size: 2em; } }
+
+.sls-subtitle {
+    color: #64748b;
+    font-size: 0.95em;
+    font-weight: 500;
+    margin-top: 3px;
+}
+@media (min-width: 768px) { .sls-subtitle { font-size: 1.05em; } }
+
+/* แถวข้อมูลใต้หัวข้อ: ป้าย VAT + เวลาอัปเดต */
+.sls-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+.sls-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eef4fc;
+    color: #13428f;
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 0.82em;
+    font-weight: 600;
+    line-height: 1.4;
+}
+.sls-note:empty { display: none; }
+.sls-note svg { width: 14px; height: 14px; flex: none; }
+.sls-note i { font-size: 1em; line-height: 1; flex: none; }
+
+.sls-updated {
+    font-size: 0.85em;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+/* ===== Filters ===== */
+.sls-filters { display: flex; gap: 8px; margin: 16px 0 2px; flex-wrap: wrap; }
+.sls-filter {
+    font-family: inherit;
+    border: 1px solid #cbd5e1;
+    background: #fff;
+    color: #334155;
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 0.88em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.sls-filter:hover { border-color: #94a3b8; }
+.sls-filter.sls-active { background: #13428f; color: #fff; border-color: #13428f; }
+
+/* ===== Rail — หัวใจของ component =====
+   เลื่อนแนวนอนทั้งสองจอ (แนวเดียวกับ Netflix/Shopee) ต่างกันที่ตัวควบคุม
+     มือถือ    = ปัดนิ้ว snap ทีละใบ · การ์ดกว้าง 62% ให้ใบถัดไปโผล่ 38% เป็นสัญญาณว่ายังมีต่อ
+     เดสก์ท็อป = ปุ่มลูกศรเลื่อนทีละหน้า (เมาส์ปัดแนวนอนไม่ได้เหมือนนิ้ว จึงต้องมีปุ่ม)
+   railwrap มีไว้เป็นหลักอ้างอิงให้ปุ่มลูกศรเกาะขอบ rail ได้ */
+.sls-railwrap { position: relative; }
+
+.sls-rail {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;     /* กันลากแล้วหน้าเว็บเลื่อนตาม */
+    /* ไม่ตั้ง scroll-behavior: smooth ตรงนี้ — การปัดนิ้ว/แทร็กแพดไม่ได้ใช้ค่านี้อยู่แล้ว
+       แต่มันไปคุมการเลื่อนที่สั่งด้วยสคริปต์จนบาง engine ค้างไม่ขยับ
+       ถ้าจะเลื่อนด้วย JS (เช่นเพิ่มปุ่มลูกศรทีหลัง) ให้ใช้ rail.scrollTo({behavior:'smooth'}) แทน */
+    padding: 12px 12px 16px;            /* เผื่อที่ให้เงาการ์ด ไม่โดนตัด */
+    margin: 0 -12px;                    /* full-bleed ชนขอบจอ */
+    scrollbar-width: none;              /* Firefox */
+    -ms-overflow-style: none;           /* IE/Edge เก่า */
+}
+.sls-rail::-webkit-scrollbar { display: none; }
+.sls-rail::after { content: ''; flex: 0 0 1px; }   /* กันใบสุดท้ายชิดขอบ */
+
+/* จับการ์ดลากเลื่อนได้ด้วยเมาส์ (ดู bindDrag ใน silver-shop.js)
+   คลาส sls-grabbable ติดให้เฉพาะรอบที่มีของให้เลื่อนจริง ไม่งั้นเป็นการหลอกให้ลาก
+   ทัชสกรีนไม่มีเคอร์เซอร์ กฎพวกนี้จึงไม่มีผลอะไรบนมือถือ */
+.sls-rail.sls-grabbable { cursor: grab; }
+.sls-rail.sls-dragging,
+.sls-rail.sls-dragging * { cursor: grabbing; }   /* ครอบลูกด้วย ไม่งั้นลากผ่านปุ่มสั่งซื้อแล้วเป็นรูปมือชี้ */
+.sls-rail.sls-dragging { user-select: none; -webkit-user-select: none; }
+
+.sls-card {
+    flex: 0 0 62%;
+    max-width: 230px;
+    scroll-snap-align: start;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.sls-card:hover { transform: translateY(-3px); box-shadow: 0 10px 22px rgba(0, 0, 0, 0.13); }
+
+@media (min-width: 768px) {
+    .sls-rail {
+        gap: 16px;
+        margin: 0;
+        padding: 12px 4px 16px;     /* 4px ข้าง = ที่ให้เงาการ์ดใบแรก/ใบสุดท้าย ไม่โดน overflow ตัด */
+    }
+    /* 250px คงที่ → ที่ container 1000px เห็นพร้อมกัน 3.8 ใบ
+       เศษ .8 ตั้งใจให้ใบที่ 4 โผล่ค้างขอบขวา เป็นสัญญาณว่ายังมีของต่อ ไม่ใช่จบแค่นี้ */
+    .sls-card { flex: 0 0 250px; max-width: none; }
+}
+
+/* ===== ปุ่มลูกศร — เดสก์ท็อปเท่านั้น ===== */
+.sls-arrow { display: none; }
+@media (min-width: 768px) {
+    .sls-arrow {
+        position: absolute;
+        top: 38%;                   /* ~กึ่งกลางรูปสินค้า ไม่ใช่กึ่งกลางการ์ด จะได้ไม่ไปทับราคา/ปุ่มซื้อ */
+        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border: none;
+        border-radius: 50%;
+        background: #fff;
+        color: #13428f;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+        font-size: 1em;
+        cursor: pointer;
+        z-index: 3;
+        transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+    }
+    .sls-arrow:hover { background: #13428f; color: #fff; }
+    .sls-arrow:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
+    .sls-prev { left: -8px; }
+    .sls-next { right: -8px; }
+    /* สุดทางแล้วซ่อนไปเลย ไม่ให้เหลือปุ่มที่กดแล้วไม่เกิดอะไร */
+    .sls-arrow[disabled] { opacity: 0; pointer-events: none; }
+}
+.sls-arrow svg { width: 15px; height: 15px; flex: none; }
+.sls-arrow i { font-size: 1em; line-height: 1; flex: none; }
+
+@media (prefers-reduced-motion: reduce) {
+    .sls-card { transition: none; }
+    .sls-card:hover { transform: none; }
+}
+
+/* ===== รูปสินค้า ===== */
+/* สี่เหลี่ยมจัตุรัส 1:1 — ลดความสูงการ์ดและให้ภาพสินค้าดูกว้างขึ้น
+   รูปแพ็กเกจใช้ contain เพื่อไม่ให้ถูกครอป ส่วนภาพถ่ายที่กำหนด imageFit: cover ยังคงเต็มกรอบ */
+.sls-card-img {
+    background: linear-gradient(160deg, #f1f5f9 0%, #e2e8f0 100%);
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    /* จำเป็น: กล่องนี้เป็น flex item ของการ์ด จึงติด min-height:auto มาโดยปริยาย
+       = ห้ามเตี้ยกว่าเนื้อใน · ภาพ SVG แทนมี viewBox 3:4 เลยดันกล่องสูงเกิน 1:1 ไป ~30%
+       ผลคือใบที่ใช้ "รูปถ่ายจริง" (สูงพอดี 1:1) เตี้ยกว่าเพื่อน แล้วโดน flex ยืดให้เท่ากัน
+       กลายเป็นช่องว่างขาวก้อนใหญ่เหนือปุ่มสั่งซื้อ — ปลดล็อกให้ aspect-ratio คุมได้จริง */
+    flex: none;
+    min-height: 0;
+}
+.sls-card-img img,
+.sls-card-img svg { width: 100%; height: 100%; object-fit: contain; display: block; }
+.sls-card-img-cover { padding: 0; overflow: hidden; }
+.sls-card-img-cover img { object-fit: cover; }
+
+/* ===== สินค้าที่มีหลายรูป (ดู bindShots ใน silver-shop.js) =====
+   ซ้อนทุกรูปทับกันแล้วสลับด้วย opacity — ไม่ใช้การปัดในการ์ด เพราะ rail แม่กินนิ้วไปแล้ว
+   ซ้อนทับแบบนี้ทำให้สลับแล้วขึ้นทันทีไม่มีวูบขาว และกล่องไม่ขยับความสูงตอนเปลี่ยนรูป */
+.sls-card-img { position: relative; }
+.sls-card-shots { position: relative; width: 100%; height: 100%; }
+.sls-card-shots img { position: absolute; left: 0; top: 0; }
+.sls-shot { opacity: 0; transition: opacity 0.18s ease; }
+.sls-shot.sls-shot-on { opacity: 1; }
+
+.sls-shot-dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 7px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    pointer-events: none;   /* ปล่อยคลิกทะลุไปโดนรูป ซึ่งเป็นเป้าที่ใหญ่กว่าจุดมาก */
+}
+.sls-shot-dots i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);   /* กันจุดจมหายบนรูปพื้นขาว */
+    transition: width 0.2s ease, background 0.2s ease;
+}
+.sls-shot-dots i.sls-on { background: #13428f; width: 14px; border-radius: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+    .sls-shot, .sls-shot-dots i { transition: none; }
+}
+
+/* fallback สำหรับเบราว์เซอร์ที่ไม่รู้จัก aspect-ratio */
+@supports not (aspect-ratio: 1 / 1) {
+    .sls-card-img { height: 230px; }
+}
+
+/* ===== เนื้อการ์ด ===== */
+.sls-card-body {
+    padding: 12px 13px 13px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+/* ชื่อสินค้า 2 บรรทัด: แบรนด์เล็กจางด้านบน / น้ำหนักตัวเด่นด้านล่าง
+   แยกแบบนี้เพื่อไม่ให้ชื่อเต็มยาว ๆ ไปบีบน้ำหนักตกบรรทัดจนอ่านยาก */
+.sls-card-brand {
+    color: #64748b;
+    font-size: 0.76em;
+    font-weight: 600;
+    line-height: 1.35;
+}
+.sls-card-name {
+    color: #002458;
+    font-weight: 700;
+    font-size: 1.08em;
+    line-height: 1.3;
+    margin-top: 2px;
+    text-wrap: balance;          /* เบราว์เซอร์ใหม่ตัดบรรทัดให้สมดุล ตัวเก่าไม่รู้จักก็ข้ามไป */
+}
+.sls-card-name-full {
+    font-size: 0.92em;
+    line-height: 1.45;
+    margin-top: 0;
+    min-height: 2.9em;
+    max-height: 2.9em;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+.sls-card-sub { color: #94a3b8; font-size: 0.76em; font-weight: 500; margin-top: 2px; }
+.sls-card-price {
+    color: #13428f;
+    font-weight: 800;
+    font-size: 1.32em;
+    line-height: 1.2;
+    margin-top: 10px;
+}
+.sls-card-price small { font-size: 0.55em; font-weight: 600; color: #64748b; margin-left: 4px; }
+
+.sls-card-btn {
+    margin-top: auto;                   /* ดันปุ่มลงล่างสุด การ์ดสูงไม่เท่ากันก็ยังเรียงตรง */
+    padding-top: 11px;
+}
+.sls-card-btn a {
+    background: #13428f;
+    color: #fff;
+    text-decoration: none;
+    font-family: inherit;
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: 700;
+    font-size: 0.87em;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.15s ease;
+}
+.sls-card-btn a:hover { background: #0d3272; }
+.sls-card-btn a:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
+
+/* ไอคอนตะกร้า รองรับทั้ง 2 โหมด (ดู cfg.icon ใน silver-shop.js)
+   - svg  : ไอคอนในตัว ไม่พึ่ง library
+   - i    : Font Awesome — ขนาดคุมด้วย font-size ไม่ใช่ width/height
+   เผื่อกรณี FA kit แบบ JS แปลง <i> เป็น <svg> ให้เอง ก็ยังโดน rule แรกคุมขนาดอยู่ */
+.sls-card-btn svg { width: 14px; height: 14px; flex: none; }
+.sls-card-btn i { font-size: 1.05em; line-height: 1; flex: none; }
+
+/* ===== Badge มุมการ์ด ===== */
+.sls-badge {
+    position: absolute;
+    top: 9px;
+    left: 9px;
+    z-index: 1;
+    background: #f59e0b;
+    color: #fff;
+    border-radius: 20px;
+    font-size: 0.7em;
+    font-weight: 700;
+    padding: 3px 9px;
+    letter-spacing: 0.2px;
+}
+.sls-badge.sls-pattern { background: linear-gradient(135deg, #94a3b8, #64748b); }
+
+/* ===== Hint + Dots (มือถือเท่านั้น) ===== */
+.sls-hint {
+    font-size: 0.78em;
+    color: #94a3b8;
+    font-weight: 500;
+    padding: 6px 2px 0;
+}
+.sls-dots { display: flex; gap: 5px; justify-content: center; margin-top: 2px; }
+.sls-dots i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    transition: all 0.2s ease;
+}
+.sls-dots i.sls-on { background: #13428f; width: 16px; border-radius: 3px; }
+@media (min-width: 768px) {
+    .sls-hint, .sls-dots { display: none; }
+}
+
+/* ===== Empty / Skeleton ===== */
+.sls-empty {
+    color: #94a3b8;
+    font-weight: 500;
+    text-align: center;
+    padding: 32px 12px;
+    width: 100%;
+}
+.sls-skeleton .sls-card-img { background: #e2e8f0; animation: sls-shimmer 1.4s infinite linear; }
+.sls-skeleton .sls-bar {
+    display: block;
+    height: 1em;
+    border-radius: 4px;
+    background: #e2e8f0;
+    animation: sls-shimmer 1.4s infinite linear;
+}
+.sls-skeleton .sls-bar.sls-w60 { width: 60%; }
+.sls-skeleton .sls-bar.sls-w40 { width: 40%; margin-top: 7px; }
+.sls-skeleton .sls-bar.sls-full { width: 100%; height: 2.4em; margin-top: 14px; border-radius: 10px; }
+@keyframes sls-shimmer {
+    0%   { opacity: 0.5; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.5; }
+}

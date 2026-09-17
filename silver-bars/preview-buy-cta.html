@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Silver Bars — ตัวเลือกดีไซน์ปุ่ม "ซื้อ" (A / B / C)</title>
+<style>
+/* ============ สำเนาจาก silver-bars.css (inline ไว้ให้เปิดไฟล์นี้เดี่ยว ๆ ได้) ============ */
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap');
+.slb-container { font-family:'Prompt',sans-serif; color:#1e293b; width:100%; box-sizing:border-box; padding:16px 12px; }
+.slb-container * { box-sizing:border-box; }
+@media (min-width:768px) { .slb-container { max-width:760px; margin:0 auto; padding:28px 16px; } }
+.slb-header { margin-bottom:14px; }
+.slb-title { font-size:1.6em; font-weight:700; color:#002458; line-height:1.2; margin:0; }
+@media (min-width:768px) { .slb-title { font-size:2em; } }
+.slb-subtitle { color:#64748b; font-size:.95em; font-weight:500; margin-top:3px; }
+.slb-sub { font-size:.9em; color:#64748b; font-weight:500; margin-top:6px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.slb-filters { display:flex; gap:8px; margin:16px 0; flex-wrap:wrap; }
+.slb-filter { font-family:inherit; border:1px solid #cbd5e1; background:#fff; color:#334155; border-radius:20px;
+              padding:7px 16px; font-size:.88em; font-weight:600; cursor:pointer; transition:all .15s ease; }
+.slb-filter:hover { border-color:#94a3b8; }
+.slb-filter.slb-active { background:#13428f; color:#fff; border-color:#13428f; }
+.slb-table-card { background:#fff; border-radius:16px; box-shadow:0 4px 6px rgba(0,0,0,.08); overflow:hidden; }
+.slb-table { width:100%; border-collapse:collapse; font-size:.9em; }
+@media (min-width:768px) { .slb-table { font-size:1em; } }
+.slb-table th { background:#dbe4ee; color:#334155; font-weight:600; font-size:.85em; padding:12px 10px;
+                text-align:right; cursor:pointer; user-select:none; white-space:nowrap; transition:background .15s ease; }
+.slb-table th:hover { background:#cddcea; }
+.slb-table th.slb-left { text-align:left; }
+.slb-table th .slb-arrow { opacity:.35; margin-left:3px; font-size:.85em; }
+.slb-table td { padding:12px 10px; text-align:right; border-top:.5px solid #eef2f7; vertical-align:middle; }
+.slb-table tbody tr:nth-child(even) td { background:#f8fafc; }
+.slb-table td.slb-weight { text-align:left; }
+.slb-wname { color:#002458; font-weight:700; font-size:1.02em; line-height:1.25; }
+.slb-tag { display:inline-block; background:linear-gradient(135deg,#c0c0c0,#a8a8a8); color:#1e293b; border-radius:20px;
+           font-size:.72em; font-weight:700; padding:1px 7px; margin-left:5px; vertical-align:middle; }
+.slb-sell { color:#13428f; font-weight:700; white-space:nowrap; }
+.slb-buy  { color:#4070a0; font-weight:700; white-space:nowrap; }
+.slb-none { color:#cbd5e1; font-weight:600; }
+
+/* ---------- เปลือกของหน้า preview (ไม่ใช่ส่วนของ component) ---------- */
+body { font-family:'Prompt',sans-serif; background:#eef2f7; margin:0; padding:0 0 80px; color:#1e293b; }
+.pv-top { background:#002458; color:#fff; padding:22px 16px; text-align:center; }
+.pv-top h1 { margin:0; font-size:1.25em; font-weight:700; }
+.pv-top p  { margin:6px 0 0; font-size:.85em; opacity:.75; }
+.pv-switch { display:flex; justify-content:center; gap:8px; margin:18px 0 4px; }
+.pv-switch button {
+  font-family:inherit; border:1px solid #cbd5e1; background:#fff; color:#334155;
+  border-radius:20px; padding:7px 18px; font-size:.85em; font-weight:600; cursor:pointer;
+}
+.pv-switch button.on { background:#13428f; color:#fff; border-color:#13428f; }
+.pv-grid { display:flex; flex-direction:column; gap:28px; padding:20px 12px; align-items:center; }
+.pv-case { width:100%; max-width:860px; background:#fff; border-radius:18px; box-shadow:0 6px 18px rgba(0,0,0,.07); overflow:hidden; }
+.pv-case > header { padding:16px 18px 12px; border-bottom:1px solid #eef2f7; }
+.pv-badge { display:inline-block; background:#13428f; color:#fff; width:26px; height:26px; line-height:26px;
+            text-align:center; border-radius:8px; font-weight:800; margin-right:8px; }
+.pv-case h2 { display:inline; font-size:1.05em; font-weight:700; color:#002458; }
+.pv-case .pv-desc { margin:10px 0 0; font-size:.85em; color:#64748b; line-height:1.6; }
+.pv-case .pv-desc b { color:#0f7a3d; } .pv-case .pv-desc i { color:#b45309; font-style:normal; }
+.pv-stage { background:#f8fafc; padding:8px 0; }
+.pv-stage .slb-container { transition:max-width .2s ease; }
+body.mobile .pv-stage .slb-container { max-width:390px; margin:0 auto; }
+/* ซ่อน header ซ้ำ ๆ ในเดโม ให้เห็นเฉพาะตาราง */
+.pv-stage .slb-header { margin-bottom:10px; }
+
+/* =====================================================================
+   ↓↓↓ ส่วนนี้คือ CSS จริงที่จะเพิ่มเข้า silver-bars.css ถ้าเลือกออปชันนั้น
+   ===================================================================== */
+
+/* ---------- OPTION A : ปุ่มซื้อรายแถว (คอลัมน์ที่ 4) ---------- */
+.slb-table th.slb-cta-head, .slb-table td.slb-cta { text-align:center; width:1%; white-space:nowrap; }
+.slb-table th.slb-cta-head { cursor:default; }
+.slb-buybtn {
+  display:inline-flex; align-items:center; gap:5px;
+  background:#13428f; color:#fff; text-decoration:none;
+  border-radius:999px; padding:6px 14px; font-size:.82em; font-weight:700;
+  font-family:inherit; line-height:1.4; white-space:nowrap;
+  transition:background .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+.slb-buybtn:hover { background:#0d3272; transform:translateY(-1px); box-shadow:0 4px 10px rgba(19,66,143,.3); }
+.slb-buybtn svg { width:13px; height:13px; flex:none; }
+@media (max-width:520px) {
+  .slb-table.slb-has-cta th, .slb-table.slb-has-cta td { padding:11px 6px; }
+  .slb-buybtn { padding:7px 10px; }
+  .slb-buybtn .slb-buytext { display:none; }   /* มือถือเหลือแต่ไอคอน */
+  .slb-buybtn svg { width:15px; height:15px; }
+}
+
+/* ---------- OPTION B : แถบ CTA ใต้ตาราง ---------- */
+.slb-cta-bar {
+  margin-top:14px; background:linear-gradient(135deg,#13428f 0%,#002458 100%);
+  border-radius:16px; padding:18px 20px; color:#fff;
+  display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+}
+.slb-cta-copy strong { display:block; font-size:1.02em; font-weight:700; }
+.slb-cta-copy span   { display:block; font-size:.85em; opacity:.75; margin-top:2px; }
+.slb-cta-btn {
+  background:#fff; color:#13428f; text-decoration:none; font-family:inherit;
+  border-radius:999px; padding:12px 26px; font-weight:700; font-size:.95em;
+  display:inline-flex; align-items:center; gap:8px; white-space:nowrap;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.slb-cta-btn:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,.25); }
+.slb-cta-btn svg { width:15px; height:15px; }
+@media (max-width:520px) {
+  .slb-cta-bar { flex-direction:column; align-items:stretch; text-align:center; padding:18px 16px; }
+  .slb-cta-btn { justify-content:center; }
+}
+
+/* ---------- OPTION C : แตะแถวเพื่อกางรายละเอียด + ปุ่มซื้อ ---------- */
+/* หมายเหตุ: มีแถวรายละเอียดแทรก → zebra ด้วย nth-child ใช้ไม่ได้ ต้องสลับด้วย class */
+.slb-tbl-c tbody tr:nth-child(even) td { background:transparent; }
+.slb-tbl-c tbody tr.slb-row-x.alt td { background:#f8fafc; }
+.slb-table tr.slb-row-x { cursor:pointer; }
+.slb-table tr.slb-row-x .slb-chev { float:right; color:#94a3b8; font-size:.8em; transition:transform .2s ease; }
+.slb-table tr.slb-row-x.open .slb-chev { transform:rotate(180deg); }
+.slb-table tr.slb-row-x.open td { background:#eef4fc !important; }
+.slb-detail > td { padding:0 !important; border-top:0 !important; background:#f8fafc !important; }
+.slb-detail-in { padding:14px 12px 16px; display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+.slb-detail-facts { display:flex; gap:18px; font-size:.85em; color:#64748b; flex-wrap:wrap; }
+.slb-detail-facts div b { display:block; color:#002458; font-size:1.15em; font-weight:700; }
+.slb-detail-btn {
+  background:#13428f; color:#fff; text-decoration:none; font-family:inherit;
+  border-radius:999px; padding:11px 24px; font-weight:700; font-size:.9em;
+  display:inline-flex; align-items:center; gap:7px; white-space:nowrap;
+  transition:background .15s ease, transform .15s ease;
+}
+.slb-detail-btn:hover { background:#0d3272; transform:translateY(-1px); }
+.slb-detail-btn svg { width:14px; height:14px; }
+.slb-hint { font-size:.8em; color:#94a3b8; margin-top:8px; text-align:center; }
+@media (max-width:520px) {
+  .slb-detail-in { flex-direction:column; align-items:stretch; }
+  .slb-detail-btn { justify-content:center; }
+}
+</style>
+</head>
+<body>
+
+<div class="pv-top">
+  <h1>Silver Bars — ดีไซน์ปุ่ม “ซื้อ” ไปเว็บภายนอก</h1>
+  <p>3 ทางเลือก · ใช้ CSS จริงจาก silver-bars.css</p>
+</div>
+
+<div class="pv-switch">
+  <button id="btnMobile" class="on">📱 มือถือ (390px)</button>
+  <button id="btnDesktop">🖥 เดสก์ท็อป</button>
+</div>
+
+<div class="pv-grid">
+
+  <!-- ========== A ========== -->
+  <section class="pv-case">
+    <header>
+      <span class="pv-badge">A</span><h2>ปุ่ม “ซื้อ” รายแถว (เพิ่มคอลัมน์ที่ 4)</h2>
+      <p class="pv-desc">
+        แต่ละน้ำหนักมีปุ่มของตัวเอง → deep link ตรงไปหน้าสินค้านั้นที่เว็บภายนอก<br>
+        <b>ดี:</b> ตรงจุดที่สุด แตะจากราคาที่กำลังดูได้เลย · click-through สูงสุด<br>
+        <i>แลก:</i> ต้องมี URL ต่อ SKU ทั้ง 9 รายการ · มือถือแคบ ต้องย่อปุ่มเหลือไอคอน
+      </p>
+    </header>
+    <div class="pv-stage"><div class="slb-container">
+      <div class="slb-filters">
+        <button class="slb-filter slb-active">ทั้งหมด</button>
+        <button class="slb-filter">แท่งบาท</button>
+        <button class="slb-filter">แท่งกรัม</button>
+      </div>
+      <div class="slb-table-card">
+        <table class="slb-table slb-has-cta">
+          <thead><tr>
+            <th class="slb-left">น้ำหนัก<span class="slb-arrow"> ⇅</span></th>
+            <th>ขายออก (+VAT)<span class="slb-arrow"> ⇅</span></th>
+            <th>รับซื้อ<span class="slb-arrow"> ⇅</span></th>
+            <th class="slb-cta-head"></th>
+          </tr></thead>
+          <tbody id="bodyA"></tbody>
+        </table>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- ========== B ========== -->
+  <section class="pv-case">
+    <header>
+      <span class="pv-badge">B</span><h2>แถบ CTA เดียวใต้ตาราง</h2>
+      <p class="pv-desc">
+        ตารางคงเดิม 3 คอลัมน์ + แถบเด่นใต้ตาราง ลิงก์เดียวไปหน้าร้านภายนอก<br>
+        <b>ดี:</b> ทำเสร็จวันนี้ · ไม่กระทบ layout/การ sort · มือถือสวยเต็มความกว้าง · ใช้ URL เดียว<br>
+        <i>แลก:</i> ผู้ใช้ต้องไปเลือกน้ำหนักซ้ำอีกทีที่ปลายทาง
+      </p>
+    </header>
+    <div class="pv-stage"><div class="slb-container">
+      <div class="slb-filters">
+        <button class="slb-filter slb-active">ทั้งหมด</button>
+        <button class="slb-filter">แท่งบาท</button>
+        <button class="slb-filter">แท่งกรัม</button>
+      </div>
+      <div class="slb-table-card">
+        <table class="slb-table">
+          <thead><tr>
+            <th class="slb-left">น้ำหนัก<span class="slb-arrow"> ⇅</span></th>
+            <th>ขายออก (+VAT)<span class="slb-arrow"> ⇅</span></th>
+            <th>รับซื้อ<span class="slb-arrow"> ⇅</span></th>
+          </tr></thead>
+          <tbody id="bodyB"></tbody>
+        </table>
+      </div>
+      <div class="slb-cta-bar">
+        <div class="slb-cta-copy">
+          <strong>สั่งซื้อแท่งเงินออนไลน์</strong>
+          <span>ชำระเงินและนัดรับที่ Ausiris Express</span>
+        </div>
+        <a class="slb-cta-btn" href="https://express.ausiris.co.th/" target="_blank" rel="noopener noreferrer">
+          ซื้อเลย
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- ========== C ========== -->
+  <section class="pv-case">
+    <header>
+      <span class="pv-badge">C</span><h2>แตะแถว → กางรายละเอียด + ปุ่มซื้อ</h2>
+      <p class="pv-desc">
+        แตะน้ำหนักที่สนใจ แถวจะกางแสดงราคา/กรัม ส่วนต่าง แล้วค่อยมีปุ่มซื้อเต็มความกว้าง<br>
+        <b>ดี:</b> ตารางยังสะอาด · มือถือดีสุด ปุ่มใหญ่กดง่าย · มีที่ใส่ข้อมูลเสริมได้อีก<br>
+        <i>แลก:</i> ซ่อนไว้ 1 ชั้น (บางคนไม่รู้ว่าแตะได้ ต้องมี hint) · โค้ดเยอะสุด
+      </p>
+    </header>
+    <div class="pv-stage"><div class="slb-container">
+      <div class="slb-filters">
+        <button class="slb-filter slb-active">ทั้งหมด</button>
+        <button class="slb-filter">แท่งบาท</button>
+        <button class="slb-filter">แท่งกรัม</button>
+      </div>
+      <div class="slb-table-card">
+        <table class="slb-table slb-tbl-c">
+          <thead><tr>
+            <th class="slb-left">น้ำหนัก<span class="slb-arrow"> ⇅</span></th>
+            <th>ขายออก (+VAT)<span class="slb-arrow"> ⇅</span></th>
+            <th>รับซื้อ<span class="slb-arrow"> ⇅</span></th>
+          </tr></thead>
+          <tbody id="bodyC"></tbody>
+        </table>
+      </div>
+      <div class="slb-hint">แตะที่แถวเพื่อดูรายละเอียดและสั่งซื้อ</div>
+    </div></div>
+  </section>
+
+</div>
+
+<script>
+/* ข้อมูลตัวอย่างชุดเดียวกับ MOCK_DATA ใน silver-bars.js + ฟิลด์ใหม่ buyUrl */
+var SHOP = 'https://express.ausiris.co.th/';
+var ROWS = [
+  { name:'1 บาท (15.24 g.)',   grams:15.24,  sell:1310,  buy:945,  url:SHOP+'?sku=slv-1baht' },
+  { name:'5 บาท (76.22 g.)',   grams:76.22,  sell:5900,  buy:4740, url:SHOP+'?sku=slv-5baht' },
+  { name:'10 บาท (152.44 g.)', grams:152.44, sell:11260, buy:9480, url:SHOP+'?sku=slv-10baht' },
+  { name:'10 กรัม',  grams:10,  sell:970,   buy:620,  url:SHOP+'?sku=slv-10g' },
+  { name:'20 กรัม',  grams:20,  sell:1730,  buy:1245, url:SHOP+'?sku=slv-20g' },
+  { name:'50 กรัม',  grams:50,  sell:4050,  buy:3110, url:SHOP+'?sku=slv-50g' },
+  { name:'100 กรัม', grams:100, sell:8000,  buy:6220, url:SHOP+'?sku=slv-100g' },
+  { name:'100 กรัม', grams:100, sell:8200,  buy:null, tag:'ลวดลาย', url:SHOP+'?sku=slv-100g-pattern' },
+  { name:'150 กรัม', grams:150, sell:11090, buy:9330, url:SHOP+'?sku=slv-150g' }
+];
+var f = function (n) { return Math.round(n).toLocaleString('en-US'); };
+var CART = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"/></svg>';
+var EXT  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>';
+
+function cells(r) {
+  var tag = r.tag ? '<span class="slb-tag">' + r.tag + '</span>' : '';
+  return '<td class="slb-weight"><div class="slb-wname">' + r.name + tag + '</div></td>' +
+         '<td class="slb-sell">' + f(r.sell) + '</td>' +
+         '<td class="slb-buy">' + (r.buy == null ? '<span class="slb-none">—</span>' : f(r.buy)) + '</td>';
+}
+
+/* --- A --- */
+document.getElementById('bodyA').innerHTML = ROWS.map(function (r) {
+  return '<tr>' + cells(r) +
+    '<td class="slb-cta"><a class="slb-buybtn" href="' + r.url + '" target="_blank" rel="noopener noreferrer">' +
+      CART + '<span class="slb-buytext">ซื้อ</span></a></td></tr>';
+}).join('');
+
+/* --- B --- */
+document.getElementById('bodyB').innerHTML = ROWS.map(function (r) {
+  return '<tr>' + cells(r) + '</tr>';
+}).join('');
+
+/* --- C --- */
+document.getElementById('bodyC').innerHTML = ROWS.map(function (r, i) {
+  var spread = (r.buy == null) ? '—' : f(r.sell - r.buy);
+  return '<tr class="slb-row-x' + (i % 2 ? ' alt' : '') + '" data-i="' + i + '">' +
+      '<td class="slb-weight"><div class="slb-wname">' + r.name +
+        (r.tag ? '<span class="slb-tag">' + r.tag + '</span>' : '') + '</div></td>' +
+      '<td class="slb-sell">' + f(r.sell) + '</td>' +
+      '<td class="slb-buy">' + (r.buy == null ? '<span class="slb-none">—</span>' : f(r.buy)) +
+        '<span class="slb-chev">▾</span></td>' +
+    '</tr>' +
+    '<tr class="slb-detail" data-d="' + i + '" hidden><td colspan="3"><div class="slb-detail-in">' +
+      '<div class="slb-detail-facts">' +
+        '<div>ราคา/กรัม<b>' + f(r.sell / r.grams) + '</b></div>' +
+        '<div>ส่วนต่างซื้อ-ขาย<b>' + spread + '</b></div>' +
+      '</div>' +
+      '<a class="slb-detail-btn" href="' + r.url + '" target="_blank" rel="noopener noreferrer">' +
+        CART + 'สั่งซื้อแท่งนี้ ' + EXT + '</a>' +
+    '</div></td></tr>';
+}).join('');
+
+document.getElementById('bodyC').addEventListener('click', function (e) {
+  var tr = e.target.closest('.slb-row-x');
+  if (!tr) return;
+  var d = this.querySelector('.slb-detail[data-d="' + tr.dataset.i + '"]');
+  var open = !d.hidden;
+  this.querySelectorAll('.slb-detail').forEach(function (x) { x.hidden = true; });
+  this.querySelectorAll('.slb-row-x').forEach(function (x) { x.classList.remove('open'); });
+  if (open) return;
+  d.hidden = false; tr.classList.add('open');
+});
+
+/* --- สลับความกว้างพรีวิว --- */
+document.body.classList.add('mobile');
+document.getElementById('btnMobile').onclick = function () {
+  document.body.classList.add('mobile');
+  this.classList.add('on'); document.getElementById('btnDesktop').classList.remove('on');
+};
+document.getElementById('btnDesktop').onclick = function () {
+  document.body.classList.remove('mobile');
+  this.classList.add('on'); document.getElementById('btnMobile').classList.remove('on');
+};
+</script>
+</body>
+</html>
