@@ -23,14 +23,18 @@
     /* เต็มความกว้างของ host container — ไม่บีบ max-width/margin ซ้อน
        ปล่อยให้ .container ของเว็บ host จัด spacing ซ้ายขวาเอง (กัน margin เกิน/แคบ) */
     /* full-bleed: ทะลุ .container ของ host ออกเต็มจอ — scope เฉพาะ .sm-container
-       ไม่กระทบ .container global หรือ section อื่นของเว็บ */
-    width: 100vw;
-    max-width: 100vw;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
+       ไม่กระทบ .container global หรือ section อื่นของเว็บ
+       --sm-vw = ความกว้างจอจริง ไม่รวม scrollbar (JS เซ็ตจาก documentElement.clientWidth)
+       ห้ามใช้ 100vw ตรง ๆ เพราะ 100vw รวมความกว้าง scrollbar -> ล้นขวา ~15px
+       ทำให้หน้าเลื่อนแนวนอนได้ และเห็นแถบว่างข้าง footer */
+    --sm-vw: 100vw;   /* fallback ก่อน JS ทำงาน */
+    width: var(--sm-vw);
+    max-width: var(--sm-vw);
+    margin-left: calc(50% - var(--sm-vw) / 2);
+    margin-right: calc(50% - var(--sm-vw) / 2);
     /* desktop: จำกัดเนื้อหากว้างสุด 1000px กึ่งกลาง (padding ข้างใหญ่ขึ้นตามจอ)
        mobile/จอเล็ก: เต็มกว้าง เหลือ gutter 16px */
-    padding: 32px max(16px, calc(50vw - 500px));
+    padding: 32px max(16px, calc(var(--sm-vw) / 2 - 500px));
     font-family: 'Prompt', sans-serif;
     font-size: 16px;   /* pin base กัน host (bootstrap ฯลฯ) ย่อ em ของ component */
     line-height: 1.5;
@@ -123,6 +127,15 @@
 .sm-pill.sm-flat { background: #f1f5f9; color: var(--sm-muted); }
 
 .sm-empty { padding: 40px; text-align: center; color: var(--sm-muted); }
+
+/* ข้อความแทนตาราง ตอน history ใช้ไม่ได้ */
+.sm-notice {
+    background: var(--sm-card); border: 1px dashed var(--sm-border); border-radius: 12px;
+    padding: 24px; text-align: center; font-size: 0.9em; color: var(--sm-muted);
+}
+
+/* [hidden] ต้องชนะ display ของ .sm-controls/.sm-summary/.sm-perf ที่เป็น flex/grid */
+.sm-container [hidden] { display: none !important; }
 
 /* Latest price hero */
 .sm-hero {
