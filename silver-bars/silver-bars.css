@@ -1,0 +1,133 @@
+/* ===== Silver Bars — ตารางราคาแท่งเงินเล็ก (Option B) =====
+   ตารางเปรียบเทียบ ขายออก(+VAT) / รับซื้อ ต่อหน่วยน้ำหนัก
+   mobile-first · desktop กว้างสูงสุด 760px กึ่งกลาง
+   font Prompt ถูก @import ในไฟล์นี้แล้ว ไม่ต้องใส่เพิ่ม
+*/
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap');
+
+.slb-container {
+    font-family: 'Prompt', sans-serif;
+    color: #1e293b;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px 12px;
+}
+.slb-container * { box-sizing: border-box; }
+
+@media (min-width: 768px) {
+    .slb-container { max-width: 760px; margin: 0 auto; padding: 28px 16px; }
+}
+
+/* ===== Header ===== */
+.slb-header { margin-bottom: 14px; }
+.slb-title {
+    font-size: 1.6em;
+    font-weight: 700;
+    color: #002458;
+    line-height: 1.2;
+    margin: 0;
+}
+@media (min-width: 768px) { .slb-title { font-size: 2em; } }
+
+.slb-subtitle {
+    color: #64748b;
+    font-size: 0.95em;
+    font-weight: 500;
+    margin-top: 3px;
+}
+@media (min-width: 768px) { .slb-subtitle { font-size: 1.05em; } }
+
+.slb-sub {
+    font-size: 0.9em;
+    color: #64748b;
+    font-weight: 500;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+/* ===== Filters ===== */
+.slb-filters { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
+.slb-filter {
+    font-family: inherit;
+    border: 1px solid #cbd5e1;
+    background: #fff;
+    color: #334155;
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 0.88em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.slb-filter:hover { border-color: #94a3b8; }
+.slb-filter.slb-active { background: #13428f; color: #fff; border-color: #13428f; }
+
+/* ===== Table ===== */
+.slb-table-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+.slb-table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+@media (min-width: 768px) { .slb-table { font-size: 1em; } }
+
+.slb-table th {
+    background: #dbe4ee;
+    color: #334155;
+    font-weight: 600;
+    font-size: 0.85em;
+    padding: 12px 10px;
+    text-align: right;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    transition: background 0.15s ease;
+}
+.slb-table th:hover { background: #cddcea; }
+.slb-table th.slb-left { text-align: left; }
+.slb-table th .slb-arrow { opacity: 0.35; margin-left: 3px; font-size: 0.85em; }
+.slb-table th.slb-sorted { color: #13428f; }
+.slb-table th.slb-sorted .slb-arrow { opacity: 1; color: #13428f; }
+
+.slb-table td {
+    padding: 12px 10px;
+    text-align: right;
+    border-top: 0.5px solid #eef2f7;
+    vertical-align: middle;
+}
+.slb-table tbody tr:nth-child(even) td { background: #f8fafc; }
+.slb-table tbody tr:active td { background: #e0f0ff; }
+
+.slb-table td.slb-weight { text-align: left; }
+.slb-wname { color: #002458; font-weight: 700; font-size: 1.02em; line-height: 1.25; }
+.slb-tag {
+    display: inline-block;
+    background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+    color: #1e293b;
+    border-radius: 20px;
+    font-size: 0.72em;
+    font-weight: 700;
+    padding: 1px 7px;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+.slb-sell { color: #13428f; font-weight: 700; white-space: nowrap; }
+.slb-buy  { color: #4070a0; font-weight: 700; white-space: nowrap; }
+.slb-none { color: #cbd5e1; font-weight: 600; }
+
+.slb-empty { text-align: center; color: #94a3b8; padding: 32px 10px; font-weight: 500; }
+
+/* skeleton ระหว่างโหลด */
+.slb-skeleton td { color: transparent; }
+.slb-skeleton .slb-bar {
+    display: inline-block;
+    height: 1em;
+    width: 60%;
+    border-radius: 4px;
+    background: #e2e8f0;
+    animation: slb-shimmer 1.4s infinite linear;
+}
+@keyframes slb-shimmer { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }

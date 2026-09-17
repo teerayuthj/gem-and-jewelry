@@ -1,0 +1,29 @@
+<!-- ===== Silver Bars — ตารางราคาแท่งเงินเล็ก · วาง 3 บรรทัดนี้ จบ ===== -->
+
+<!-- 1) ใน <head> -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@main/silver-bars/silver-bars.css">
+
+<!-- 2) ใน <body> ตำแหน่งที่อยากให้แสดง -->
+<div id="silver-bars"></div>
+
+<!-- 3) ก่อนปิด </body> -->
+<script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@main/silver-bars/silver-bars.js"></script>
+
+<!-- หมายเหตุ:
+     - font Prompt ถูก @import ในไฟล์ CSS แล้ว ไม่ต้องใส่เพิ่ม
+     - ค่าเริ่มต้น = โหมด mock (แสดง badge "ราคาตัวอย่าง")
+     - ต่อ API จริงในอนาคต เลือกทางใดทางหนึ่ง:
+
+       ก) ใส่ที่ตัว div เลย
+          <div id="silver-bars" data-api-url="https://api-price.ausiris.co.th/api/v1/prices/ausiris-silver" data-refresh="30000"></div>
+
+       ข) หรือประกาศ config ก่อนโหลด script
+          <script>
+            window.SILVER_BARS_CONFIG = {
+              apiUrl: 'https://api-price.ausiris.co.th/api/v1/prices/ausiris-silver',
+              refreshMs: 30000
+            };
+          </script>
+
+     - ปรับ mapping response ได้ที่ฟังก์ชัน mapApiResponse ใน silver-bars.js
+-->

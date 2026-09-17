@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โลหะเงินทั้งหมด | ออสสิริสซิลเวอร์</title>
+    	<!-- CSS Library -->
+        <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/style.css">
+        <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/swiper.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.min.css">
+          <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/bootstrap.min.css">
+          <link rel="stylesheet" href="http://www.ausiris.co.th/etc/designs/ausiris-gold/css/bootstrap-select.css">
+    
+        <!-- CSS Library -->
+    
+        <!-- JS Library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.2.7/js/swiper.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.0/d3.min.js"></script>
+        <script src="https://use.fontawesome.com/21df7b781f.js"></script>
+    
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script src="http://www.ausiris.co.th/etc/designs/ausiris-gold/js/bootstrap-select.min.js"></script>
+        <script src="http://www.ausiris.co.th/etc/designs/ausiris-gold/js/lodash.min.js"></script>
+    
+        <link rel="stylesheet" type="text/css" href="https://cdn.wpcc.io/lib/1.0.2/cookieconsent.min.css"/>
+        <script>window.wpcc = window.wpcc || { init: function () {} };</script>
+        <script src="https://cdn.wpcc.io/lib/1.0.2/cookieconsent.min.js" defer></script><script>window.addEventListener("load", function(){window.wpcc.init({"colors":{"popup":{"background":"#222222","text":"#ffffff","border":"#f9f9f9"},"button":{"background":"#f9f9f9","text":"#000000"}},"transparency":"10","fontsize":"small","content":{"href":"http://www.ausiris.co.th/content/index/aboutus/cookies-policy.html","message":"เว็บไซต์นี้มีการเก็บข้อมูลใช้คุกกี้ (Cookies) เพื่อการพัฒนาและปรับปรุงเว็บไซต์ หากท่านใช้บริการเว็บไซต์นี้โดยไม่มีการปรับตั้งค่าใดๆ แสดงว่าท่านยินยอมที่จะรับคุกกี้บนเว็บไซต์ และนโยบายสิทธิส่วนบุคคลของเรา","link":"นโยบายการใช้คุกกี้","button":"ให้ความยินยอม"},"position":"bottom","padding":"small","margin":"small","corners":"small"})});</script>
+    
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Google Fonts (มีใน CSS อยู่แล้ว แต่ preload ไว้ให้เดโมสวยขึ้น) -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- DEV: ใช้ไฟล์ในเครื่อง / PROD: เปลี่ยนเป็น jsDelivr (ดู silver-shop-component.html) -->
+    <link rel="stylesheet" href="./silver-shop.css">
+    <style>
+        body { background: #ffffff; margin: 0; padding: 20px 0 60px; }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Silver Shop — การ์ดสินค้า (auto-mount) =====
+         DEV: ชี้ผ่าน dev-proxy (path /api/... เพื่อเลี่ยง CORS) — รันด้วย: python3 dev-proxy.py
+         PROD บน AEM: ลบ data-api-url ออกได้ (ใช้ค่า default ในไฟล์ js) หรือใส่ URL เต็ม
+
+         data-shop-url = ปลายทางสำรอง ใช้เมื่อรายการนั้นยังไม่มี link เฉพาะใน PRODUCTS -->
+    <script>
+        /* ชื่อและลำดับตรงตามหน้าสินค้า Ausiris Express
+           priceKey = key ราคาสดของแท่งเงิน; price = ราคาสำรองถ้า API ไม่มี key นั้น */
+        window.SILVER_SHOP_CONFIG = {
+            title: 'โลหะเงินทั้งหมด',
+            subtitle: 'ออสสิริสซิลเวอร์',
+            catalog: [
+                { key: 'glory-three-forces', name: 'แท่งเงินออสสิริส 99.99% น้ำหนัก 100 กรัม ลาย Glory of three forces', priceKey: '100g_pattern', priceAdjustment: 310, price: 8440, grams: 100, kind: 'gram', images: ['../public/silver/glory-of-three-forces-100gram.jpeg', '../public/silver/glory-of-three-forces-100gram-2.jpeg'], imageFit: 'cover' },
+                { key: 'horse', name: 'แท่งเงินออสสิริส 99.99% น้ำหนัก 100 กรัม ลายม้า', priceKey: '100g_pattern', price: 8130, grams: 100, kind: 'gram' },
+                { key: 'swan', name: 'แท่งเงินออสสิริส 99.99% น้ำหนัก 100 กรัม ลายหงส์', priceKey: '100g_pattern', price: 8130, grams: 100, kind: 'gram' },
+                { key: 'dragon', name: 'แท่งเงินออสสิริส 99.99% น้ำหนัก 100 กรัม ลายมังกร', priceKey: '100g_pattern', price: 8130, grams: 100, kind: 'gram' },
+                { key: '100g-green-card', name: 'แท่งเงินออสสิริส 99.99% น้ำหนัก 100 กรัม (การ์ดเขียว)', priceKey: '100g', price: 7930, grams: 100, kind: 'gram' },
+                { key: '50g-bar', name: 'แท่งเงินออสสิริส 99.99% น้ำหนัก 50 กรัม', priceKey: '50g', price: 4020, grams: 50, kind: 'gram' },
+                { key: '20g-bar', name: 'แท่งเงินออสสิริส 99.99% น้ำหนัก 20 กรัม', priceKey: '20g', price: 1730, grams: 20, kind: 'gram' },
+                { key: '10g-bar', name: 'แท่งเงินออสสิริส 99.99% น้ำหนัก 10 กรัม', priceKey: '10g', price: 980, grams: 10, kind: 'gram' },
+                { key: '150g-signature', name: 'แท่งเงิน 99.99% 150 กรัม ลายออสสิริส Signature', priceKey: '150g', price: 10970, grams: 150, kind: 'gram' },
+                { key: '10baht-bar', name: 'แท่งเงินออสสิริส 99.99% น้ำหนัก 10 บาท', priceKey: '10baht', price: 11130, grams: 152.44, kind: 'baht' },
+                { key: '5baht-signature', name: 'แท่งเงิน 99.99% น้ำหนัก 5 บาท การ์ดออสสิริส Signature', priceKey: '5baht', price: 5840, grams: 76.22, kind: 'baht' },
+                { key: 'heart-rose', name: 'แท่งเงิน 99.99% 1 บาท ทรงหัวใจ การ์ดกุหลาบเงิน แห่งความรัก', priceKey: '1baht', priceAdjustment: 200, price: 1510, grams: 15.24, kind: 'baht' },
+                { key: 'celebrate-2026', name: 'แท่งเงิน 99.99% 1 บาท การ์ด Celebrate 2026', priceKey: '1baht', priceAdjustment: 990, price: 2300, grams: 15.24, kind: 'baht' },
+                { key: '1baht-signature', name: 'แท่งเงิน 99.99% น้ำหนัก 1 บาท การ์ดออสสิริส Signature', priceKey: '1baht', price: 1310, grams: 15.24, kind: 'baht' },
+                { key: 'granule-10kg', name: 'เม็ดเงิน 99.99 10 กิโลกรัม', price: 716480, grams: 10000, kind: 'granule' },
+                { key: 'granule-5kg', name: 'เม็ดเงิน 99.99 5 กิโลกรัม', price: 358240, grams: 5000, kind: 'granule' },
+                { key: 'granule-1kg', name: 'เม็ดเงิน 99.99 1 กิโลกรัม', price: 71648, grams: 1000, kind: 'granule' },
+                { key: 'granule-500g', name: 'เม็ดเงิน 99.99 500 กรัม', price: 20000, grams: 500, kind: 'granule', image: '../public/silver/silver-beads-500gram.jpeg', imageFit: 'cover' },
+                { key: 'granule-100g', name: 'เม็ดเงิน 99.99 100 กรัม', price: 5350, grams: 100, kind: 'granule' },
+                { key: '1kg-bar', name: 'แท่งเงินออสสิริส 99.99% น้ำหนัก 1 กิโลกรัม', price: 71648, grams: 1000, kind: 'gram' }
+            ]
+        };
+    </script>
+
+    <div id="silver-shop"
+         data-api-url="/api/v1/prices/ausiris-silver"
+         data-shop-url="https://express.ausiris.co.th/"></div>
+
+    <!-- DEV: ใช้ไฟล์ในเครื่อง / PROD: เปลี่ยนเป็น jsDelivr -->
+    <script src="./silver-shop.js"></script>
+
+
+    <!-- ===== ของเดิม: ตารางราคา silver-bars (ยังใช้ได้ ไม่ได้แก้อะไร) =====
+         อยากดูเทียบกัน เอา comment ออก แล้วเพิ่ม
+         <link rel="stylesheet" href="./silver-bars.css"> ใน <head> ด้วย
+
+    <div id="silver-bars" data-api-url="/api/v1/prices/ausiris-silver"></div>
+    <script src="./silver-bars.js"></script>
+    -->
+
+</body>
+</html>

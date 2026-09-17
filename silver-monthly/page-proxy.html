@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silver Monthly — via dev-proxy</title>
+    <link rel="stylesheet" href="./silver-monthly.css">
+    <style> body { background: #f0f4f8; margin: 0; } </style>
+</head>
+<body>
+    <div id="silver-monthly"></div>
+    <script>
+        // ยิงผ่าน dev-proxy.py (ปลอม Origin ให้ host เดิมยอม) เพื่อทดสอบส่วน history
+        window.SILVER_MONTHLY_CONFIG = {
+            apiHost: 'http://localhost:8000',
+            historyHost: 'http://localhost:8000'
+        };
+    </script>
+    <script src="./silver-monthly.js"></script>
+</body>
+</html>

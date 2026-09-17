@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Silver Shop — 3 แนวเลย์เอาต์ให้ทีมเลือก (A / B / C)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap');
+
+/* ============ โทนร่วม (ยกมาจาก silver-shop.css) ============ */
+.sx { font-family:'Prompt',sans-serif; color:#1e293b; box-sizing:border-box; }
+.sx * { box-sizing:border-box; }
+.sx-title { font-size:1.6em; font-weight:700; color:#002458; line-height:1.2; margin:0; }
+.sx-subtitle { color:#64748b; font-size:.95em; font-weight:500; margin-top:3px; }
+.sx-note { display:inline-flex; align-items:center; gap:6px; background:#eef4fc; color:#13428f;
+           border-radius:20px; padding:5px 12px; font-size:.82em; font-weight:600; margin-top:10px; }
+.sx-brand { color:#64748b; font-size:.76em; font-weight:600; line-height:1.35; }
+.sx-name { color:#002458; font-weight:700; font-size:1.08em; line-height:1.3; margin-top:2px; }
+.sx-sub { color:#94a3b8; font-size:.76em; font-weight:500; margin-top:2px; }
+.sx-price { color:#13428f; font-weight:800; font-size:1.32em; line-height:1.2; }
+.sx-price small { font-size:.55em; font-weight:600; color:#64748b; margin-left:4px; }
+.sx-btn { background:#13428f; color:#fff; text-decoration:none; font-family:inherit; border-radius:10px;
+          padding:10px 18px; font-weight:700; font-size:.87em; display:inline-flex; align-items:center;
+          justify-content:center; gap:7px; transition:background .15s ease; border:none; cursor:pointer; }
+.sx-btn:hover { background:#0d3272; }
+.sx-btn.ghost { background:#fff; color:#13428f; border:1.5px solid #cbd5e1; }
+.sx-btn.ghost:hover { background:#f1f5f9; border-color:#94a3b8; }
+.sx-badge { position:absolute; top:10px; left:10px; z-index:2; background:#f59e0b; color:#fff;
+            border-radius:20px; font-size:.7em; font-weight:700; padding:3px 10px; }
+.sx-badge.silver { background:linear-gradient(135deg,#94a3b8,#64748b); }
+.sx-pic { background:linear-gradient(160deg,#f1f5f9 0%,#e2e8f0 100%); display:flex; align-items:center;
+          justify-content:center; padding:10px; }
+.sx-pic svg { width:100%; height:100%; object-fit:contain; display:block; }
+.sx-trust { display:inline-flex; align-items:center; gap:5px; color:#0f7a3d; font-size:.72em; font-weight:600; margin-top:6px; }
+
+/* ============ A · โชว์เคส 2 ใบ/แถว (ต่อยอดของเดิม) ============ */
+/* rail เลื่อนแนวนอนทั้งเดสก์ท็อปและมือถือ (แนวเลือกหนัง)
+   ต่างกันแค่ขนาดการ์ด และตัวควบคุม: เดสก์ท็อป = ปุ่มลูกศร / มือถือ = ปัดนิ้ว + dots */
+.a-railwrap { position:relative; }
+.a-grid {
+  display:flex; gap:16px;
+  overflow-x:auto; overflow-y:hidden;
+  scroll-snap-type:x mandatory;
+  /* ไม่ตั้ง scroll-behavior:smooth ตรงนี้ — มันไปคุมทุกการเลื่อนรวมถึงที่สั่งด้วยสคริปต์
+     จนบาง engine ค้างไม่ขยับ · ให้ scrollTo({behavior:'smooth'}) ใน JS เป็นคนคุมแทน */
+  overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch;
+  padding:12px 4px 16px;
+  scrollbar-width:none; -ms-overflow-style:none;
+}
+.a-grid::-webkit-scrollbar { display:none; }
+.a-grid::after { content:''; flex:0 0 1px; }
+.a-card { background:#fff; border-radius:18px; box-shadow:0 4px 12px rgba(0,0,0,.08); overflow:hidden;
+          position:relative; display:flex; flex-direction:column;
+          flex:0 0 250px; scroll-snap-align:start;
+          transition:transform .15s ease, box-shadow .15s ease; }
+.a-card:hover { transform:translateY(-4px); box-shadow:0 12px 26px rgba(0,0,0,.15); }
+.a-card .sx-pic { aspect-ratio:1/1; padding:18px; }
+
+/* ปุ่มลูกศร — เดสก์ท็อปเท่านั้น (เมาส์ปัดไม่ได้เหมือนนิ้ว) */
+.a-arrow {
+  position:absolute; top:38%; transform:translateY(-50%);
+  width:44px; height:44px; border-radius:50%; border:none;
+  background:#fff; box-shadow:0 4px 14px rgba(0,0,0,.2); color:#13428f;
+  font-size:1em; cursor:pointer; z-index:3;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .15s ease, color .15s ease, opacity .15s ease;
+}
+.a-arrow:hover { background:#13428f; color:#fff; }
+.a-arrow.prev { left:-8px; }
+.a-arrow.next { right:-8px; }
+.a-arrow[disabled] { opacity:0; pointer-events:none; }   /* ถึงสุดทางแล้วซ่อน ไม่ให้กดลม */
+.a-body { padding:16px 18px 18px; display:flex; flex-direction:column; flex:1; }
+.a-row { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-top:12px; }
+.a-card .sx-btn { margin-top:14px; }
+
+/* มือถือ: การ์ดกว้าง 74% ให้ใบถัดไปโผล่ค้างขอบจอ · ซ่อนลูกศร ใช้ปัดนิ้วแทน · โชว์ hint + dots */
+.a-hint, .a-dots { display:none; }
+body.m .a-hint { display:block; font-size:.78em; color:#94a3b8; font-weight:500; padding:4px 2px 0; }
+body.m .a-grid { gap:12px; padding:12px 12px 16px; margin:0 -12px; }
+body.m .a-card { flex:0 0 74%; max-width:280px; }
+body.m .a-card:hover { transform:none; }
+body.m .a-arrow { display:none; }
+body.m .a-dots { display:flex; gap:5px; justify-content:center; margin-top:2px; }
+body.m .a-dots i { width:5px; height:5px; border-radius:50%; background:#cbd5e1; transition:all .2s ease; }
+body.m .a-dots i.on { background:#13428f; width:16px; border-radius:3px; }
+
+/* ============ B · เด่น 1 + รายการเทียบราคา ============ */
+.b-hero { background:#fff; border-radius:18px; box-shadow:0 4px 12px rgba(0,0,0,.08); overflow:hidden;
+          position:relative; display:flex; gap:0; margin-bottom:18px; }
+.b-hero .sx-pic { flex:0 0 240px; aspect-ratio:3/4; }
+.b-hero-body { padding:22px 24px; display:flex; flex-direction:column; justify-content:center; flex:1; }
+.b-hero .sx-name { font-size:1.5em; }
+.b-hero .sx-price { font-size:2em; margin-top:12px; }
+.b-hero .sx-btn { align-self:flex-start; margin-top:16px; padding:13px 30px; font-size:.95em; }
+body.m .b-hero { flex-direction:column; }
+/* กำหนดความสูงตรง ๆ แทน aspect-ratio เพราะ svg ลูกมีสัดส่วนในตัว (3:4) จะดันกล่องสูงเกินที่สั่งไว้
+   ใส่ height ชัดเจนแล้ว svg จะย่อลงมาพอดีกล่องเอง (preserveAspectRatio ค่าเริ่มต้น) */
+body.m .b-hero .sx-pic { flex:none; width:100%; aspect-ratio:auto; height:210px; }
+body.m .b-hero .sx-pic svg { height:100%; width:auto; }
+body.m .b-hero-body { padding:18px; }
+body.m .b-hero .sx-btn { align-self:stretch; }
+
+.b-list { background:#fff; border-radius:18px; box-shadow:0 4px 12px rgba(0,0,0,.08); overflow:hidden; }
+.b-item { display:flex; align-items:center; gap:14px; padding:12px 16px; border-top:1px solid #eef2f7; }
+.b-item:first-child { border-top:none; }
+.b-item:hover { background:#f8fafc; }
+.b-thumb { flex:0 0 52px; height:68px; border-radius:8px; overflow:hidden; background:#eef2f7;
+           display:flex; align-items:center; justify-content:center; padding:4px; }
+.b-thumb svg { width:100%; height:100%; }
+.b-info { flex:1; min-width:0; }
+.b-money { text-align:right; white-space:nowrap; }
+.b-item .sx-btn { padding:9px 18px; }
+body.m .b-item { padding:12px; gap:10px; flex-wrap:wrap; }
+body.m .b-item .b-info { flex:1 1 auto; }
+body.m .b-item .b-money { flex:0 0 auto; }
+body.m .b-item .sx-btn { flex:1 1 100%; }
+
+/* ============ C · เลือกน้ำหนักแบบ configurator ============ */
+.c-wrap { background:#fff; border-radius:18px; box-shadow:0 4px 12px rgba(0,0,0,.08); overflow:hidden;
+          display:flex; }
+.c-left { flex:0 0 42%; background:linear-gradient(160deg,#f1f5f9,#e2e8f0); padding:26px;
+          display:flex; align-items:center; justify-content:center; position:relative; }
+.c-left svg { width:100%; max-width:260px; }
+.c-right { flex:1; padding:24px 26px; display:flex; flex-direction:column; }
+.c-opts { display:flex; flex-direction:column; gap:8px; margin:14px 0 4px; max-height:300px; overflow-y:auto; }
+.c-opt { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%;
+         background:#fff; border:1.5px solid #e2e8f0; border-radius:12px; padding:11px 14px;
+         font-family:inherit; cursor:pointer; text-align:left; transition:all .12s ease; }
+.c-opt:hover { border-color:#94a3b8; }
+.c-opt.on { border-color:#13428f; background:#eef4fc; }
+.c-opt-w { font-weight:700; color:#002458; font-size:.95em; }
+.c-opt-s { color:#94a3b8; font-size:.75em; font-weight:500; }
+.c-opt-p { font-weight:700; color:#13428f; white-space:nowrap; font-size:.95em; }
+.c-total { border-top:1px solid #eef2f7; margin-top:14px; padding-top:14px;
+           display:flex; align-items:flex-end; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+.c-total .sx-btn { padding:13px 32px; font-size:.95em; }
+body.m .c-wrap { flex-direction:column; }
+body.m .c-left { flex:none; padding:18px; }
+body.m .c-left svg { max-width:170px; }
+body.m .c-right { padding:18px; }
+body.m .c-total { flex-direction:column; align-items:stretch; }
+body.m .c-total .sx-btn { width:100%; }
+
+/* ============ เปลือกหน้า preview ============ */
+body { font-family:'Prompt',sans-serif; background:#eef2f7; margin:0; padding:0 0 80px; color:#1e293b; }
+.pv-top { background:#002458; color:#fff; padding:22px 16px; text-align:center; }
+.pv-top h1 { margin:0; font-size:1.25em; font-weight:700; }
+.pv-top p { margin:6px 0 0; font-size:.85em; opacity:.75; }
+.pv-switch { display:flex; justify-content:center; gap:8px; margin:18px 0 4px; }
+.pv-switch button { font-family:inherit; border:1px solid #cbd5e1; background:#fff; color:#334155;
+                    border-radius:20px; padding:7px 18px; font-size:.85em; font-weight:600; cursor:pointer; }
+.pv-switch button.on { background:#13428f; color:#fff; border-color:#13428f; }
+.pv-grid { display:flex; flex-direction:column; gap:28px; padding:20px 12px; align-items:center; }
+.pv-case { width:100%; max-width:1040px; background:#fff; border-radius:18px;
+           box-shadow:0 6px 18px rgba(0,0,0,.07); overflow:hidden; }
+.pv-case > header { padding:16px 20px 14px; border-bottom:1px solid #eef2f7; }
+.pv-b { display:inline-block; background:#13428f; color:#fff; width:26px; height:26px; line-height:26px;
+        text-align:center; border-radius:8px; font-weight:800; margin-right:8px; }
+.pv-case h2 { display:inline; font-size:1.05em; font-weight:700; color:#002458; }
+.pv-desc { margin:10px 0 0; font-size:.85em; color:#64748b; line-height:1.65; }
+.pv-desc b { color:#0f7a3d; } .pv-desc i { color:#b45309; font-style:normal; }
+.pv-stage { background:#f8fafc; padding:20px 16px; overflow:hidden; }
+body.m .pv-stage > .sx { max-width:390px; margin:0 auto; }
+</style>
+</head>
+<body class="m">
+
+<div class="pv-top">
+  <h1>Silver Shop — 3 แนวเลย์เอาต์ให้ทีมเลือก</h1>
+  <p>ทั้งสามใช้ราคาจริงและชื่อสินค้าเต็มเหมือนกัน ต่างกันที่โครงหน้า</p>
+</div>
+
+<div class="pv-switch">
+  <button id="bM" class="on">📱 มือถือ (390px)</button>
+  <button id="bD">🖥 เดสก์ท็อป</button>
+</div>
+
+<div class="pv-grid">
+
+  <!-- ===== A ===== -->
+  <section class="pv-case">
+    <header>
+      <span class="pv-b">A</span><h2>โชว์เคสเลื่อนแนวนอน — แบบเลือกหนัง</h2>
+      <p class="pv-desc">
+        rail เลื่อนแนวนอนทั้งเดสก์ท็อปและมือถือ · เดสก์ท็อปกดลูกศรเลื่อนทีละหน้า มือถือปัดนิ้ว snap ทีละใบ<br>
+        <b>ดี:</b> รูปสินค้าเป็นพระเอกเต็มที่ · กินพื้นที่แนวตั้งน้อยมากทั้งที่รูปใหญ่ ·
+        เป็นภาษาที่คนคุ้นจาก Netflix/Shopee อยู่แล้ว ไม่ต้องสอน<br>
+        <i>แลก:</i> เทียบราคาข้ามน้ำหนักยากสุด ต้องเลื่อนถึงจะเห็นราคาตัวถัดไป ·
+        ของที่อยู่ท้าย rail มีคนเห็นน้อยกว่าของต้น ๆ อย่างมีนัยสำคัญ
+      </p>
+    </header>
+    <div class="pv-stage">
+      <div class="sx">
+        <h2 class="sx-title">เงินแท่งออสสิริส</h2>
+        <div class="sx-subtitle">โลหะเงินบริสุทธิ์ 99.99% — เลือกน้ำหนักที่ต้องการ</div>
+        <div class="sx-note"><i class="fas fa-info-circle"></i>ราคาที่แสดงรวมภาษีมูลค่าเพิ่ม (VAT 7%) แล้ว</div>
+        <div class="a-hint">← เลื่อนดูน้ำหนักอื่น →</div>
+        <div class="a-railwrap" style="margin-top:10px">
+          <button class="a-arrow prev" id="prevA" aria-label="เลื่อนไปทางซ้าย"><i class="fas fa-chevron-left"></i></button>
+          <div class="a-grid" id="gridA"></div>
+          <button class="a-arrow next" id="nextA" aria-label="เลื่อนไปทางขวา"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="a-dots" id="dotsA"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== B ===== -->
+  <section class="pv-case">
+    <header>
+      <span class="pv-b">B</span><h2>ตัวเด่น 1 ใบ + รายการเทียบราคา</h2>
+      <p class="pv-desc">
+        ดันตัวขายดีขึ้นมาเป็นพระเอกใบใหญ่ ที่เหลือเป็นรายการแถวสั้น ๆ มีรูปย่อ ชื่อ ราคา ปุ่มซื้อครบในบรรทัดเดียว<br>
+        <b>ดี:</b> เห็นครบ 9 รายการในหน้าจอเดียว เทียบราคาง่ายสุด · มือถือเป็นรายการแนวตั้งธรรมชาติ ไม่ต้องเลื่อนข้าง ·
+        ชี้นำคนที่ยังไม่รู้จะซื้ออะไรได้<br>
+        <i>แลก:</i> ตัวที่ไม่ใช่พระเอกได้พื้นที่น้อย รูปย่อเล็กจนเป็นแค่ตัวช่วยจำ
+      </p>
+    </header>
+    <div class="pv-stage">
+      <div class="sx">
+        <h2 class="sx-title">เงินแท่งออสสิริส</h2>
+        <div class="sx-note"><i class="fas fa-info-circle"></i>ราคาที่แสดงรวมภาษีมูลค่าเพิ่ม (VAT 7%) แล้ว</div>
+        <div style="margin-top:16px" id="heroB"></div>
+        <div class="b-list" id="listB"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== C ===== -->
+  <section class="pv-case">
+    <header>
+      <span class="pv-b">C</span><h2>เลือกน้ำหนักแบบ configurator</h2>
+      <p class="pv-desc">
+        รูปใหญ่ค้างไว้ฝั่งซ้าย ฝั่งขวาเป็นรายการน้ำหนักให้กด เลือกอันไหนรูปกับราคาเปลี่ยนตาม ปุ่มซื้อเดียวอยู่ล่างสุด<br>
+        <b>ดี:</b> ได้ทั้งรูปใหญ่และราคาครบทุกน้ำหนักพร้อมกัน · กินพื้นที่แนวตั้งน้อยสุด ไม่ต้องเลื่อนเลย ·
+        รู้สึกเป็นการ “เลือกสินค้า” ไม่ใช่ไล่ดูรายการ<br>
+        <i>แลก:</i> เห็นทีละตัว ไม่ได้เห็นทุกแบบพร้อมกัน · โค้ดเยอะสุด · ถ้าคนไม่กดเลือกก็เห็นแค่ตัวเดียว
+      </p>
+    </header>
+    <div class="pv-stage">
+      <div class="sx">
+        <h2 class="sx-title">เงินแท่งออสสิริส</h2>
+        <div class="sx-note"><i class="fas fa-info-circle"></i>ราคาที่แสดงรวมภาษีมูลค่าเพิ่ม (VAT 7%) แล้ว</div>
+        <div class="c-wrap" id="wrapC" style="margin-top:16px"></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+var BRAND = 'โลหะเงินออสสิริส 99.99%';
+var SHOP = 'https://express.ausiris.co.th/';
+var ROWS = [
+  { w:'1 บาท',   sub:'15.24 กรัม',  g:15.24,  price:1380,  kind:'baht' },
+  { w:'5 บาท',   sub:'76.22 กรัม',  g:76.22,  price:6240,  kind:'baht' },
+  { w:'10 บาท',  sub:'152.44 กรัม', g:152.44, price:11950, kind:'baht' },
+  { w:'10 กรัม', sub:'',            g:10,     price:1020,  kind:'gram', badge:'ยอดนิยม' },
+  { w:'20 กรัม', sub:'',            g:20,     price:1820,  kind:'gram' },
+  { w:'50 กรัม', sub:'',            g:50,     price:4280,  kind:'gram' },
+  { w:'100 กรัม',sub:'',            g:100,    price:8450,  kind:'gram', badge:'ยอดนิยม' },
+  { w:'100 กรัม',sub:'',            g:100,    price:8650,  kind:'gram', tag:'ลวดลาย' },
+  { w:'150 กรัม',sub:'',            g:150,    price:12680, kind:'gram' }
+];
+var f = n => Math.round(n).toLocaleString('en-US');
+var CART = '<i class="fas fa-shopping-cart"></i>';
+var TRUST = '<div class="sx-trust"><i class="fas fa-certificate"></i>พร้อมใบรับรอง Assay Certificate</div>';
+var nameOf = r => 'น้ำหนัก ' + r.w + (r.tag ? ' (' + r.tag + ')' : '');
+
+/* รูปแทน: ซองแพ็กเกจแนวตั้ง (ชุดเดียวกับ silver-shop.js) */
+var uid = 0;
+function pack(g, pattern) {
+  var bw = Math.min(46, 20 + Math.log(g + 1) * 5.5), bh = bw * 1.5;
+  var bx = 60 - bw / 2, by = 78 - bh / 2, id = 'p' + (uid++);
+  return '<svg viewBox="0 0 120 160">' +
+    '<defs><linearGradient id="t' + id + '" x1="0" y1="0" x2="1" y2="1">' +
+      '<stop offset="0%" stop-color="#14615c"/><stop offset="100%" stop-color="#063a38"/></linearGradient>' +
+    '<linearGradient id="s' + id + '" x1="0" y1="0" x2="1" y2="1">' +
+      '<stop offset="0%" stop-color="#fff"/><stop offset="45%" stop-color="#dfe6ee"/>' +
+      '<stop offset="100%" stop-color="#a6b3c2"/></linearGradient></defs>' +
+    '<rect x="18" y="8" width="84" height="144" rx="9" fill="#e4e9ee" stroke="#c2ccd6"/>' +
+    '<rect x="23" y="13" width="74" height="134" rx="6" fill="url(#t' + id + ')"/>' +
+    '<rect x="' + bx.toFixed(1) + '" y="' + by.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + bh.toFixed(1) +
+      '" rx="3" fill="url(#s' + id + ')" stroke="#8fa0b3" stroke-width=".6"/>' +
+    (pattern
+      ? '<g fill="none" stroke="#93a2b3" stroke-width=".9" opacity=".85">' +
+        '<circle cx="' + (bx + bw * .32).toFixed(1) + '" cy="' + (by + bh * .32).toFixed(1) + '" r="' + (bw * .11).toFixed(1) + '"/>' +
+        '<circle cx="' + (bx + bw * .68).toFixed(1) + '" cy="' + (by + bh * .5).toFixed(1) + '" r="' + (bw * .11).toFixed(1) + '"/>' +
+        '<circle cx="' + (bx + bw * .35).toFixed(1) + '" cy="' + (by + bh * .68).toFixed(1) + '" r="' + (bw * .11).toFixed(1) + '"/></g>'
+      : '<text x="60" y="' + (by + bh * .42).toFixed(1) + '" text-anchor="middle" font-family="Prompt" font-size="' +
+        (bw * .3).toFixed(1) + '" font-weight="700" fill="#8b9aac">A</text>' +
+        '<rect x="' + (bx + bw * .2).toFixed(1) + '" y="' + (by + bh * .58).toFixed(1) + '" width="' + (bw * .6).toFixed(1) + '" height="1.6" rx=".8" fill="#a9b6c4"/>' +
+        '<rect x="' + (bx + bw * .28).toFixed(1) + '" y="' + (by + bh * .68).toFixed(1) + '" width="' + (bw * .44).toFixed(1) + '" height="1.4" rx=".7" fill="#bcc7d3"/>') +
+    '<text x="60" y="130" text-anchor="middle" font-family="Prompt" font-size="9.5" font-weight="700" fill="#fff" letter-spacing="1.2">AUSIRIS</text>' +
+    '<text x="60" y="139" text-anchor="middle" font-family="Prompt" font-size="4" fill="#8fc4bf" letter-spacing=".6">FINE SILVER 999.0</text>' +
+  '</svg>';
+}
+function badgeOf(r) {
+  if (r.tag) return '<span class="sx-badge silver">' + r.tag + '</span>';
+  return r.badge ? '<span class="sx-badge">' + r.badge + '</span>' : '';
+}
+
+/* ---------- A ---------- */
+document.getElementById('gridA').innerHTML = ROWS.map(r =>
+  '<article class="a-card">' + badgeOf(r) +
+    '<div class="sx-pic">' + pack(r.g, !!r.tag) + '</div>' +
+    '<div class="a-body">' +
+      '<div class="sx-brand">' + BRAND + '</div>' +
+      '<div class="sx-name">' + nameOf(r) + '</div>' +
+      (r.sub ? '<div class="sx-sub">' + r.sub + '</div>' : '') +
+      TRUST +
+      '<div class="a-row"><div class="sx-price">' + f(r.price) + '<small>บาท</small></div></div>' +
+      '<a class="sx-btn" href="' + SHOP + '" target="_blank" rel="noopener noreferrer">' + CART + 'สั่งซื้อ</a>' +
+    '</div></article>').join('');
+
+/* ---------- B ---------- */
+var hero = ROWS.find(r => r.badge) || ROWS[0];
+document.getElementById('heroB').innerHTML =
+  '<div class="b-hero">' + badgeOf(hero) +
+    '<div class="sx-pic">' + pack(hero.g, !!hero.tag) + '</div>' +
+    '<div class="b-hero-body">' +
+      '<div class="sx-brand">' + BRAND + '</div>' +
+      '<div class="sx-name">' + nameOf(hero) + '</div>' + TRUST +
+      '<div class="sx-price">' + f(hero.price) + '<small>บาท</small></div>' +
+      '<a class="sx-btn" href="' + SHOP + '" target="_blank" rel="noopener noreferrer">' + CART + 'สั่งซื้อ</a>' +
+    '</div></div>';
+
+document.getElementById('listB').innerHTML = ROWS.filter(r => r !== hero).map(r =>
+  '<div class="b-item">' +
+    '<div class="b-thumb">' + pack(r.g, !!r.tag) + '</div>' +
+    '<div class="b-info"><div class="sx-name" style="font-size:.98em">' + nameOf(r) + '</div>' +
+      '<div class="sx-sub">' + (r.sub || BRAND) + '</div></div>' +
+    '<div class="b-money"><div class="sx-price" style="font-size:1.1em">' + f(r.price) + '<small>บาท</small></div></div>' +
+    '<a class="sx-btn" href="' + SHOP + '" target="_blank" rel="noopener noreferrer">' + CART + 'ซื้อ</a>' +
+  '</div>').join('');
+
+/* ---------- C ---------- */
+var sel = 0;
+function drawC() {
+  var r = ROWS[sel];
+  document.getElementById('wrapC').innerHTML =
+    '<div class="c-left">' + badgeOf(r) + pack(r.g, !!r.tag) + '</div>' +
+    '<div class="c-right">' +
+      '<div class="sx-brand">' + BRAND + '</div>' +
+      '<div class="sx-name" style="font-size:1.35em">' + nameOf(r) + '</div>' + TRUST +
+      '<div class="c-opts">' + ROWS.map((o, i) =>
+        '<button class="c-opt' + (i === sel ? ' on' : '') + '" data-i="' + i + '">' +
+          '<span><span class="c-opt-w">' + nameOf(o) + '</span>' +
+            (o.sub ? '<span class="c-opt-s"> · ' + o.sub + '</span>' : '') + '</span>' +
+          '<span class="c-opt-p">' + f(o.price) + '</span></button>').join('') +
+      '</div>' +
+      '<div class="c-total">' +
+        '<div><div class="sx-sub">ราคารวม VAT แล้ว</div>' +
+          '<div class="sx-price" style="font-size:1.8em">' + f(r.price) + '<small>บาท</small></div></div>' +
+        '<a class="sx-btn" href="' + SHOP + '" target="_blank" rel="noopener noreferrer">' + CART + 'สั่งซื้อ</a>' +
+      '</div>' +
+    '</div>';
+}
+drawC();
+document.getElementById('wrapC').addEventListener('click', e => {
+  var b = e.target.closest('.c-opt'); if (!b) return;
+  sel = +b.dataset.i; drawC();
+});
+
+/* ---------- ตัวควบคุม rail A ---------- */
+var gridA = document.getElementById('gridA'), dotsA = document.getElementById('dotsA');
+var prevA = document.getElementById('prevA'), nextA = document.getElementById('nextA');
+
+function stepA() {
+  var c = gridA.querySelector('.a-card');
+  return c ? c.offsetWidth + parseFloat(getComputedStyle(gridA).gap || 16) : 260;
+}
+
+function syncA() {
+  var cards = gridA.querySelectorAll('.a-card');
+  if (!cards.length) return;
+  /* dots — เฉพาะมือถือ */
+  if (document.body.classList.contains('m')) {
+    var idx = Math.round(gridA.scrollLeft / stepA());
+    dotsA.innerHTML = [...cards].map((_, i) => '<i class="' + (i === idx ? 'on' : '') + '"></i>').join('');
+  } else {
+    dotsA.innerHTML = '';
+  }
+  /* ลูกศร — ซ่อนเมื่อสุดทางแล้ว
+     เผื่อ 8px เพราะจุดพักซ้ายสุดไม่ใช่ 0 พอดี (rail มี padding-left แล้ว snap ไปเกาะที่ขอบการ์ด) */
+  var max = gridA.scrollWidth - gridA.clientWidth;
+  prevA.disabled = gridA.scrollLeft <= 8;
+  nextA.disabled = gridA.scrollLeft >= max - 8;
+}
+
+/* เลื่อนทีละ "หน้า" ให้พอดีจำนวนการ์ดที่เห็น — ไม่เลื่อนครึ่ง ๆ กลาง ๆ
+   หมายเหตุ: บาง engine (รวมถึงตัวที่ใช้เรนเดอร์พรีวิวนี้) สั่งเลื่อนด้วยสคริปต์แล้วนิ่งสนิท
+   เมื่อ CSS ตั้ง scroll-behavior:smooth ไว้ จึงเช็คหลังกด 150ms ถ้ายังไม่ขยับให้เลื่อนทันทีแทน
+   ปุ่มจะได้ทำงานแน่นอนทุกเบราว์เซอร์ */
+function pageA(dir) {
+  var s = stepA();
+  var n = Math.max(1, Math.floor(gridA.clientWidth / s));
+  var from = gridA.scrollLeft;
+  var to = Math.max(0, Math.min(from + dir * s * n, gridA.scrollWidth - gridA.clientWidth));
+  gridA.scrollTo({ left: to, behavior: 'smooth' });
+  setTimeout(function () { if (gridA.scrollLeft === from) gridA.scrollLeft = to; }, 150);
+  /* อนิเมชันจบหลัง scroll event สุดท้ายเล็กน้อย — เช็คสถานะลูกศรซ้ำตอนนิ่งแล้ว */
+  setTimeout(syncA, 400);
+  setTimeout(syncA, 700);
+}
+prevA.addEventListener('click', function () { pageA(-1); });
+nextA.addEventListener('click', function () { pageA(1); });
+
+gridA.addEventListener('scroll', syncA, { passive:true });
+window.addEventListener('resize', syncA);
+syncA();
+
+/* ---------- สลับความกว้าง ---------- */
+document.getElementById('bM').onclick = function () {
+  document.body.classList.add('m'); this.classList.add('on');
+  document.getElementById('bD').classList.remove('on');
+  gridA.scrollLeft = 0; syncA();
+};
+document.getElementById('bD').onclick = function () {
+  document.body.classList.remove('m'); this.classList.add('on');
+  document.getElementById('bM').classList.remove('on');
+  gridA.scrollLeft = 0; syncA();
+};
+</script>
+</body>
+</html>

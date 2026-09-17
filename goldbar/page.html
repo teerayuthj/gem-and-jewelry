@@ -1,0 +1,289 @@
+<div data-sly-include="/libs/wcm/core/components/init/init.jsp"></div>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    var refreshIntervalId = setInterval(refresh_dashbord_goldbar_all, 3000);
+                    var dataName = "goldbar-all";
+                    var G965B_offer_asso_3 = 0;
+                    var G965B_offer_3 = 0;
+                    var G9999B_offer_3 = 0;
+                    var G9999KG_offer_3 = 0;
+                    var G9999US_offer_3 = 0;
+                    function refresh_dashbord_goldbar_all() {
+                        var dataName = "goldbar-all";
+                        var url = 'https://api-price.ausiris.co.th/api/v1/prices/gold';
+                        $.getJSON(url, function(data) {
+                            {
+                                G965B_offer_asso_3 = data.G965B.offer_asso;
+                                G965B_offer_3 = data.G965B.offer;
+                                G9999B_offer_3 = data.G9999B.offer;
+                                G9999KG_offer_3 = data.G9999KG.offer;
+                                G9999US_offer_3 = data.G9999US.offer;
+
+                                var G965B_bid_asso = data.G965B.bid_asso;
+                                var G965B_offer_asso = data.G965B.offer_asso;
+
+                                var G965B_bid = data.G965B.bid;
+                                var G965B_offer = data.G965B.offer;
+
+                                var G9999B_bid = data.G9999B.bid;
+                                var G9999B_offer = data.G9999B.offer;
+
+                                var G9999KG_bid = data.G9999KG.bid;
+                                var G9999KG_offer = data.G9999KG.offer;
+
+                                var G9999US_bid = data.G9999US.bid;
+                                var G9999US_offer = data.G9999US.offer;
+
+                                var G9999B_time = data.G9999B.time;
+                                var G9999KG_time = data.G9999KG.time;
+                                var G965B_time = data.G965B.time;
+                                var G9999US_time = data.G9999US.time;
+
+                                $("#" + dataName + " #G9999B_time").text(G9999B_time.substr(11, 5));
+                                $("#" + dataName + " #G9999KG_time").text(G9999KG_time.substr(11, 5)); 
+                                $("#" + dataName + " #G965B_time").text(G965B_time.substr(11, 5)); 
+                                $("#" + dataName + " #G9999US_time").text(G9999US_time.substr(11, 5));   
+
+                                //$("#time_" + dataName + "").text("Last Update : " + G9999B_time);
+                                $("#" + dataName + " #G965B_bid_asso").text(numeral(G965B_bid_asso).format('0,0'));
+                                $("#" + dataName + " #G965B_offer_asso").text(numeral(G965B_offer_asso).format('0,0'));
+
+                                $("#" + dataName + " #G965B_bid").text(numeral(G965B_bid).format('0,0'));
+                                $("#" + dataName + " #G965B_offer").text(numeral(G965B_offer).format('0,0'));
+
+                                $("#" + dataName + " #G9999B_bid").text(numeral(G9999B_bid).format('0,0'));
+                                $("#" + dataName + " #G9999B_offer").text(numeral(G9999B_offer).format('0,0'));
+
+                                $("#" + dataName + " #G9999KG_bid").text(numeral(G9999KG_bid).format('0,0'));
+                                $("#" + dataName + " #G9999KG_offer").text(numeral(G9999KG_offer).format('0,0'));
+
+                                $("#" + dataName + " #G9999US_bid").text(numeral(G9999US_bid).format('0,0.00'));
+                                $("#" + dataName + " #G9999US_offer").text(numeral(G9999US_offer).format('0,0.00'));
+                                var url_history = 'https://api-price.ausiris.co.th/api/v1/prices/gold-yesterday';
+                                $.getJSON(url_history, function(data_2) {
+                                    {
+
+                                        var G965B_bid_asso_2 = data_2.G965B.bid_asso;
+                                        var G965B_offer_asso_2 = data_2.G965B.offer_asso;
+
+                                        var G965B_bid_2 = data_2.G965B.bid;
+                                        var G965B_offer_2 = data_2.G965B.offer;
+
+                                        var G9999B_bid_2 = data_2.G9999B.bid;
+                                        var G9999B_offer_2 = data_2.G9999B.offer;
+
+                                        var G9999KG_bid_2 = data_2.G9999KG.bid;
+                                        var G9999KG_offer_2 = data_2.G9999KG.offer;
+
+                                        var G9999US_bid_2 = data_2.G9999US.bid;
+                                        var G9999US_offer_2 = data_2.G9999US.offer;
+
+                                        var G965B_move_asso =  G965B_offer_asso_3 - G965B_offer_asso_2;
+                                        var G965B_move =  G965B_offer_3 - G965B_offer_2;
+                                        var G9999B_move =  G9999B_offer_3 - G9999B_offer_2;
+                                        var G9999KG_move =  G9999KG_offer_3 - G9999KG_offer_2;
+                                        var G9999US_move =  G9999US_offer_3 - G9999US_offer_2;
+                                        console.log('Offer Today => '+G965B_offer_asso_3+' / Offer Yesterday => '+G965B_offer_asso_2+' / Move => '+G965B_move_asso);
+                                        $green = '<div class="arrow-icon"><div class="arrow-icon-1"><div class="arrow-up arrow-green"></div></div><div class="arrow-icon-2"><div class="arrow-up arrow-green"></div></div><div class="arrow-icon-3"><div class="arrow-up arrow-green"></div></div></div>';
+                                        $red = '<div class="arrow-icon"><div class="arrow-icon-4"><div class="arrow-down arrow-red"></div></div><div class="arrow-icon-5"><div class="arrow-down arrow-red"></div></div><div class="arrow-icon-6"><div class="arrow-down arrow-red"></div></div></div>';
+                                        
+                                        if (G965B_move_asso > 0) {
+                                            $("#" + dataName + " #G965B_move_asso").attr('style', 'color: #15621A;').html($green+numeral(G965B_move_asso).format('0,0'));
+                                        } else {
+                                            $("#" + dataName + " #G965B_move_asso").attr('style', 'color: #CC0D00;').html($red+numeral(G965B_move_asso).format('0,0'));
+                                        }
+
+                                        if (G965B_move > 0) {
+                                            $("#" + dataName + " #G965B_move").attr('style', 'color: #15621A;').html($green+numeral(G965B_move).format('0,0'));
+                                        } else {
+                                            $("#" + dataName + " #G965B_move").attr('style', 'color: #CC0D00;').html($red+numeral(G965B_move).format('0,0'));
+                                        }
+                                        if (G9999B_move > 0) {
+                                            $("#" + dataName + " #G9999B_move").attr('style', 'color: #15621A;').html($green+numeral(G9999B_move).format('0,0'));
+                                        } else {
+                                            $("#" + dataName + " #G9999B_move").attr('style', 'color: #CC0D00;').html($red+numeral(G9999B_move).format('0,0'));
+                                        }
+                                        if (G9999KG_move > 0) {
+                                            $("#" + dataName + " #G9999KG_move").attr('style', 'color: #15621A;').html($green+numeral(G9999KG_move).format('0,0'));
+                                        } else {
+                                            $("#" + dataName + " #G9999KG_move").attr('style', 'color: #CC0D00;').html($red+numeral(G9999KG_move).format('0,0'));
+                                        }
+                                        if (G9999US_move > 0) {
+                                            $("#" + dataName + " #G9999US_move").attr('style', 'color: #15621A;').html($green+numeral(G9999US_move).format('0,0.00'));
+
+                                        } else {
+                                            $("#" + dataName + " #G9999US_move").attr('style', 'color: #CC0D00;').html($red+numeral(G9999US_move).format('0,0.00'));
+                                        }
+                                    }
+                                });
+                            }
+                        })
+                        .error(function(jqXHR, textStatus, errorThrown) {
+        console.log("error " + textStatus);
+        console.log("incoming Text " + jqXHR.responseText);
+    });
+                        var url_baht = 'http://27.254.77.78/rest/public/rest/baht';
+                        $.getJSON(url_baht, function(data_baht) {
+                            {
+                                var baht_time = data_baht.update_on;
+                                var baht_sell = data_baht.price;
+                                $("#" + dataName + " #baht_sell").text(numeral(baht_sell).format('0,0.000'));
+                                $("#" + dataName + " #baht_move").text(numeral(data_baht.change).format('0,0.000'));
+                                $("#" + dataName + " #baht_time").text(baht_time.substr(11, 5));   
+                            }
+                        });
+
+                    }
+                    refreshIntervalId;
+                });
+            </script>
+
+
+            <div class="dashboard_box">
+                <div class="dashboard-wrapper">
+                    <div class="dashboard-headline">ราคาทอง
+                    </div>
+                    <ul id="goldbar-all">
+                        <li class="comp1_left">
+                            <div class="comp1_headline">96.5% สมาคมค้าทองคำ
+                                <div class="comp1_time"><div class="comp1_time_icon"></div><span id="G965B_time">ไม่พบ</span></div>
+                            </div>
+                            <ul class="comp1_gold_list">
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="G965B_bid_asso">0</div>
+                                        <div class="comp1_gold_list_text">ขาย</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="G965B_offer_asso">0</div>
+                                        <div class="comp1_gold_list_text">ซื้อ</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="G965B_move_asso">0</div>
+                                        <div class="comp1_gold_list_text">ราคาเปลี่ยนแปลง</div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="comp1_headline">96.5% ออสสิริส
+                                <div class="comp1_time"><div class="comp1_time_icon"></div><span id="G965B_time">ไม่พบ</span></div>
+                            </div>
+                            <ul class="comp1_gold_list">
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="G965B_bid">0</div>
+                                        <div class="comp1_gold_list_text">ขาย</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="G965B_offer">0</div>
+                                        <div class="comp1_gold_list_text">ซื้อ</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="G965B_move">0</div>
+                                        <div class="comp1_gold_list_text">ราคาเปลี่ยนแปลง</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="comp1_center">
+                            <div class="comp1_headline">99.99% ออสสิริส
+                                <div class="comp1_time"><div class="comp1_time_icon"></div><span id="G9999B_time">ไม่พบ</span></div>
+                            </div>
+                            <ul class="comp1_gold_list">
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="G9999B_bid">0</div>
+                                        <div class="comp1_gold_list_text">ขาย</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="G9999B_offer">0</div>
+                                        <div class="comp1_gold_list_text">ซื้อ</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="G9999B_move">0</div>
+                                        <div class="comp1_gold_list_text">ราคาเปลี่ยนแปลง</div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="comp1_headline">99.99% ออสสิริส (KG)
+                                <div class="comp1_time"><div class="comp1_time_icon"></div><span id="G9999KG_time">ไม่พบ</span></div>
+                            </div>
+                            <ul class="comp1_gold_list">
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="G9999KG_bid">0</div>
+                                        <div class="comp1_gold_list_text">ขาย</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="G9999KG_offer">0</div>
+                                        <div class="comp1_gold_list_text">ซื้อ</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="G9999KG_move">0</div>
+                                        <div class="comp1_gold_list_text">ราคาเปลี่ยนแปลง</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="comp1_right">
+
+                            <div class="comp1_headline">ราคาทองคำตลาดโลก
+                                <div class="comp1_time"><div class="comp1_time_icon"></div><span id="G9999US_time">ไม่พบ</span></div>
+                            </div>
+                            <ul class="comp1_gold_list">
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="G9999US_bid">0</div>
+                                        <div class="comp1_gold_list_text">ขาย</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="G9999US_offer">0</div>
+                                        <div class="comp1_gold_list_text">ซื้อ</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="G9999US_move">0</div>
+                                        <div class="comp1_gold_list_text">ราคาเปลี่ยนแปลง</div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="comp1_headline">ค่าเงินบาท (ราคาอ้างอิง)
+                                <div class="comp1_time"><div class="comp1_time_icon"></div><span id="baht_time">ไม่พบ</span></div>
+                            </div>
+                            <ul class="comp1_gold_list_large">
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="baht_sell">0</div>
+                                        <div class="comp1_gold_list_text">Last</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="comp1_gold_list_box">
+                                        <div class="comp1_gold_list_price" id="baht_move">0</div>
+                                        <div class="comp1_gold_list_text">ราคาเปลี่ยนแปลง</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div style="color: #666" class="dashboard-textgray">ราคาฝั่งซื้อปัจจุบันเทียบกับราคาฝั่งซื้อเมื่อวานเวลา 17.00 น.</div>
+                </div>
+            </div>

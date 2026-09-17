@@ -1,0 +1,519 @@
+<meta charset="UTF-8">
+<!--
+    Ausiris | กระดานราคาทองคำ (Gold Price Board)
+    ดึงราคาสดจาก https://api-price.ausiris.co.th/api/v1/prices (endpoint เดียว ได้ทั้งราคาวันนี้ + เมื่อวาน)
+    ไม่พึ่ง jQuery / numeral.js — vanilla JS ล้วน ใช้ได้ทั้งเปิดตรง ๆ และวางเป็น component ใน AEM
+    class/id ทั้งหมด prefix ด้วย gp- เพื่อไม่ให้ชนกับ component เดิมใน goldbar/page.html
+-->
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    .gp-wrap {
+        font-family: 'Prompt', sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px 16px 40px;
+        box-sizing: border-box;
+    }
+    .gp-wrap *,
+    .gp-wrap *::before,
+    .gp-wrap *::after {
+        box-sizing: border-box;
+    }
+
+    /* ---------- หัวเรื่อง ---------- */
+    .gp-head {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+    .gp-title {
+        font-size: 2.4em;
+        font-weight: 600;
+        color: #0b2244;
+        line-height: 1.2;
+        margin: 0;
+    }
+    /* ขีดทองใต้หัวเรื่อง */
+    .gp-title::after {
+        content: "";
+        display: block;
+        width: 64px;
+        height: 3px;
+        margin: 10px auto 0;
+        border-radius: 3px;
+        background: linear-gradient(90deg, #e3c76a, #b8912f);
+    }
+    .gp-date {
+        font-size: 1.05em;
+        color: #7a8699;
+        margin-top: 10px;
+    }
+    .gp-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 12px;
+        font-size: 0.85em;
+        color: #4b5c73;
+        background: #f4f6fa;
+        border: 1px solid #e6eaf1;
+        border-radius: 999px;
+        padding: 5px 14px;
+    }
+    .gp-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #16a34a;
+        animation: gp-pulse 1.6s ease-in-out infinite;
+    }
+    .gp-status.is-error {
+        background: #fdf3f3;
+        border-color: #f6dede;
+        color: #b91c1c;
+    }
+    .gp-status.is-error .gp-dot {
+        background: #dc2626;
+        animation: none;
+    }
+
+    /* ---------- การ์ดราคา ---------- */
+    .gp-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+        gap: 20px;
+    }
+    .gp-card {
+        position: relative;
+        background: #ffffff;
+        border: 1px solid #e9edf3;
+        border-radius: 18px;
+        padding: 20px 18px 18px;
+        box-shadow: 0 2px 14px rgba(11, 34, 68, 0.06);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    /* แถบทองบางๆ ด้านบนการ์ด */
+    .gp-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #e3c76a, #b8912f);
+    }
+    .gp-card:hover {
+        border-color: #e0d3ac;
+        box-shadow: 0 6px 22px rgba(11, 34, 68, 0.1);
+    }
+    .gp-card-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+    .gp-card-title {
+        font-size: 1.22em;
+        font-weight: 600;
+        color: #0b2244;
+        line-height: 1.3;
+    }
+    .gp-card-sub {
+        font-size: 0.78em;
+        font-weight: 400;
+        color: #93a0b3;
+        margin-top: 2px;
+    }
+    .gp-badge {
+        display: inline-block;
+        background: #fdf6e3;
+        border: 1px solid #eedebd;
+        color: #8a6a10;
+        font-size: 0.6em;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        padding: 3px 9px;
+        border-radius: 20px;
+        margin-left: 6px;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+    .gp-time {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.82em;
+        font-weight: 500;
+        color: #7a8699;
+        background: #f4f6fa;
+        border: 1px solid #e9edf3;
+        border-radius: 8px;
+        padding: 4px 9px;
+        white-space: nowrap;
+    }
+
+    .gp-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: auto;
+    }
+    .gp-cell {
+        border-radius: 12px;
+        padding: 14px 6px;
+        text-align: center;
+        min-height: 84px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border: 1px solid transparent;
+    }
+    /* รับซื้อ = โทนเทาอ่อน (ราคารอง) */
+    .gp-cell-bid {
+        background: #f6f8fb;
+        border-color: #e9edf3;
+    }
+    .gp-cell-bid .gp-val {
+        color: #33445e;
+    }
+    /* ขายออก = พระเอกของการ์ด โทนทองอ่อน */
+    .gp-cell-offer {
+        background: linear-gradient(160deg, #fffaec, #fbf0d4);
+        border-color: #f0e2bd;
+    }
+    .gp-cell-offer .gp-val {
+        color: #8a6a10;
+    }
+    /* เปลี่ยนแปลง = พื้นขาว ใช้สีตัวเลขบอกทิศทาง */
+    .gp-cell-chg {
+        background: #fbfcfe;
+        border-color: #e9edf3;
+    }
+    /* ตัวเลขเปลี่ยนแปลงเป็นข้อมูลรอง เลยย่อลงกว่าราคาหลัก */
+    .gp-cell-chg .gp-val {
+        color: #7a8699;
+        font-size: 1em;
+        white-space: nowrap;
+    }
+    /* ลูกศรเล็กกว่าตัวเลข กันบรรทัดแตกในการ์ดที่ตัวเลขยาว */
+    .gp-arrow {
+        font-size: 0.7em;
+        margin-right: 3px;
+        vertical-align: 1px;
+    }
+    .gp-val {
+        font-size: 1.45em;
+        font-weight: 700;
+        line-height: 1.2;
+        display: block;
+        min-height: 1.2em;
+        letter-spacing: -0.2px;
+    }
+    .gp-cap {
+        display: block;
+        font-size: 0.74em;
+        font-weight: 500;
+        color: #93a0b3;
+        margin-top: 7px;
+    }
+    .gp-cell-offer .gp-cap {
+        color: #b39a55;
+    }
+    .gp-cell-chg .gp-val.gp-up {
+        color: #16a34a;
+    }
+    .gp-cell-chg .gp-val.gp-down {
+        color: #e11d48;
+    }
+
+    .gp-note {
+        margin-top: 22px;
+        font-size: 0.85em;
+        color: #64748b;
+        text-align: right;
+    }
+
+    /* ---------- skeleton ตอนโหลด ---------- */
+    .gp-skel {
+        display: inline-block;
+        width: 80%;
+        height: 1.1em;
+        border-radius: 4px;
+        background: linear-gradient(90deg, rgba(11, 34, 68, 0.07) 25%, rgba(11, 34, 68, 0.16) 50%, rgba(11, 34, 68, 0.07) 75%);
+        background-size: 400px 100%;
+        animation: gp-shimmer 1.4s linear infinite;
+        vertical-align: middle;
+    }
+    .gp-cell-offer .gp-skel {
+        background: linear-gradient(90deg, rgba(138, 106, 16, 0.1) 25%, rgba(138, 106, 16, 0.22) 50%, rgba(138, 106, 16, 0.1) 75%);
+        background-size: 400px 100%;
+    }
+    .gp-time .gp-skel,
+    .gp-date .gp-skel {
+        width: 90px;
+    }
+
+    @keyframes gp-shimmer {
+        0%   { background-position: -200px 0; }
+        100% { background-position: 200px 0; }
+    }
+    @keyframes gp-pulse {
+        0%, 100% { opacity: 1; }
+        50%      { opacity: 0.25; }
+    }
+
+    /* ---------- responsive ---------- */
+    @media (max-width: 767px) {
+        .gp-wrap {
+            padding: 16px 12px 32px;
+        }
+        .gp-title {
+            font-size: 1.8em;
+        }
+        .gp-date {
+            font-size: 0.95em;
+        }
+        .gp-grid {
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+        .gp-card {
+            padding: 14px;
+        }
+        .gp-card-title {
+            font-size: 1.05em;
+        }
+        .gp-val {
+            font-size: 1.15em;
+        }
+        .gp-cell-chg .gp-val {
+            font-size: 0.92em;
+        }
+        .gp-cell {
+            min-height: 70px;
+            padding: 10px 4px;
+        }
+        .gp-cap {
+            font-size: 0.68em;
+        }
+        .gp-note {
+            text-align: left;
+        }
+    }
+    @media (max-width: 360px) {
+        .gp-val {
+            font-size: 1em;
+        }
+        .gp-cell-chg .gp-val {
+            font-size: 0.82em;
+        }
+        .gp-cap {
+            font-size: 0.62em;
+        }
+    }
+</style>
+
+<div class="gp-wrap">
+    <div class="gp-head">
+        <h1 class="gp-title">ราคาทองคำ ออสสิริส</h1>
+        <div class="gp-date" id="gpDate"><span class="gp-skel"></span></div>
+        <div class="gp-status" id="gpStatus">
+            <span class="gp-dot"></span>
+            <span id="gpStatusText">กำลังโหลดราคา...</span>
+        </div>
+    </div>
+
+    <div class="gp-grid" id="gpGrid"></div>
+
+    <div class="gp-note">ราคาเปลี่ยนแปลง = ราคาขายออกปัจจุบัน เทียบกับราคาขายออกเมื่อวานเวลา 17.00 น.</div>
+</div>
+
+<script>
+(function () {
+    'use strict';
+
+    var GP_API = 'https://api-price.ausiris.co.th/api/v1/prices';
+    var GP_INTERVAL = 5000;
+
+    // key = ชื่อชุดข้อมูลใน API, ราคาเมื่อวานอยู่ที่ key + '-yesterday'
+    var GP_CARDS = [
+        { id: 'assoc',  key: 'G965B',   bid: 'bid_asso',  offer: 'offer_asso', dec: 0,
+          title: 'ทองคำ 96.5%', sub: 'สมาคมค้าทองคำ', badge: 'บาท' },
+        { id: 'au965',  key: 'G965B',   bid: 'bid',       offer: 'offer',      dec: 0,
+          title: 'ทองคำ 96.5%', sub: 'ออสสิริส', badge: 'บาท' },
+        { id: 'au9999', key: 'G9999B',  bid: 'bid',       offer: 'offer',      dec: 0,
+          title: 'ทองคำ 99.99%', sub: 'ออสสิริส', badge: 'บาท' },
+        { id: 'aukg',   key: 'G9999KG', bid: 'bid',       offer: 'offer',      dec: 0,
+          title: 'ทองคำ 99.99%', sub: 'ออสสิริส (แท่งกิโลกรัม)', badge: 'บาท/กก.' },
+        { id: 'spot',   key: 'G9999US', bid: 'bidspot',   offer: 'offerspot',  dec: 2,
+          title: 'ทองคำตลาดโลก', sub: 'Gold Spot', badge: 'USD/oz' }
+    ];
+
+    /* ---------- helpers ---------- */
+
+    function el(id) {
+        return document.getElementById(id);
+    }
+
+    function fmt(value, dec) {
+        var num = Number(value);
+        if (!isFinite(num)) {
+            return '-';
+        }
+        return num.toLocaleString('en-US', {
+            minimumFractionDigits: dec,
+            maximumFractionDigits: dec
+        });
+    }
+
+    // "2026-09-01 11:54:04" -> "11:54"
+    function hhmm(time) {
+        return typeof time === 'string' && time.length >= 16 ? time.slice(11, 16) : '--:--';
+    }
+
+    // "2026-09-01 11:54:04" -> "วันอังคารที่ 1 กันยายน 2569"
+    function thaiDate(time) {
+        if (typeof time !== 'string' || time.length < 10) {
+            return '';
+        }
+        var parts = time.slice(0, 10).split('-');
+        var date = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+        if (isNaN(date.getTime())) {
+            return '';
+        }
+        return date.toLocaleDateString('th-TH', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+    }
+
+    /* ---------- render ---------- */
+
+    function buildCards() {
+        var html = '';
+        for (var i = 0; i < GP_CARDS.length; i++) {
+            var c = GP_CARDS[i];
+            html +=
+                '<div class="gp-card">' +
+                    '<div class="gp-card-head">' +
+                        '<div>' +
+                            '<div class="gp-card-title">' + c.title + '<span class="gp-badge">' + c.badge + '</span></div>' +
+                            '<div class="gp-card-sub">' + c.sub + '</div>' +
+                        '</div>' +
+                        '<div class="gp-time" id="gp-' + c.id + '-time"><span class="gp-skel"></span></div>' +
+                    '</div>' +
+                    '<div class="gp-row">' +
+                        '<div class="gp-cell gp-cell-bid">' +
+                            '<span class="gp-val" id="gp-' + c.id + '-bid"><span class="gp-skel"></span></span>' +
+                            '<span class="gp-cap">รับซื้อ</span>' +
+                        '</div>' +
+                        '<div class="gp-cell gp-cell-offer">' +
+                            '<span class="gp-val" id="gp-' + c.id + '-offer"><span class="gp-skel"></span></span>' +
+                            '<span class="gp-cap">ขายออก</span>' +
+                        '</div>' +
+                        '<div class="gp-cell gp-cell-chg">' +
+                            '<span class="gp-val" id="gp-' + c.id + '-chg"><span class="gp-skel"></span></span>' +
+                            '<span class="gp-cap">เปลี่ยนแปลง</span>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+        }
+        el('gpGrid').innerHTML = html;
+    }
+
+    function paintCard(card, data) {
+        var today = data[card.key];
+        var yest = data[card.key + '-yesterday'];
+        if (!today) {
+            return;
+        }
+
+        var bid = Number(today[card.bid]);
+        var offer = Number(today[card.offer]);
+
+        el('gp-' + card.id + '-bid').textContent = fmt(bid, card.dec);
+        el('gp-' + card.id + '-offer').textContent = fmt(offer, card.dec);
+        el('gp-' + card.id + '-time').textContent = hhmm(today.time);
+
+        var chgEl = el('gp-' + card.id + '-chg');
+        chgEl.className = 'gp-val';
+
+        if (!yest || !isFinite(Number(yest[card.offer]))) {
+            chgEl.textContent = '-';
+            return;
+        }
+
+        var chg = offer - Number(yest[card.offer]);
+        var arrow = chg > 0 ? '▲' : (chg < 0 ? '▼' : '');
+        chgEl.innerHTML = (arrow ? '<span class="gp-arrow">' + arrow + '</span>' : '') +
+            (chg > 0 ? '+' : '') + fmt(chg, card.dec);
+        if (chg > 0) {
+            chgEl.className = 'gp-val gp-up';
+        } else if (chg < 0) {
+            chgEl.className = 'gp-val gp-down';
+        }
+    }
+
+    function setStatus(text, isError) {
+        el('gpStatusText').textContent = text;
+        el('gpStatus').className = isError ? 'gp-status is-error' : 'gp-status';
+    }
+
+    /* ---------- fetch loop ---------- */
+
+    function refresh() {
+        fetch(GP_API, { cache: 'no-store' })
+            .then(function (res) {
+                if (!res.ok) {
+                    throw new Error('HTTP ' + res.status);
+                }
+                return res.json();
+            })
+            .then(function (data) {
+                for (var i = 0; i < GP_CARDS.length; i++) {
+                    paintCard(GP_CARDS[i], data);
+                }
+
+                var ref = data.G9999B || data.G965B || {};
+                el('gpDate').textContent = thaiDate(ref.time);
+                setStatus('อัปเดตล่าสุด ' + hhmm(ref.time) + ' น.', false);
+            })
+            .catch(function (err) {
+                console.error('[gold-price] fetch failed:', err);
+                setStatus('เชื่อมต่อราคาไม่สำเร็จ กำลังลองใหม่...', true);
+            });
+    }
+
+    var timer = null;
+
+    function start() {
+        if (timer === null) {
+            refresh();
+            timer = setInterval(refresh, GP_INTERVAL);
+        }
+    }
+
+    function stop() {
+        clearInterval(timer);
+        timer = null;
+    }
+
+    // หยุด poll ตอนผู้ใช้สลับแท็บออกไป แล้วดึงใหม่ทันทีเมื่อกลับมา
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+            stop();
+        } else {
+            start();
+        }
+    });
+
+    buildCards();
+    start();
+})();
+</script>
