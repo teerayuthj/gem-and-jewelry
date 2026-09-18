@@ -16,7 +16,16 @@
        "offer_usd_oz": 107.71,            // Silver Spot offer
        "vat_rate": 0.07,
        "source_time": "2026-09-16 10:00:03",  // เวลาจากไฟล์ราคา (ไม่ได้แสดง เก็บไว้ตรวจย้อนหลัง)
-       "updated_at":  "2026-09-16 10:00:05"   // เวลาเครื่องตอนบันทึก = เวลาที่แสดงบนหน้าจอ
+       "updated_at":  "2026-09-16 10:00:05",  // เวลาเครื่องตอนบันทึก = เวลาที่แสดงบนหน้าจอ
+       "comparison": {
+         "basis": "previous_business_day",
+         "status": "matched",
+         "reference_date": "2026-09-15",
+         "offer_thb_kg": 110000.0,
+         "offer_vat_thb_kg": 117700.0,
+         "offer_thb_kg_change": 1276.0,
+         "offer_vat_thb_kg_change": 1365.0
+       }
      }
 
    override จากหน้า host ได้ (ต้องวางก่อน silver-hourly.js):
@@ -36,7 +45,8 @@
     var MAX_RANGE_DAYS = CFG.maxRangeDays || API_RANGES[API_RANGES.length - 1];
     var PAGE = CFG.pageSize || 48;                  // แสดงทีละ 2 วัน แล้วค่อยกด "แสดงเพิ่ม"
     var REFRESH_MS = CFG.refreshMs || 5 * 60 * 1000;
-    var WIDE_PX = 700;                              // กว้างกว่านี้ใช้ตาราง, แคบกว่าใช้การ์ด
+    var WIDE_PX = 860;                              // ตาราง comparison มีหลายคอลัมน์; จอแคบใช้การ์ด
+    var MIN_LOADING_MS = CFG.minLoadingMs == null ? 180 : Math.max(0, Number(CFG.minLoadingMs) || 0);
 
     // ===== ข้อความทั้งหมด แก้ผ่าน config ได้ ไม่ต้องแตะโค้ด =====
     // description รับ HTML ได้ (<b> <br> <a>) — ตั้งจากหน้า host เท่านั้น ไม่ได้รับ input จากผู้ใช้
@@ -51,7 +61,7 @@
     };
 
     // ===== State =====
-    var state = { rangeDays: DEFAULT_RANGE, from: null, to: null, sort: 'desc', limit: PAGE };
+    var state = { rangeDays: DEFAULT_RANGE, from: null, to: null, sort: 'desc', limit: PAGE, loading: false };
     var all = [];        // ข้อมูลที่โหลดมาทั้งก้อน (ascending)
     var rows = [];       // เฉพาะช่วงที่เลือก (ascending)
     var cache = {};      // rangeKey -> rows  กันยิงซ้ำตอนสลับ preset ไปมา
@@ -66,20 +76,29 @@
                     '<div class="sh-hero-t">' + TEXT.title + '</div>' +
                     (TEXT.subtitle ? '<div class="sh-hero-s">' + TEXT.subtitle + '</div>' : '') +
                 '</div>' +
-                '<div class="sh-live" id="shLive"><i></i><span id="shLiveText">กำลังโหลด</span></div>' +
+                '<div class="sh-live" id="shLive" role="status" aria-live="polite"><i></i><span id="shLiveText">กำลังโหลด</span></div>' +
             '</div>' +
 
-            '<div class="sh-cards">' +
+            '<div class="sh-skeleton-cards" id="shCardsSkeleton" hidden aria-hidden="true">' +
+                '<div class="sh-skeleton-card sh-skeleton-primary"><i class="sh-skel sh-skel-label"></i><i class="sh-skel sh-skel-price"></i><i class="sh-skel sh-skel-pill"></i></div>' +
+                '<div class="sh-skeleton-card"><i class="sh-skel sh-skel-label"></i><i class="sh-skel sh-skel-price"></i><i class="sh-skel sh-skel-note"></i></div>' +
+                '<div class="sh-skeleton-card"><i class="sh-skel sh-skel-label"></i><i class="sh-skel sh-skel-price"></i><i class="sh-skel sh-skel-note"></i></div>' +
+            '</div>' +
+
+            '<div class="sh-cards" id="shCards">' +
                 '<div class="sh-main">' +
                     '<div class="sh-main-top"><span>ราคาขายรวม VAT 7%</span><span id="shTime">—</span></div>' +
                     '<div class="sh-main-p">' +
                         '<b id="shVat">—</b><span class="sh-main-u">บาท/kg</span>' +
+                    '</div>' +
+                    '<div class="sh-deltas">' +
                         '<span class="sh-pill sh-flat" id="shChg"></span>' +
+                        '<span class="sh-pill sh-hour sh-flat" id="shHourChg"></span>' +
                     '</div>' +
                 '</div>' +
                 '<div class="sh-duo">' +
-                    '<div class="sh-mini"><span>ขายออกก่อน VAT</span><b id="shOffer">—</b></div>' +
-                    '<div class="sh-mini"><span>ราคารับซื้อ</span><b id="shBid">—</b></div>' +
+                    '<div class="sh-mini"><span>ขายออกก่อน VAT</span><b id="shOffer">—</b><small class="sh-mini-delta" id="shOfferChg"></small></div>' +
+                    '<div class="sh-mini"><span>ราคารับซื้อ</span><b id="shBid">—</b><small class="sh-mini-note" id="shBidNote">ราคาปัจจุบัน</small></div>' +
                 '</div>' +
             '</div>' +
 
@@ -91,6 +110,9 @@
                     '<div class="sh-seg" id="shPresets"></div>' +
                 '</div>' +
                 '<div class="sh-sum" id="shSum"></div>' +
+                '<div class="sh-sum-skeleton" id="shSumSkeleton" hidden aria-hidden="true">' +
+                    '<i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i>' +
+                '</div>' +
                 // ช่องวันที่ซ่อนไว้ กด "กำหนดเอง" ถึงจะเผย — คนส่วนใหญ่ใช้แค่ปุ่มลัด
                 '<div class="sh-custom" id="shCustom">' +
                     '<label>ตั้งแต่วันที่<input type="date" id="shFrom"></label>' +
@@ -98,6 +120,9 @@
                 '</div>' +
             '</div>' +
 
+            '<div class="sh-chart-skeleton" id="shChartSkeleton" hidden aria-hidden="true">' +
+                '<i class="sh-skel sh-skel-chart-title"></i><i class="sh-skel sh-skel-chart"></i>' +
+            '</div>' +
             '<div class="sh-chart-card" id="shChartCard">' +
                 '<div class="sh-chart-t" id="shChartTitle">' + TEXT.chartTitle + '</div>' +
                 '<div class="sh-chart-note" id="shChartNote" hidden></div>' +
@@ -105,14 +130,23 @@
                 '<div class="sh-tip" id="shTip"></div>' +
             '</div>' +
 
-            '<div class="sh-listhead"><span>' + TEXT.listTitle + '</span>' +
+            '<div class="sh-listhead" id="shListhead"><div><span>' + TEXT.listTitle + '</span>' +
+                '<small>แต่ละแถวจับคู่กับเวลาเดียวกันของวันทำการก่อนหน้า</small></div>' +
                 '<select id="shSort">' +
                     '<option value="desc">ล่าสุดก่อน</option>' +
                     '<option value="asc">เก่าสุดก่อน</option>' +
                 '</select></div>' +
+            '<div class="sh-rows-skeleton" id="shRowsSkeleton" hidden aria-hidden="true">' +
+                '<div class="sh-skeleton-day"><i class="sh-skel"></i></div>' +
+                '<div class="sh-skeleton-row"><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i></div>' +
+                '<div class="sh-skeleton-row"><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i></div>' +
+                '<div class="sh-skeleton-row"><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i></div>' +
+                '<div class="sh-skeleton-row"><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i></div>' +
+                '<div class="sh-skeleton-row"><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i><i class="sh-skel"></i></div>' +
+            '</div>' +
             '<div id="shRows"></div>' +
             '<div class="sh-state" id="shState" hidden></div>' +
-            '<div class="sh-foot"><span id="shCount"></span><span>' + TEXT.footNote + '</span></div>' +
+            '<div class="sh-foot" id="shFoot"><span id="shCount"></span><span>' + TEXT.footNote + '</span></div>' +
             '<button class="sh-more" id="shMore" hidden>แสดงเพิ่ม</button>' +
         '</div>';
 
@@ -147,7 +181,11 @@
 
     // ===== Helpers =====
     function $(id) { return document.getElementById(id); }
-    function num(v) { var n = Number(v); return isFinite(n) ? n : null; }
+    function num(v) {
+        if (v == null || v === '') return null;
+        var n = Number(v);
+        return isFinite(n) ? n : null;
+    }
     function pad2(n) { return String(n).padStart(2, '0'); }
     function dayKey(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
     function hhmm(d) { return pad2(d.getHours()) + ':' + pad2(d.getMinutes()); }
@@ -216,11 +254,98 @@
     function endOfDay(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999); }
     function daysBetween(a, b) { return Math.round((startOfDay(b) - startOfDay(a)) / 86400000); }
 
+    function comparisonFromApi(raw) {
+        if (!raw || typeof raw !== 'object') return null;
+        var referenceDate = raw.reference_date ? parseSql(raw.reference_date + ' 00:00:00') : null;
+        var referenceTs = raw.hour_start != null ? bkkFromUnix(raw.hour_start) : null;
+        return {
+            basis: raw.basis || 'previous_business_day',
+            status: raw.status || 'missing_reference_day',
+            referenceDate: referenceDate,
+            referenceTs: referenceTs,
+            offer: num(raw.offer_thb_kg),
+            offerVat: num(raw.offer_vat_thb_kg),
+            offerChange: num(raw.offer_thb_kg_change),
+            offerChangePct: num(raw.offer_thb_kg_change_pct),
+            offerVatChange: num(raw.offer_vat_thb_kg_change),
+            offerVatChangePct: num(raw.offer_vat_thb_kg_change_pct)
+        };
+    }
+
+    function isBusinessDay(d) { return d.getDay() !== 0 && d.getDay() !== 6; }
+
+    // fallback ช่วง deploy ที่ frontend ใหม่อาจเจอ backend เก่า:
+    // จับคู่วันทำการก่อนหน้าในข้อมูลที่โหลดมา โดยใช้ชั่วโมง Bangkok เดียวกันเท่านั้น
+    function attachLocalComparisons(list) {
+        var byDate = {};
+        var businessDates = [];
+
+        list.forEach(function (r) {
+            var key = dayKey(r.ts);
+            if (!byDate[key]) {
+                byDate[key] = { date: startOfDay(r.ts), hours: {} };
+                if (isBusinessDay(r.ts)) businessDates.push(key);
+            }
+            byDate[key].hours[r.ts.getHours()] = r;
+        });
+        businessDates.sort();
+
+        list.forEach(function (r) {
+            if (r.comparison) return; // backend เป็น source of truth เมื่อมีข้อมูลแล้ว
+            var currentKey = dayKey(r.ts);
+            var referenceKey = null;
+            for (var i = businessDates.length - 1; i >= 0; i--) {
+                if (businessDates[i] < currentKey) { referenceKey = businessDates[i]; break; }
+            }
+            if (!referenceKey) {
+                r.comparison = {
+                    basis: 'previous_business_day', status: 'missing_reference_day',
+                    referenceDate: null, referenceTs: null,
+                    offer: null, offerVat: null, offerChange: null, offerChangePct: null,
+                    offerVatChange: null, offerVatChangePct: null
+                };
+                return;
+            }
+
+            var reference = byDate[referenceKey].hours[r.ts.getHours()];
+            if (!reference) {
+                r.comparison = {
+                    basis: 'previous_business_day', status: 'missing_reference_hour',
+                    referenceDate: byDate[referenceKey].date, referenceTs: null,
+                    offer: null, offerVat: null, offerChange: null, offerChangePct: null,
+                    offerVatChange: null, offerVatChangePct: null
+                };
+                return;
+            }
+
+            var offerChange = r.offer == null || reference.offer == null ? null : r.offer - reference.offer;
+            var vatChange = r.offerVat == null || reference.offerVat == null ? null : r.offerVat - reference.offerVat;
+            r.comparison = {
+                basis: 'previous_business_day', status: 'matched',
+                referenceDate: byDate[referenceKey].date, referenceTs: reference.ts,
+                offer: reference.offer, offerVat: reference.offerVat,
+                offerChange: offerChange,
+                offerChangePct: reference.offer ? offerChange / reference.offer * 100 : null,
+                offerVatChange: vatChange,
+                offerVatChangePct: reference.offerVat ? vatChange / reference.offerVat * 100 : null
+            };
+        });
+
+        return list;
+    }
+
+    function comparisonTimeLabel(r) {
+        var c = r && r.comparison;
+        if (!c || !c.referenceDate) return 'วันทำการก่อนหน้า';
+        var hour = c.referenceTs ? c.referenceTs.getHours() : r.ts.getHours();
+        return thDate(c.referenceDate) + ' ' + pad2(hour) + ':00';
+    }
+
     // ===== Data =====
     // record ดิบ -> รูปแบบที่ทุกส่วนของ component ใช้
     function normalize(list) {
         if (!Array.isArray(list)) list = (list && list.data) || [];
-        return list.map(function (d) {
+        var normalized = list.map(function (d) {
             // รอบชั่วโมง: ใช้ hour (เวลาไทยอ่านง่าย) ก่อน ถ้าไม่มีค่อย fallback ไป hour_start (unix)
             var ts = d.hour ? parseSql(d.hour) : null;
             if (!ts && d.hour_start != null) ts = bkkFromUnix(d.hour_start);
@@ -237,7 +362,8 @@
                 offerVat: num(d.offer_vat_thb_kg),
                 bidSpot: num(d.bid_usd_oz),
                 offerSpot: num(d.offer_usd_oz),
-                vatRate: num(d.vat_rate)
+                vatRate: num(d.vat_rate),
+                comparison: comparisonFromApi(d.comparison)
             };
         }).filter(function (r) {
             return r.ts && isFinite(r.ts.getTime()) && r.offerVat != null;
@@ -247,6 +373,7 @@
             r.shownTs = r.recordedAt || r.srcTime || r.ts;
             return r;
         }).sort(function (a, b) { return a.ts - b.ts; });
+        return attachLocalComparisons(normalized);
     }
 
     function fetchRange(days) {
@@ -287,25 +414,66 @@
         el.textContent = msg;
     }
 
+    function setDataVisibility(visible) {
+        $('shCards').hidden = !visible;
+        $('shChartCard').hidden = !visible;
+        $('shRows').hidden = !visible;
+        $('shFoot').hidden = !visible;
+    }
+
+    function setLoadingView(active) {
+        var container = document.querySelector('.sh-container');
+        state.loading = active;
+        if (container) {
+            container.classList.toggle('sh-is-loading', active);
+            container.setAttribute('aria-busy', active ? 'true' : 'false');
+        }
+        $('shCardsSkeleton').hidden = !active;
+        $('shSumSkeleton').hidden = !active;
+        $('shChartSkeleton').hidden = !active;
+        $('shRowsSkeleton').hidden = !active;
+        $('shSort').disabled = active;
+        $('shSum').hidden = active;
+        $('shMore').hidden = true;
+        if (active) {
+            setDataVisibility(false);
+            showState(null);
+            $('shLiveText').textContent = 'กำลังโหลด…';
+        } else {
+            setDataVisibility(true);
+        }
+    }
+
+    function waitForVisibleSkeleton(startedAt, value) {
+        var remaining = Math.max(0, MIN_LOADING_MS - (Date.now() - startedAt));
+        return new Promise(function (resolve) {
+            setTimeout(function () { resolve(value); }, remaining);
+        });
+    }
+
     function load(silent) {
+        if (silent && state.loading) return;
         var my = ++inflight;
+        var startedAt = Date.now();
         if (!silent) {
-            showState('loading', 'กำลังโหลดราคารายชั่วโมง…');
-            $('shRows').innerHTML = '';
-            $('shCount').textContent = '';
-            $('shMore').hidden = true;
+            setLoadingView(true);
         }
         fetchRange(neededDays()).then(function (list) {
+            return silent ? list : waitForVisibleSkeleton(startedAt, list);
+        }).then(function (list) {
             if (my !== inflight) return;   // มีคำขอใหม่แซงไปแล้ว
             all = list;
             applyFilter();
+            if (!silent) setLoadingView(false);
             if (!rows.length) {
                 showState('loading', 'ไม่มีข้อมูลรายชั่วโมงในช่วงวันที่เลือก');
+                setDataVisibility(false);
                 $('shRows').innerHTML = '';
                 $('shChart').innerHTML = '';
                 $('shCount').textContent = '';
                 $('shMore').hidden = true;
                 $('shSum').hidden = true;
+                $('shLiveText').textContent = 'ไม่มีข้อมูล';
                 return;
             }
             showState(null);
@@ -313,12 +481,17 @@
         }).catch(function (e) {
             if (my !== inflight) return;
             console.warn('[silver-hourly] โหลดข้อมูลไม่สำเร็จ:', e.message, '| url:', HOURLY_URL);
+            // background refresh ต้องไม่ล้างราคาที่ผู้ใช้กำลังอ่านอยู่
+            if (silent) return;
+            setLoadingView(false);
             showState('error', 'ยังดูราคาย้อนหลังรายชั่วโมงไม่ได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง');
+            setDataVisibility(false);
             $('shRows').innerHTML = '';
             $('shChart').innerHTML = '';
             $('shCount').textContent = '';
             $('shMore').hidden = true;
             $('shSum').hidden = true;
+            $('shLiveText').textContent = 'โหลดไม่สำเร็จ';
         });
     }
 
@@ -326,23 +499,46 @@
     function renderHero() {
         var last = rows[rows.length - 1];
         var prev = rows.length > 1 ? rows[rows.length - 2] : null;
-        var chg = prev ? last.offerVat - prev.offerVat : null;
+        var hourChange = prev ? last.offerVat - prev.offerVat : null;
+        var comparison = last.comparison;
+        var comparisonMatched = comparison && comparison.status === 'matched';
+        var vatChange = comparisonMatched ? comparison.offerVatChange : null;
+        var offerChange = comparisonMatched ? comparison.offerChange : null;
         var vatPct = last.vatRate != null ? Math.round(last.vatRate * 100) : 7;
 
         $('shTime').textContent = hhmmss(last.shownTs) + ' น. · ' + thDate(last.shownTs);
         $('shVat').textContent = fmtN(last.offerVat, 0);
         $('shOffer').textContent = fmtN(last.offer, 0);
         $('shBid').textContent = fmtN(last.bid, 0);
+        $('shBidNote').textContent = 'ราคาปัจจุบัน ณ ' + hhmmss(last.shownTs) + ' น.';
         // ชิปนี้เป็นแค่ตัวบอกสถานะ ไม่ใส่วินาที กันดันหัวข้อจนตกบรรทัดบนมือถือ
         $('shLiveText').textContent = 'อัปเดต ' + hhmm(last.shownTs) + ' น.';
 
         var lbl = $('shTime').parentNode.firstElementChild;
         if (lbl) lbl.textContent = 'ราคาขายรวม VAT ' + vatPct + '%';
 
-        var pill = $('shChg');
-        pill.hidden = chg == null;   // ไม่มีชั่วโมงก่อนหน้าให้เทียบ ก็ไม่ต้องโชว์ pill เปล่า
-        pill.className = 'sh-pill ' + dirOf(chg);
-        pill.textContent = chg == null ? '' : arrowOf(chg) + ' ' + fmtSignedN(chg, 0);
+        var dayPill = $('shChg');
+        dayPill.hidden = false;
+        dayPill.className = 'sh-pill ' + dirOf(vatChange);
+        dayPill.textContent = comparisonMatched
+            ? arrowOf(vatChange) + ' ' + fmtSignedN(vatChange, 0) +
+                (comparison.offerVatChangePct == null ? '' : ' (' + fmtSignedN(comparison.offerVatChangePct, 2) + '%)') +
+                ' · เทียบ ' + comparisonTimeLabel(last)
+            : 'ไม่มีข้อมูลวันทำการก่อนหน้าในเวลาเดียวกัน';
+
+        var hourPill = $('shHourChg');
+        hourPill.hidden = hourChange == null;
+        hourPill.className = 'sh-pill sh-hour ' + dirOf(hourChange);
+        hourPill.textContent = hourChange == null
+            ? ''
+            : arrowOf(hourChange) + ' ' + fmtSignedN(hourChange, 0) + ' · จากชั่วโมงก่อน';
+
+        var offerDelta = $('shOfferChg');
+        offerDelta.hidden = !comparisonMatched;
+        offerDelta.className = 'sh-mini-delta ' + dirOf(offerChange);
+        offerDelta.textContent = comparisonMatched
+            ? arrowOf(offerChange) + ' ' + fmtSignedN(offerChange, 0) + ' · เทียบ ' + comparisonTimeLabel(last)
+            : '';
     }
 
     // ===== Render: กราฟเส้น (SVG เขียนเอง ไม่พึ่ง library) =====
@@ -433,11 +629,17 @@
             if (cross) { cross.setAttribute('x1', best.x); cross.setAttribute('x2', best.x); cross.setAttribute('opacity', '1'); }
             if (dot) { dot.setAttribute('cx', best.x); dot.setAttribute('cy', best.y); dot.setAttribute('opacity', '1'); }
 
-            var prev = best.i > 0 ? rows[best.i - 1].offerVat : null;
-            var chg = prev == null ? null : best.r.offerVat - prev;
+            var comparison = best.r.comparison;
+            var matched = comparison && comparison.status === 'matched';
+            var vatChange = matched ? comparison.offerVatChange : null;
+            var offerChange = matched ? comparison.offerChange : null;
             tip.innerHTML = thDate(best.r.shownTs) + ' ' + hhmmss(best.r.shownTs) + ' น.<br>' +
-                'รวม VAT <b>' + fmtN(best.r.offerVat, 0) + '</b>' + (chg == null ? '' : ' (' + fmtSignedN(chg, 0) + ')') +
-                '<br>ขายออก <b>' + fmtN(best.r.offer, 0) + '</b> · รับซื้อ <b>' + fmtN(best.r.bid, 0) + '</b>';
+                'รวม VAT <b>' + fmtN(best.r.offerVat, 0) + '</b>' +
+                (matched ? ' (' + fmtSignedN(vatChange, 0) + ' / 24 ชม.)' : '') +
+                '<br>ขายออก <b>' + fmtN(best.r.offer, 0) + '</b>' +
+                (matched ? ' (' + fmtSignedN(offerChange, 0) + ' / 24 ชม.)' : '') +
+                ' · รับซื้อ <b>' + fmtN(best.r.bid, 0) + '</b>' +
+                (matched ? '<br>เทียบ ' + comparisonTimeLabel(best.r) : '<br>ไม่มีข้อมูลวันอ้างอิงเวลาเดียวกัน');
 
             var cardBox = card.getBoundingClientRect();
             var half = tip.offsetWidth / 2 + 6;
@@ -464,9 +666,23 @@
         var shown = list.slice(0, state.limit);
         var host = $('shRows');
 
-        // จอกว้าง -> ตารางแบน โชว์ครบ 6 คอลัมน์ ไม่ต้องกดกาง
-        // จอแคบ  -> การ์ดใบเดียวคั่นด้วยเส้น แตะกางดูรับซื้อ/Spot
+        // จอกว้าง -> ตารางเปรียบเทียบ VAT/ขายออกกับวันทำการก่อนหน้า
+        // จอแคบ  -> การ์ดใบเดียวคั่นด้วยเส้น แตะกางดูราคาอ้างอิง/รับซื้อ/Spot
         var wide = (host.clientWidth || 0) >= WIDE_PX;
+
+        function matched(r) { return r.comparison && r.comparison.status === 'matched'; }
+        function deltaHtml(value) {
+            return value == null
+                ? '<span class="sh-missing">—</span>'
+                : '<b class="' + dirOf(value) + '">' + arrowOf(value) + ' ' + fmtSignedN(value, 0) + '</b>';
+        }
+        function priceCell(r, current, reference, extraClass) {
+            var ref = matched(r)
+                ? 'อ้างอิง ' + comparisonTimeLabel(r) + ' · ' + fmtN(reference, 0)
+                : 'ไม่มีข้อมูลอ้างอิงเวลาเดียวกัน';
+            return '<td class="sh-price-cell ' + (extraClass || '') + '">' +
+                '<b>' + fmtN(current, 0) + '</b><small>' + ref + '</small></td>';
+        }
 
         // วันที่ซ้ำทุกแถวอ่านยาก -> ยกไปไว้หัวข้อคั่นวัน แถวเหลือแค่เวลา
         var curDay = null;
@@ -481,38 +697,45 @@
 
         if (wide) {
             host.innerHTML =
-                '<table class="sh-table"><thead><tr>' +
-                    '<th>เวลา</th><th>รับซื้อ THB/kg</th><th>ขายออก THB/kg</th>' +
-                    '<th>รวม VAT 7%</th><th>Spot Bid</th><th>Spot Offer</th>' +
+                '<div class="sh-table-scroll"><table class="sh-table"><thead><tr>' +
+                    '<th>เวลา</th><th>รวม VAT 7%</th><th>Δ VAT 24 ชม.</th>' +
+                    '<th>ขายออกก่อน VAT</th><th>Δ ขายออก 24 ชม.</th><th>รับซื้อ</th>' +
+                    '<th>Spot Bid</th><th>Spot Offer</th>' +
                 '</tr></thead><tbody>' +
                 shown.map(function (r) {
-                    return daySep(r, 6) + '<tr>' +
+                    var comparison = r.comparison || {};
+                    return daySep(r, 8) + '<tr>' +
                         '<td>' + hhmmss(r.shownTs) + '</td>' +
+                        priceCell(r, r.offerVat, comparison.offerVat, 'sh-vat-c') +
+                        '<td class="sh-delta-cell">' + deltaHtml(comparison.offerVatChange) + '</td>' +
+                        priceCell(r, r.offer, comparison.offer, '') +
+                        '<td class="sh-delta-cell">' + deltaHtml(comparison.offerChange) + '</td>' +
                         '<td>' + fmtN(r.bid, 0) + '</td>' +
-                        '<td>' + fmtN(r.offer, 0) + '</td>' +
-                        '<td class="sh-vat-c">' + fmtN(r.offerVat, 0) + '</td>' +
                         '<td class="sh-spot">' + fmtN(r.bidSpot, 2) + '</td>' +
                         '<td class="sh-spot">' + fmtN(r.offerSpot, 2) + '</td>' +
                     '</tr>';
-                }).join('') + '</tbody></table>';
+                }).join('') + '</tbody></table></div>';
         } else {
             host.innerHTML = '<div class="sh-list">' + shown.map(function (r) {
-                var i = rows.indexOf(r);
-                var p = i > 0 ? rows[i - 1].offerVat : null;
-                var c = p == null ? null : r.offerVat - p;
+                var comparison = r.comparison || {};
+                var referenceLabel = matched(r) ? comparisonTimeLabel(r) : 'ไม่มีข้อมูลเวลาเดียวกัน';
                 return daySep(r, 0) + '<div class="sh-row">' +
                     '<div class="sh-row-head">' +
                         '<div class="sh-t"><b>' + hhmmss(r.shownTs) + '</b></div>' +
                         '<div class="sh-p">' +
                             '<div class="sh-pr"><span>ขายออก</span><b>' + fmtN(r.offer, 0) + '</b></div>' +
+                            '<div class="sh-pr sh-pr-change"><span>Δ ขายออก 24 ชม.</span>' + deltaHtml(comparison.offerChange) + '</div>' +
                             '<div class="sh-pr"><span>รวม VAT</span><b class="sh-vat">' + fmtN(r.offerVat, 0) + '</b></div>' +
+                            '<div class="sh-pr sh-pr-change"><span>Δ VAT 24 ชม.</span>' + deltaHtml(comparison.offerVatChange) + '</div>' +
                         '</div>' +
                         '<span class="sh-caret">⌄</span>' +
                     '</div>' +
                     '<div class="sh-row-body">' +
+                        '<div class="sh-reference">เทียบ ' + referenceLabel + '</div>' +
+                        '<div class="sh-pr"><span>ขายออกวันอ้างอิง</span><b>' + (matched(r) ? fmtN(comparison.offer, 0) : '—') + '</b></div>' +
+                        '<div class="sh-pr"><span>รวม VAT วันอ้างอิง</span><b>' + (matched(r) ? fmtN(comparison.offerVat, 0) : '—') + '</b></div>' +
                         '<div class="sh-pr"><span>รับซื้อ THB/kg</span><b>' + fmtN(r.bid, 0) + '</b></div>' +
                         '<div class="sh-pr"><span>Spot bid / offer</span><b>' + fmtN(r.bidSpot, 2) + ' / ' + fmtN(r.offerSpot, 2) + '</b></div>' +
-                        '<div class="sh-pr"><span>เทียบชั่วโมงก่อน</span><b class="' + dirOf(c) + '">' + (c == null ? '—' : fmtSignedN(c, 0)) + '</b></div>' +
                     '</div>' +
                 '</div>';
             }).join('') + '</div>';
@@ -541,6 +764,7 @@
     }
 
     function renderAll() {
+        setDataVisibility(true);
         renderHero();
         renderSummary();
         renderChart();

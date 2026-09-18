@@ -50,40 +50,49 @@
 
 /* ---------- hero ---------- */
 .sh-hero {
-    background: linear-gradient(135deg, var(--sh-accent-dark), var(--sh-accent));
-    color: #fff; border-radius: 14px 14px 0 0; padding: 16px 18px;
+    color: var(--sh-ink); padding: 0 2px 12px;
     display: flex; justify-content: space-between; align-items: center; gap: 12px;
 }
-.sh-hero-t { font-size: 1.05em; font-weight: 600; }
-.sh-hero-s { font-size: .78em; opacity: .85; margin-top: 2px; }
+.sh-hero-t { color: var(--sh-accent-dark); font-size: 1.45em; font-weight: 600; }
+.sh-hero-s { color: var(--sh-muted); font-size: .82em; margin-top: 2px; }
 .sh-live {
     display: inline-flex; align-items: center; gap: 6px; font-size: .76em;
-    background: rgba(255,255,255,.16); padding: 5px 11px; border-radius: 999px; white-space: nowrap;
+    background: var(--sh-card); border: 1px solid var(--sh-border); color: var(--sh-muted);
+    padding: 6px 11px; border-radius: 999px; white-space: nowrap;
 }
 .sh-live i { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; display: block; }
 
 /* ---------- ราคาล่าสุด ---------- */
 .sh-main {
-    background: var(--sh-gold-bg); border: 1.5px solid var(--sh-gold-bd);
-    border-top: none; border-radius: 0 0 14px 14px; padding: 14px 18px 16px;
+    background: linear-gradient(135deg, var(--sh-accent-dark), var(--sh-accent));
+    color: #fff; border-radius: 14px; padding: 18px 20px;
 }
-.sh-main-top { display: flex; justify-content: space-between; gap: 10px; font-size: .82em; color: var(--sh-gold); font-weight: 500; }
+.sh-main-top { display: flex; justify-content: space-between; gap: 10px; font-size: .82em; color: #fff; font-weight: 500; }
 .sh-main-p { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
-.sh-main-p b { font-size: 2.3em; font-weight: 700; color: var(--sh-gold); font-variant-numeric: tabular-nums; line-height: 1.1; }
-.sh-main-u { font-size: .85em; color: var(--sh-gold); opacity: .8; }
+.sh-main-p b { font-size: 2.55em; font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.sh-main-u { font-size: .85em; color: #fff; opacity: .8; }
+.sh-deltas { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
 
 .sh-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
 .sh-mini { background: var(--sh-card); border: 1px solid var(--sh-border); border-radius: 12px; padding: 12px 14px; }
 .sh-mini span { display: block; font-size: .78em; color: var(--sh-muted); }
 .sh-mini b { display: block; font-size: 1.3em; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 2px; }
+.sh-mini-delta, .sh-mini-note { display: block; font-size: .68em; margin-top: 5px; }
+.sh-mini-note { color: var(--sh-muted); }
 
 .sh-pill {
     display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px;
     border-radius: 999px; font-size: .82em; font-weight: 600; white-space: nowrap;
 }
+.sh-main .sh-pill { background: rgba(255,255,255,.18); color: #fff; }
+.sh-main .sh-pill.sh-hour { background: transparent; border: 1px solid rgba(255,255,255,.3); }
 .sh-pill.sh-up { background: var(--sh-green-bg); color: var(--sh-green); }
 .sh-pill.sh-down { background: var(--sh-red-bg); color: var(--sh-red); }
 .sh-pill.sh-flat { background: #f1f5f9; color: var(--sh-muted); }
+.sh-main .sh-pill.sh-up,
+.sh-main .sh-pill.sh-down,
+.sh-main .sh-pill.sh-flat { background: rgba(255,255,255,.18); color: #fff; }
+.sh-main .sh-pill.sh-hour { background: transparent; }
 .sh-up { color: var(--sh-green); } .sh-down { color: var(--sh-red); } .sh-flat { color: var(--sh-muted); }
 
 /* ---------- คำอธิบายเพิ่มเติม (ตั้งผ่าน config.description — ไม่ตั้งก็ไม่แสดง) ---------- */
@@ -171,27 +180,34 @@
     display: flex; justify-content: space-between; align-items: center; gap: 12px;
     margin: 18px 2px 10px; font-size: .92em; font-weight: 600;
 }
+.sh-listhead > div { display: grid; gap: 2px; }
+.sh-listhead small { color: var(--sh-muted); font-size: .74em; font-weight: 400; }
 /* "เรียงข้อมูล" อยู่ตรงนี้เพราะมันสั่งการรายการ ไม่ใช่ช่วงวันที่ */
 .sh-listhead select { width: auto; font-size: .82em; font-weight: 400; padding: 6px 28px 6px 10px; }
 
 /* desktop: ตารางแบน โชว์ครบทุกราคาในแถวเดียว ไม่ต้องกดกาง */
+.sh-table-scroll { overflow-x: auto; border-radius: 12px; }
 .sh-table {
     background: var(--sh-card); border: 1px solid var(--sh-border);
-    border-radius: 12px; overflow: hidden; width: 100%; border-collapse: collapse;
+    border-radius: 12px; overflow: hidden; min-width: 980px; width: 100%; border-collapse: collapse;
 }
 .sh-table thead th {
     background: #f8fafc; border-bottom: 1px solid var(--sh-border); text-align: right;
-    padding: 12px 16px; font-size: .78em; font-weight: 600; color: var(--sh-muted); white-space: nowrap;
+    padding: 11px 10px; font-size: .72em; font-weight: 600; color: var(--sh-muted); white-space: nowrap;
 }
 .sh-table thead th:first-child { text-align: left; }
 .sh-table td {
-    padding: 13px 16px; font-size: .95em; border-bottom: 1px solid #f1f5f9;
+    padding: 11px 10px; font-size: .86em; border-bottom: 1px solid #f1f5f9;
     text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap;
 }
 .sh-table td:first-child { text-align: left; }
 .sh-table tbody tr:last-child td { border-bottom: none; }
 .sh-table tbody tr:hover td { background: #f8fafc; }
-.sh-table .sh-vat-c { color: var(--sh-gold); font-weight: 700; }
+.sh-table .sh-price-cell b { display: block; font-size: 1.02em; font-weight: 700; }
+.sh-table .sh-price-cell small { display: block; color: var(--sh-muted); font-size: .72em; font-weight: 400; margin-top: 2px; }
+.sh-table .sh-vat-c > b { color: var(--sh-accent-dark); }
+.sh-table .sh-delta-cell b { font-weight: 600; }
+.sh-table .sh-missing { color: var(--sh-muted); }
 .sh-table .sh-spot { color: var(--sh-muted); }
 
 /* mobile: การ์ดเดียว แถวคั่นด้วยเส้น — ไม่มีช่องไฟระหว่างการ์ดให้ดูขาดตอน */
@@ -219,12 +235,16 @@
 /* ป้ายชิดซ้าย ตัวเลขชิดขวา แล้วจำกัดความกว้าง -> ช่องว่างไม่ค้างเป็นรูกลางการ์ด */
 .sh-p {
     display: flex; flex-direction: column; gap: 1px; min-width: 0;
-    width: 100%; max-width: 152px; margin-left: auto;
+    width: 100%; max-width: 200px; margin-left: auto;
 }
 .sh-pr { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .sh-pr span { font-size: .74em; color: var(--sh-muted); white-space: nowrap; }
 .sh-pr b { font-size: .98em; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .sh-pr b.sh-vat { color: var(--sh-gold); font-weight: 700; }
+.sh-pr-change { padding-bottom: 4px; border-bottom: 1px dashed var(--sh-border); }
+.sh-pr-change span { font-size: .68em; }
+.sh-pr-change b, .sh-pr-change .sh-missing { font-size: .82em; }
+.sh-reference { color: var(--sh-accent-dark); font-size: .72em; font-weight: 600; padding-bottom: 3px; }
 .sh-caret { color: #cbd5e1; font-size: .85em; transition: transform .18s; justify-self: end; }
 .sh-row.sh-open .sh-caret { transform: rotate(180deg); }
 .sh-row-body {
@@ -251,19 +271,62 @@
 }
 .sh-state.sh-err { border-color: #fecaca; background: #fef2f2; color: #b91c1c; }
 .sh-skel {
-    background: linear-gradient(90deg, #eef2f7 25%, #f8fafc 37%, #eef2f7 63%);
-    background-size: 400% 100%; animation: sh-shimmer 1.2s ease-in-out infinite;
+    display: block; background: linear-gradient(90deg, #e8edf4 25%, #f8fafc 37%, #e8edf4 63%);
+    background-size: 400% 100%; animation: sh-shimmer 1.15s ease-in-out infinite;
     border-radius: 6px; color: transparent !important;
 }
+.sh-skeleton-cards {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 10px;
+}
+.sh-skeleton-card {
+    min-height: 128px; background: var(--sh-card); border: 1px solid var(--sh-border);
+    border-radius: 14px; padding: 18px 20px; display: flex; flex-direction: column; justify-content: center;
+}
+.sh-skeleton-card:first-child { grid-column: 1 / -1; }
+.sh-skeleton-primary { background: linear-gradient(135deg, #1e40af, #3b82f6); border-color: transparent; }
+.sh-skeleton-primary .sh-skel {
+    background: linear-gradient(90deg, rgba(255,255,255,.16) 25%, rgba(255,255,255,.32) 37%, rgba(255,255,255,.16) 63%);
+    background-size: 400% 100%;
+}
+.sh-skel-label { width: 42%; height: 12px; }
+.sh-skel-price { width: 58%; height: 34px; margin-top: 12px; }
+.sh-skel-pill { width: 76%; height: 22px; margin-top: 12px; border-radius: 999px; }
+.sh-skel-note { width: 55%; height: 10px; margin-top: 12px; }
+.sh-sum-skeleton { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+.sh-sum-skeleton .sh-skel { width: 120px; height: 13px; }
+.sh-sum-skeleton .sh-skel:nth-child(2) { width: 72px; }
+.sh-sum-skeleton .sh-skel:nth-child(3) { width: 150px; }
+.sh-chart-skeleton {
+    background: var(--sh-card); border: 1px solid var(--sh-border); border-radius: 12px;
+    padding: 16px; margin-top: 14px;
+}
+.sh-skel-chart-title { width: 190px; height: 13px; margin-bottom: 18px; }
+.sh-skel-chart { width: 100%; height: 200px; border-radius: 10px; }
+.sh-rows-skeleton {
+    background: var(--sh-card); border: 1px solid var(--sh-border); border-radius: 12px; overflow: hidden;
+}
+.sh-skeleton-day { background: #f1f5f9; padding: 14px 16px; border-bottom: 1px solid var(--sh-border); }
+.sh-skeleton-day .sh-skel { width: 185px; height: 16px; }
+.sh-skeleton-row {
+    min-height: 66px; padding: 12px 10px; border-bottom: 1px solid #f1f5f9;
+    display: grid; grid-template-columns: .75fr 1.35fr .9fr 1.35fr .9fr .8fr .7fr .7fr;
+    align-items: center; gap: 14px;
+}
+.sh-skeleton-row:last-child { border-bottom: none; }
+.sh-skeleton-row .sh-skel { width: 100%; height: 13px; }
+.sh-is-loading .sh-live i { animation: sh-pulse 1s ease-in-out infinite; }
+.sh-is-loading .sh-seg button { cursor: wait; }
 @keyframes sh-shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+@keyframes sh-pulse { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
 
 /* ===== จอกว้าง: ราคาสามช่องอยู่แถวเดียว, ปุ่ม/ช่องกรอกไม่ยืดเต็มจนโหวง ===== */
 @media (min-width: 860px) {
-    .sh-hero { border-radius: 14px; }
+    .sh-skeleton-cards { grid-template-columns: 1.25fr 1fr 1fr; }
+    .sh-skeleton-card:first-child { grid-column: auto; }
     .sh-cards { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 10px; margin-top: 10px; }
     .sh-duo { display: contents; }              /* ให้การ์ดเล็กเป็นลูกของกริดเดียวกัน */
     .sh-main {
-        border: 1.5px solid var(--sh-gold-bd); border-radius: 14px;
+        border-radius: 14px;
         padding: 14px 18px; display: flex; flex-direction: column; justify-content: center;
     }
     .sh-main-p b { font-size: 2.1em; }
@@ -272,17 +335,24 @@
 
 
     .sh-chart-card svg { height: 260px; }
+    .sh-skel-chart { height: 260px; }
+}
+
+@media (max-width: 859px) {
+    .sh-skeleton-row { grid-template-columns: 72px 1fr 76px; min-height: 82px; padding: 13px; }
+    .sh-skeleton-row .sh-skel:nth-child(n+4) { display: none; }
 }
 
 /* ===== จอเล็ก ===== */
 @media (max-width: 640px) {
     .sh-container { padding: 18px 12px 40px; }
-    .sh-hero { padding: 14px 16px; gap: 8px; }
-    .sh-hero-t { font-size: 1em; }
+    .sh-hero { padding: 0 2px 12px; gap: 8px; }
+    .sh-hero-t { font-size: 1.2em; }
     .sh-hero-s { font-size: .74em; }
     .sh-live { font-size: .7em; padding: 4px 9px; }
     .sh-main-top { font-size: .78em; }
     .sh-main-p b { font-size: 2em; }
+    .sh-deltas .sh-pill { white-space: normal; line-height: 1.35; }
     .sh-mini b { font-size: 1.15em; }
     .sh-range { gap: 8px; }
     .sh-range-l { min-width: 0; width: 100%; }
@@ -290,8 +360,12 @@
     .sh-seg button { padding: 10px 2px; font-size: .8em; text-align: center; }
     .sh-custom label { width: calc(50% - 6px); }
     .sh-sum { font-size: .8em; gap: 6px; }
+    .sh-sum-skeleton { flex-wrap: wrap; gap: 8px; }
+    .sh-sum-skeleton .sh-skel { height: 11px; }
     .sh-chart-card { padding: 12px 6px 6px; }
     .sh-chart-card svg { height: 180px; }
+    .sh-chart-skeleton { padding: 14px 12px; }
+    .sh-skel-chart { height: 180px; }
     .sh-daysep, .sh-daysep td { font-size: .96em; padding: 11px 13px; }
     .sh-row-head { gap: 12px; padding: 11px 13px; }
     .sh-t b { font-size: .96em; }
@@ -303,4 +377,8 @@
 @media (max-width: 358px) {
     .sh-seg { grid-template-columns: repeat(2, 1fr); }
     .sh-main-p b { font-size: 1.8em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sh-skel, .sh-is-loading .sh-live i { animation: none; }
 }

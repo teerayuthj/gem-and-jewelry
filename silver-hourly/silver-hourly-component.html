@@ -39,7 +39,8 @@ window.SILVER_HOURLY_CONFIG = {
     presets: [1, 2, 7, 14, 30],                  // ปุ่มลัดช่วงเวลา
     apiRanges: [7, 30],                          // ค่า range ที่ endpoint รองรับจริง
     pageSize: 48,                                // จำนวนแถวต่อการกด "แสดงเพิ่ม"
-    refreshMs: 300000                            // ดึงข้อมูลใหม่ทุกกี่ ms
+    refreshMs: 300000,                           // ดึงข้อมูลใหม่ทุกกี่ ms
+    minLoadingMs: 180                            // ให้ skeleton แสดงอย่างน้อยกี่ ms (0 = ไม่หน่วง)
 };
 </script>
 -->
