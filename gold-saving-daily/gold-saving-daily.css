@@ -13,9 +13,6 @@
     /* theme tokens (scoped) */
     --gsd-navy: #0f2f56;
     --gsd-gold: #f2a900;
-    /* ทองเข้มสำหรับ "ตัวอักษร" โดยเฉพาะ — ทองแบรนด์บนพื้นขาวคอนทราสต์แค่ ~2:1 อ่านยาก
-       เฉดนี้ ~3.4:1 ผ่านเกณฑ์ WCAG AA ของตัวอักษรขนาดใหญ่ */
-    --gsd-gold-deep: #c07f00;
     --gsd-gold-soft: #fff7e6;
     --gsd-red: #c8102e;
     --gsd-green: #00924c;
@@ -67,8 +64,8 @@
 .gsd-container .gsd-t2 {
     display: block; font-size: 1.05em; font-weight: 500; line-height: 1.3; color: #46617f;
 }
-/* คำที่เน้นในบรรทัดแรก (ค่าเริ่มต้นคือ "ทองคำ") */
-.gsd-container .gsd-gw { font-style: normal; color: var(--gsd-gold-deep); }
+/* คำที่เน้นในบรรทัดแรก (ค่าเริ่มต้นคือ "ทองคำ") — ทองแบรนด์เหมือน mock */
+.gsd-container .gsd-gw { font-style: normal; color: var(--gsd-gold); }
 .gsd-container .gsd-hero {
     margin: 0; font-size: 1.32em; font-weight: 700; line-height: 1.32;
     color: var(--gsd-navy); letter-spacing: -.2px;
