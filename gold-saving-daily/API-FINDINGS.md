@@ -1,7 +1,7 @@
 # ประกาศราคาออมทอง — สรุป endpoint ที่มีจริง + สิ่งที่ควรเพิ่ม
 
 ตรวจจาก API prod (`api-price.ausiris.co.th`) และ source `~/WorkSpace/realtime-price`
-เมื่อ 18 ก.ย. 2569 · ใช้คู่กับ `mock.html` (แบบ A / B / C)
+เมื่อ 18 ก.ย. 2569 · กติกาในเอกสารนี้คือสิ่งที่ `gold-saving-daily.js` ใช้จริง
 
 ---
 
