@@ -53,17 +53,29 @@
 .gsd-container .gsd-num { font-variant-numeric: tabular-nums; }
 
 /* ---------- หัวประกาศ ---------- */
-.gsd-container .gsd-head { text-align: center; margin-bottom: 13px; }
-.gsd-container .gsd-title {
-    margin: 0; font-size: 1.05em; font-weight: 600; line-height: 1.4; color: var(--gsd-navy);
+.gsd-container .gsd-head { text-align: center; margin-bottom: 14px; }
+/* ชื่อประกาศเป็นบรรทัดนำเล็ก — พระเอกของหัวคือ "วันที่ · เวลา" */
+.gsd-container .gsd-kicker {
+    margin: 0 0 5px; font-size: .84em; font-weight: 500; color: var(--gsd-muted); line-height: 1.4;
 }
-.gsd-container .gsd-at { color: var(--gsd-navy); font-weight: 700; }
-.gsd-container .gsd-date { margin: 3px 0 0; font-size: .85em; color: var(--gsd-muted); }
-/* .gsd-today ซ้อนใน .gsd-date (.85em) -> .82em ของ parent ≈ .7em ของ base */
-.gsd-container .gsd-today {
-    display: inline-block; margin-top: 4px; margin-left: 5px; padding: 2px 9px; border-radius: 999px;
-    background: #eef1f6; border: 1px solid #dbe2ec; font-size: .82em; color: #4b5b70;
+.gsd-container .gsd-hero {
+    margin: 0; font-size: 1.32em; font-weight: 700; line-height: 1.32;
+    color: var(--gsd-navy); letter-spacing: -.2px;
 }
+/* margin เป็น em เพื่อให้ช่องไฟรอบจุดคั่นโตตามขนาดตัวอักษรของแต่ละ breakpoint */
+.gsd-container .gsd-hero .gsd-dot { color: var(--gsd-gold); margin: 0 .3em; font-weight: 700; }
+/* nowrap = เวลาไม่ถูกตัดกลางคำเวลาบรรทัดพอดีเป๊ะ */
+.gsd-container .gsd-hero .gsd-tm { white-space: nowrap; }
+/* ตอนยังไม่มีราคาบันทึก ช่องเวลาเป็นข้อความ ไม่ใช่ตัวเลข — ย่อลงให้ไม่แย่งสายตาวันที่ */
+.gsd-container .gsd-hero .gsd-tm-note {
+    font-size: .62em; font-weight: 600; color: var(--gsd-muted); white-space: normal;
+}
+.gsd-container .gsd-rule {
+    width: 46px; height: 3px; border-radius: 99px; background: var(--gsd-gold); margin: 9px auto 0;
+}
+/* วันที่เต็มบนจอกว้าง / ย่อบนจอแคบ — render ทั้งสองแล้วสลับด้วย media query
+   (เปลี่ยนข้อความด้วย CSS ไม่ได้ จึงต้องมีทั้งคู่ใน DOM) */
+.gsd-container .gsd-dshort { display: none; }
 
 /* ---------- แถบแจ้งเตือนตอนโหลดราคาไม่สำเร็จ ---------- */
 .gsd-container .gsd-error {
@@ -182,6 +194,13 @@
     .gsd-container.gsd-loading .gsd-sk { animation: none; }
 }
 
+/* ---------- จอแคบกว่า ~520px: วันที่เต็มยาวเกินบรรทัด สลับไปใช้แบบย่อ ---------- */
+@media (max-width: 519px) {
+    .gsd-container .gsd-dfull { display: none; }
+    .gsd-container .gsd-dshort { display: inline; }
+    .gsd-container .gsd-hero { font-size: 1.12em; }
+}
+
 /* ---------- มือถือทั่วไป: บีบช่องกรอกให้ป้ายซ้ายอยู่บรรทัดเดียว ---------- */
 @media (max-width: 400px) {
     .gsd-container .gsd-inputrow { gap: 7px; padding: 9px; }
@@ -198,13 +217,15 @@
     .gsd-container .gsd-table th { padding: 8px 5px 6px; font-size: .61em; }
     .gsd-container .gsd-table td { padding: 8px 5px; font-size: .76em; }
     .gsd-container .gsd-pcard-val { font-size: 1.3em; }
+    .gsd-container .gsd-hero { font-size: 1.02em; }
 }
 
 /* ---------- แท็บเล็ต/เดสก์ท็อป: ขยายตัวเลขให้อ่านง่ายขึ้น ---------- */
 @media (min-width: 640px) {
     .gsd-container { padding-top: 34px; padding-bottom: 34px; }
-    .gsd-container .gsd-title { font-size: 1.2em; }
-    .gsd-container .gsd-date { font-size: .92em; }
+    .gsd-container .gsd-kicker { font-size: .92em; }
+    .gsd-container .gsd-hero { font-size: 1.7em; }
+    .gsd-container .gsd-rule { width: 54px; margin-top: 11px; }
     .gsd-container .gsd-pair { gap: 14px; }
     .gsd-container .gsd-pcard-val { font-size: 1.85em; }
     .gsd-container .gsd-table th { font-size: .74em; padding: 12px 14px 9px; }

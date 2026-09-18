@@ -1,13 +1,13 @@
 <!-- ===== ประกาศราคาออมทอง (Gold Saving Daily) — วาง 3 บรรทัดนี้ จบ ===== -->
 
 <!-- 1) ใน <head> -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.11.1/gold-saving-daily/gold-saving-daily.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.12.0/gold-saving-daily/gold-saving-daily.css">
 
 <!-- 2) ใน <body> ตำแหน่งที่อยากให้แสดง -->
 <div id="gold-saving-daily"></div>
 
 <!-- 3) ก่อนปิด </body> -->
-<script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.11.1/gold-saving-daily/gold-saving-daily.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.12.0/gold-saving-daily/gold-saving-daily.js"></script>
 
 <!-- หมายเหตุ: font Prompt ถูก @import ในไฟล์ CSS แล้ว ไม่ต้องใส่เพิ่ม -->
 
@@ -22,6 +22,7 @@ window.GOLD_SAVING_DAILY_CONFIG = {
     customLabel: 'กรอกยอดออมของคุณ',
     footNote:    'คำนวณจากราคาปิดที่บันทึกล่าสุด ณ เวลา 17:00 น.',  // ต่อท้ายบรรทัด "เดือน… X วันทำการ"
     errorText:   'ยังโหลดราคาประกาศไม่ได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง',
+    noPriceText: 'ยังไม่มีราคาที่บันทึก',                            // ขึ้นแทนเวลา ตอน API ยังไม่มี record
 
     // ---------- การทำงาน ----------
     apiHost:       'https://api-price.ausiris.co.th',  // host ของ API
@@ -35,8 +36,10 @@ window.GOLD_SAVING_DAILY_CONFIG = {
 
 <!-- ===== กติกาที่ component ใช้ (สรุปจาก API-FINDINGS.md) =====
      - แสดงเฉพาะ "ราคาปิดที่บันทึก" (effective_price) ไม่ใช้ราคาสมาคมสด (reference_*)
-     - วันที่ตัวใหญ่ = วันที่ของ record ราคา ไม่ใช่วันที่ปฏิทินของเครื่องผู้ใช้
-     - ถ้าราคาไม่ใช่ของวันนี้ จะขึ้นชิปเล็กท้ายวันที่ เช่น "วันนี้ เสาร์ 19 ก.ย. 69 · ใช้ราคาวันศุกร์"
+     - หัวประกาศ = "วันที่ · เวลา" บรรทัดเดียว ตัวใหญ่สุดของ component
+       วันที่คือวันที่ของ record ราคา ไม่ใช่วันที่ปฏิทินของเครื่องผู้ใช้
+       (เสาร์ที่ยังใช้ราคาวันศุกร์ หัวจึงขึ้นวันศุกร์ ไม่ใช่วันเสาร์)
+     - จอแคบกว่า 520px สลับเป็นวันที่แบบย่อ "พฤหัสบดี ที่ 17 ก.ย. 2569" ให้อยู่บรรทัดเดียว
      - เวลาแสดง 17:00 น. ตายตัวจาก effective_price_time
-     - ยังไม่เคยมีราคาบันทึก -> แสดง "—" ไม่ fallback ไปราคา realtime
+     - ยังไม่เคยมีราคาบันทึก -> ช่องเวลาขึ้น noPriceText และราคาเป็น "—" ไม่ fallback ไป realtime
 -->

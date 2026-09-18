@@ -30,7 +30,8 @@
         customTitle: CFG.customTitle || 'สำหรับลูกค้าที่ออมทองตามยอดที่กำหนดเอง',
         customLabel: CFG.customLabel || 'กรอกยอดออมของคุณ',
         footNote: CFG.footNote || 'คำนวณจากราคาปิดที่บันทึกล่าสุด ณ เวลา 17:00 น.',
-        errorText: CFG.errorText || 'ยังโหลดราคาประกาศไม่ได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง'
+        errorText: CFG.errorText || 'ยังโหลดราคาประกาศไม่ได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง',
+        noPriceText: CFG.noPriceText || 'ยังไม่มีราคาที่บันทึก'
     };
 
     var TH_MONTH = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
@@ -57,15 +58,11 @@
         var p = iso.split('-'), d = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2]));
         return 'วัน' + TH_DAY[d.getUTCDay()] + ' ที่ ' + (+p[2]) + ' ' + TH_MONTH[+p[1] - 1] + ' ' + (+p[0] + 543);
     }
-    function thDateShort(iso) {
-        if (!iso) return '—';
-        var p = iso.split('-');
-        return (+p[2]) + ' ' + TH_MONTH_ABBR[+p[1] - 1] + ' ' + ((+p[0] + 543) % 100);
-    }
-    function thDayShort(iso) {
+    // แบบย่อสำหรับจอแคบ: "พฤหัสบดี ที่ 17 ก.ย. 2569" (CSS สลับกับแบบเต็มเอง)
+    function thDateMedium(iso) {
         if (!iso) return '—';
         var p = iso.split('-'), d = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2]));
-        return TH_DAY[d.getUTCDay()] + ' ' + thDateShort(iso);
+        return TH_DAY[d.getUTCDay()] + ' ที่ ' + (+p[2]) + ' ' + TH_MONTH_ABBR[+p[1] - 1] + ' ' + (+p[0] + 543);
     }
     function thMonthYear(month) {
         var p = (month || '').split('-');
@@ -140,10 +137,14 @@
     function markup() {
         return '<div class="gsd-container gsd-loading">' +
             '<div class="gsd-head">' +
-                '<h2 class="gsd-title">' + TEXT.title + '<br>' +
-                    'ณ เวลา <span class="gsd-at" id="gsdTime">—</span></h2>' +
-                '<p class="gsd-date"><span id="gsdDateMain" class="gsd-sk">วันศุกร์ ที่ 00 กันยายน 2569</span>' +
-                    '<span class="gsd-today" id="gsdChip" hidden></span></p>' +
+                '<p class="gsd-kicker">' + TEXT.title + '</p>' +
+                '<h2 class="gsd-hero">' +
+                    '<span class="gsd-dfull gsd-sk" id="gsdDateFull">วันศุกร์ ที่ 00 กันยายน 2569</span>' +
+                    '<span class="gsd-dshort gsd-sk" id="gsdDateShort">ศุกร์ ที่ 00 ก.ย. 2569</span>' +
+                    '<span class="gsd-dot" id="gsdDot">·</span>' +
+                    '<span class="gsd-tm gsd-num gsd-sk" id="gsdTime">00:00 น.</span>' +
+                '</h2>' +
+                '<div class="gsd-rule"></div>' +
             '</div>' +
 
             '<div class="gsd-error" id="gsdError" hidden></div>' +
@@ -223,6 +224,18 @@
     /* ================= render ================= */
     function cell(row, key) { return row.querySelector('[data-c="' + key + '"]'); }
 
+    // หัวประกาศ — วันที่ (เต็ม/ย่อ ให้ CSS เลือกตามความกว้าง) กับเวลา อยู่บรรทัดเดียวกัน
+    // time = null -> ยังไม่มีราคาบันทึก · iso = null -> โหลดไม่สำเร็จ ตัดท่อนเวลาทิ้งไปเลย
+    function setHead(iso, time) {
+        $('gsdDateFull').textContent = iso ? thDate(iso) : '—';
+        $('gsdDateShort').textContent = iso ? thDateMedium(iso) : '—';
+        var tm = $('gsdTime'), dot = $('gsdDot');
+        tm.hidden = dot.hidden = !iso;
+        if (!iso) return;
+        tm.textContent = time || TEXT.noPriceText;
+        tm.classList.toggle('gsd-tm-note', !time);
+    }
+
     function fillRow(row, amount, selling, days) {
         var p = plan(amount, selling, days);
         var base = plan(amount, null, days);
@@ -264,9 +277,7 @@
             $('gsdError').textContent = TEXT.errorText;
             $('gsdError').hidden = false;
             container.classList.remove('gsd-loading');
-            $('gsdTime').textContent = '—';
-            $('gsdDateMain').textContent = '—';
-            $('gsdChip').hidden = true;
+            setHead(null, null);
             $('gsdBuyback').textContent = '—';
             $('gsdSelling').textContent = '—';
             Array.prototype.forEach.call(document.querySelectorAll('#gsdBody tr'), function (row) {
@@ -281,21 +292,8 @@
         var d = days();
         $('gsdError').hidden = true;
 
-        // หัวข้อ + วันที่ — วันที่ตัวใหญ่คือวันที่ของ record ราคา ไม่ใช่วันที่ปฏิทิน
-        $('gsdTime').textContent = view.priceDate ? view.fixedTime + ' น.' : 'ยังไม่มีราคาที่บันทึก';
-        $('gsdDateMain').textContent = view.priceDate ? thDate(view.priceDate) : thDate(ctx.requested_date);
-
-        var chip = $('gsdChip');
-        if (!view.priceDate) {
-            chip.textContent = 'ยังไม่มีราคาที่บันทึกในระบบ';
-            chip.hidden = false;
-        } else if (view.isCarried) {
-            chip.textContent = 'วันนี้ ' + thDayShort(ctx.requested_date) +
-                (view.mode === 'weekend' ? ' · ใช้ราคาวันศุกร์' : ' · รอราคาบันทึกของวันใหม่');
-            chip.hidden = false;
-        } else {
-            chip.hidden = true;
-        }
+        // วันที่ตัวใหญ่ = วันที่ของ record ราคา ไม่ใช่วันที่ปฏิทินของเครื่องผู้ใช้
+        setHead(view.priceDate || ctx.requested_date, view.priceDate ? view.fixedTime + ' น.' : null);
 
         $('gsdBuyback').textContent = money(view.buyback);
         $('gsdSelling').textContent = money(view.selling);
