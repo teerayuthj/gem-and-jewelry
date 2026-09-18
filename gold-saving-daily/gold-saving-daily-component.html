@@ -1,0 +1,42 @@
+<!-- ===== ประกาศราคาออมทอง (Gold Saving Daily) — วาง 3 บรรทัดนี้ จบ ===== -->
+
+<!-- 1) ใน <head> -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.11.0/gold-saving-daily/gold-saving-daily.css">
+
+<!-- 2) ใน <body> ตำแหน่งที่อยากให้แสดง -->
+<div id="gold-saving-daily"></div>
+
+<!-- 3) ก่อนปิด </body> -->
+<script src="https://cdn.jsdelivr.net/gh/teerayuthj/gem-and-jewelry@v1.11.0/gold-saving-daily/gold-saving-daily.js"></script>
+
+<!-- หมายเหตุ: font Prompt ถูก @import ในไฟล์ CSS แล้ว ไม่ต้องใส่เพิ่ม -->
+
+
+<!-- ===== (ไม่บังคับ) ปรับค่าได้ โดยวางก่อน gold-saving-daily.js =====
+<script>
+window.GOLD_SAVING_DAILY_CONFIG = {
+
+    // ---------- ข้อความ ----------
+    title:       'ประกาศราคาทองคำ สำหรับลูกค้าออมทองออสสิริส',   // ใส่ HTML ได้
+    customTitle: 'สำหรับลูกค้าที่ออมทองตามยอดที่กำหนดเอง',
+    customLabel: 'กรอกยอดออมของคุณ',
+    footNote:    'คำนวณจากราคาปิดที่บันทึกล่าสุด ณ เวลา 17:00 น.',  // ต่อท้ายบรรทัด "เดือน… X วันทำการ"
+    errorText:   'ยังโหลดราคาประกาศไม่ได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง',
+
+    // ---------- การทำงาน ----------
+    apiHost:       'https://api-price.ausiris.co.th',  // host ของ API
+    presets:       [1000, 2000, 5000, 10000],          // ยอดออมในตาราง + ปุ่มลัด
+    defaultAmount: 3000,                               // ยอดเริ่มต้นของแถว "ยอดของคุณ"
+    refreshMs:     300000                              // ดึงข้อมูลใหม่ทุกกี่ ms (0 = ไม่ refresh)
+};
+</script>
+-->
+
+
+<!-- ===== กติกาที่ component ใช้ (สรุปจาก API-FINDINGS.md) =====
+     - แสดงเฉพาะ "ราคาปิดที่บันทึก" (effective_price) ไม่ใช้ราคาสมาคมสด (reference_*)
+     - วันที่ตัวใหญ่ = วันที่ของ record ราคา ไม่ใช่วันที่ปฏิทินของเครื่องผู้ใช้
+     - ถ้าราคาไม่ใช่ของวันนี้ จะขึ้นชิปเล็กท้ายวันที่ เช่น "วันนี้ เสาร์ 19 ก.ย. 69 · ใช้ราคาวันศุกร์"
+     - เวลาแสดง 17:00 น. ตายตัวจาก effective_price_time
+     - ยังไม่เคยมีราคาบันทึก -> แสดง "—" ไม่ fallback ไปราคา realtime
+-->

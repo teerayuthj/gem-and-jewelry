@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ประกาศราคาออมทอง — Demo</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- DEV: ใช้ไฟล์ในเครื่อง / PROD: เปลี่ยนเป็น jsDelivr (ดู gold-saving-daily-component.html) -->
+    <link rel="stylesheet" href="./gold-saving-daily.css">
+    <style> body { background: #eef2f7; margin: 0; } </style>
+</head>
+<body>
+
+    <!-- ===== Gold Saving Daily Component (auto-mount) ===== -->
+    <div id="gold-saving-daily"></div>
+
+    <!-- ตัวอย่างการตั้งค่าเอง — ต้องวางก่อน gold-saving-daily.js (ลบทิ้งได้ถ้าใช้ค่าเริ่มต้น) -->
+    <script>
+    window.GOLD_SAVING_DAILY_CONFIG = {
+        defaultAmount: 3000
+    };
+    </script>
+
+    <!-- DEV: ใช้ไฟล์ในเครื่อง / PROD: เปลี่ยนเป็น jsDelivr -->
+    <script src="./gold-saving-daily.js"></script>
+</body>
+</html>
