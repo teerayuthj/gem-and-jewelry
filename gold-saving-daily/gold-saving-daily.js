@@ -26,7 +26,10 @@
     var MAX_AMOUNT = 10000000;
 
     var TEXT = {
-        title: CFG.title || 'ประกาศราคาทองคำ สำหรับลูกค้าออมทองออสสิริส',
+        // ชื่อประกาศ 2 บรรทัด — ข้อความธรรมดา (ไม่รับ HTML) คำใน goldWord จะถูกทำเป็นสีทองให้เอง
+        titleTop: CFG.titleTop || 'ประกาศราคาทองคำ',
+        titleSub: CFG.titleSub || 'สำหรับลูกค้าออมทองออสสิริส',
+        goldWord: CFG.goldWord == null ? 'ทองคำ' : CFG.goldWord,   // '' = ไม่เน้นคำไหนเลย
         customTitle: CFG.customTitle || 'สำหรับลูกค้าที่ออมทองตามยอดที่กำหนดเอง',
         customLabel: CFG.customLabel || 'กรอกยอดออมของคุณ',
         footNote: CFG.footNote || 'คำนวณจากราคาปิดที่บันทึกล่าสุด ณ เวลา 17:00 น.',
@@ -51,6 +54,15 @@
     /* ================= helpers ================= */
     function $(id) { return document.getElementById(id); }
     function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+
+    // ทำคำเดียวในข้อความให้เป็นสีทอง — escape ก่อนแล้วค่อยแทรก tag จึงไม่เปิดช่อง HTML จาก config
+    function goldWord(text, word) {
+        var safe = esc(text);
+        if (!word) return safe;
+        var w = esc(word), i = safe.indexOf(w);
+        if (i < 0) return safe;
+        return safe.slice(0, i) + '<em class="gsd-gw">' + w + '</em>' + safe.slice(i + w.length);
+    }
 
     // ทุกฟังก์ชันวันที่แกะจาก string 'YYYY-MM-DD' ตรง ๆ (UTC) — ไม่ผ่าน timezone ของเครื่อง
     function thDate(iso) {
@@ -137,13 +149,16 @@
     function markup() {
         return '<div class="gsd-container gsd-loading">' +
             '<div class="gsd-head">' +
-                '<p class="gsd-kicker">' + TEXT.title + '</p>' +
-                '<h2 class="gsd-hero">' +
+                '<h2 class="gsd-title">' +
+                    '<span class="gsd-t1">' + goldWord(TEXT.titleTop, TEXT.goldWord) + '</span>' +
+                    '<span class="gsd-t2">' + esc(TEXT.titleSub) + '</span>' +
+                '</h2>' +
+                '<p class="gsd-hero">' +
                     '<span class="gsd-dfull gsd-sk" id="gsdDateFull">วันศุกร์ ที่ 00 กันยายน 2569</span>' +
                     '<span class="gsd-dshort gsd-sk" id="gsdDateShort">ศุกร์ ที่ 00 ก.ย. 2569</span>' +
                     '<span class="gsd-dot" id="gsdDot">·</span>' +
                     '<span class="gsd-tm gsd-num gsd-sk" id="gsdTime">00:00 น.</span>' +
-                '</h2>' +
+                '</p>' +
                 '<div class="gsd-rule"></div>' +
             '</div>' +
 
