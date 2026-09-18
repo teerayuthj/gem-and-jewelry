@@ -83,23 +83,29 @@
     background: #fdeef1; border: 1px solid #f3c2cc; color: #8c0a20; font-size: .8em;
 }
 
-/* ---------- การ์ดราคา ซื้อคืน / ขายออก ---------- */
+/* ---------- การ์ดราคา ซื้อคืน / ขายออก ----------
+   มือถือ = ป้ายจัดกลาง ตัวเลขใหญ่วางกลางการ์ด (อ่านไกล)
+   เดสก์ท็อป (≥640px) = ป้ายชิดซ้าย ตัวเลขกับหน่วยอยู่แถวเดียวกัน (ดูบล็อก min-width ท้ายไฟล์) */
 .gsd-container .gsd-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 .gsd-container .gsd-pcard {
-    background: var(--gsd-card); border: 1px solid var(--gsd-line); border-radius: 14px;
+    background: var(--gsd-card); border: 1px solid var(--gsd-line); border-radius: 16px;
     overflow: hidden; box-shadow: 0 2px 8px rgba(15, 47, 86, .05);
 }
 .gsd-container .gsd-pcard-cap {
-    padding: 7px 11px; font-size: .85em; font-weight: 600; color: #fff;
-    display: flex; align-items: baseline; gap: 5px;
+    padding: 9px 13px; font-size: 1.12em; font-weight: 700; color: #fff;
+    display: flex; align-items: baseline; justify-content: center; gap: 5px;
 }
-/* ซ้อนใน .gsd-pcard-cap (.85em) -> .8em ของ parent ≈ .68em ของ base */
-.gsd-container .gsd-pcard-cap small { font-size: .8em; font-weight: 400; opacity: .9; }
+/* ซ้อนใน .gsd-pcard-cap (1.12em) -> .68em ของ parent ≈ .76em ของ base */
+.gsd-container .gsd-pcard-cap small { font-size: .68em; font-weight: 400; opacity: .9; }
 .gsd-container .gsd-pcard.gsd-buy .gsd-pcard-cap { background: var(--gsd-red); }
 .gsd-container .gsd-pcard.gsd-sell .gsd-pcard-cap { background: var(--gsd-green); }
-.gsd-container .gsd-pcard-body { padding: 11px; display: flex; align-items: baseline; justify-content: space-between; }
-.gsd-container .gsd-pcard-val { font-size: 1.5em; font-weight: 700; color: var(--gsd-navy); letter-spacing: -.5px; }
-.gsd-container .gsd-pcard-unit { font-size: .68em; color: var(--gsd-muted); }
+.gsd-container .gsd-pcard-body {
+    padding: 13px 11px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.gsd-container .gsd-pcard-val {
+    font-size: 2.05em; line-height: 1.1; font-weight: 700; color: var(--gsd-navy); letter-spacing: -.5px;
+}
+.gsd-container .gsd-pcard-unit { font-size: .72em; color: var(--gsd-muted); }
 
 /* ---------- ตารางแผนออม ---------- */
 .gsd-container .gsd-table {
@@ -216,7 +222,8 @@
     .gsd-container .gsd-inputrow em { font-size: .65em; }
     .gsd-container .gsd-table th { padding: 8px 5px 6px; font-size: .61em; }
     .gsd-container .gsd-table td { padding: 8px 5px; font-size: .76em; }
-    .gsd-container .gsd-pcard-val { font-size: 1.3em; }
+    .gsd-container .gsd-pcard-cap { font-size: 1em; padding: 8px 9px; }
+    .gsd-container .gsd-pcard-val { font-size: 1.7em; }
     .gsd-container .gsd-hero { font-size: 1.02em; }
 }
 
@@ -227,7 +234,17 @@
     .gsd-container .gsd-hero { font-size: 1.7em; }
     .gsd-container .gsd-rule { width: 54px; margin-top: 11px; }
     .gsd-container .gsd-pair { gap: 14px; }
-    .gsd-container .gsd-pcard-val { font-size: 1.85em; }
+    /* เดสก์ท็อป: กลับเป็นแถวเดียว ป้ายชิดซ้าย — พื้นที่กว้างพอให้ราคากับหน่วยอยู่บรรทัดเดียว */
+    .gsd-container .gsd-pcard { border-radius: 14px; }
+    .gsd-container .gsd-pcard-cap {
+        font-size: 1.15em; font-weight: 600; padding: 10px 14px; justify-content: flex-start;
+    }
+    .gsd-container .gsd-pcard-cap small { font-size: .72em; }
+    .gsd-container .gsd-pcard-body {
+        padding: 12px 14px; flex-direction: row; align-items: baseline; justify-content: space-between;
+    }
+    .gsd-container .gsd-pcard-val { font-size: 2.3em; }
+    .gsd-container .gsd-pcard-unit { font-size: .68em; }
     .gsd-container .gsd-table th { font-size: .74em; padding: 12px 14px 9px; }
     .gsd-container .gsd-table td { font-size: .95em; padding: 12px 14px; }
     .gsd-container .gsd-foot-note { font-size: .78em; }

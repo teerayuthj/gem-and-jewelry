@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ประกาศราคาออมทอง — เทียบขนาดการ์ดราคา</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* หน้าเทียบแบบ ไม่ใช่ไฟล์ของ component — token/สัดส่วนชุดเดียวกับ gold-saving-daily.css */
+* { box-sizing: border-box; }
+body { margin: 0; padding: 24px 20px 60px; background: #e9eef5; font-family: 'Prompt', sans-serif; color: #17253a; }
+h1 { font-size: 1.1rem; margin: 0 0 4px; color: #0f2f56; }
+.note { font-size: .82rem; color: #5b6b81; margin: 0 0 26px; }
+.case { margin-bottom: 34px; }
+.case > h2 { font-size: .95rem; margin: 0 0 3px; color: #0f2f56; display: flex; align-items: center; gap: 8px; }
+.case > h2 b { background: #0f2f56; color: #fff; border-radius: 6px; padding: 2px 8px; font-size: .8rem; }
+.case > p { margin: 0 0 12px; font-size: .78rem; color: #5b6b81; }
+.pair { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+.screen { background: #fff; border: 1px solid #d3dce7; border-radius: 16px; overflow: hidden; }
+.screen > .cap { font-size: .68rem; color: #64748b; background: #f3f6fa; border-bottom: 1px solid #e3e9f1; padding: 5px 10px; }
+.screen.desk { flex: 1 1 520px; min-width: 340px; }
+.screen.phone { flex: 0 0 375px; }
+
+/* ===== ของจริง ===== */
+.gsd {
+    --navy: #0f2f56; --gold: #f2a900; --gold-soft: #fff7e6;
+    --red: #c8102e; --green: #00924c; --ink: #17253a; --muted: #6b7a90; --line: #e3e9f1;
+    background: #fff; color: var(--ink); font-size: 16px; line-height: 1.5; padding: 20px 16px 18px;
+}
+.gsd * { box-sizing: border-box; }
+.screen.desk .gsd { padding: 26px 22px 20px; }
+
+/* หัวประกาศแบบ 1 (ที่เลือกไปแล้ว) ใส่ไว้ให้เห็นสัดส่วนรวม */
+.head { text-align: center; margin-bottom: 14px; }
+.head .kicker { margin: 0 0 5px; font-size: .84em; font-weight: 500; color: var(--muted); }
+.head .hero { margin: 0; font-size: 1.12em; font-weight: 700; line-height: 1.32; color: var(--navy); letter-spacing: -.2px; }
+.head .hero .dot { color: var(--gold); margin: 0 .3em; }
+.head .rule { width: 46px; height: 3px; border-radius: 99px; background: var(--gold); margin: 9px auto 0; }
+.screen.desk .head .hero { font-size: 1.7em; }
+.screen.desk .head .kicker { font-size: .92em; }
+.screen.desk .dshort { display: none; }
+.screen.phone .dfull { display: none; }
+
+/* ---------- การ์ดราคา: ค่าฐาน = ของปัจจุบัน ---------- */
+.pair2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.screen.desk .pair2 { gap: 14px; }
+.pc { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(15,47,86,.05); }
+.pc-cap { padding: 7px 11px; font-size: .85em; font-weight: 600; color: #fff; display: flex; align-items: baseline; gap: 5px; }
+.pc-cap small { font-size: .8em; font-weight: 400; opacity: .9; }
+.pc.buy .pc-cap { background: var(--red); }
+.pc.sell .pc-cap { background: var(--green); }
+.pc-body { padding: 11px; display: flex; align-items: baseline; justify-content: space-between; }
+.pc-val { font-size: 1.5em; font-weight: 700; color: var(--navy); letter-spacing: -.5px; font-variant-numeric: tabular-nums; }
+.pc-unit { font-size: .68em; color: var(--muted); }
+.screen.desk .pc-val { font-size: 1.85em; }
+
+/* ---------- แบบ A : ขยายเฉพาะป้าย ซื้อคืน/ขายออก ---------- */
+.vA .pc-cap { font-size: 1.02em; padding: 8px 12px; }
+.vA .pc-cap small { font-size: .72em; }
+.screen.desk .vA .pc-cap { font-size: 1.15em; padding: 10px 14px; }
+
+/* ---------- แบบ B : ขยายทั้งป้ายและตัวเลข ---------- */
+.vB .pc-cap { font-size: 1.02em; padding: 8px 12px; }
+.vB .pc-cap small { font-size: .72em; }
+.vB .pc-val { font-size: 1.85em; }
+.vB .pc-body { padding: 12px 11px; }
+.screen.desk .vB .pc-cap { font-size: 1.15em; padding: 10px 14px; }
+.screen.desk .vB .pc-val { font-size: 2.3em; }
+
+/* ---------- แบบ C : ป้ายใหญ่เต็มแถบ + ตัวเลขใหญ่สุด (เน้นอ่านไกล) ---------- */
+.vC .pc { border-radius: 16px; }
+.vC .pc-cap { font-size: 1.12em; font-weight: 700; padding: 9px 13px; justify-content: center; }
+.vC .pc-cap small { font-size: .68em; }
+.vC .pc-body { padding: 13px 11px; flex-direction: column; align-items: center; gap: 0; }
+.vC .pc-val { font-size: 2.05em; line-height: 1.1; }
+.vC .pc-unit { font-size: .72em; }
+.screen.desk .vC .pc-cap { font-size: 1.3em; padding: 11px 15px; }
+.screen.desk .vC .pc-val { font-size: 2.7em; }
+</style>
+</head>
+<body>
+
+<h1>การ์ดราคา ซื้อคืน / ขายออก — เทียบขนาด</h1>
+<p class="note">
+    ปัจจุบันป้าย “ซื้อคืน / ขายออก” อยู่ที่ .85em (13.6px บนมือถือ) · ซ้าย = เดสก์ท็อป / ขวา = มือถือ 375px
+    · หัวประกาศด้านบนคือแบบ 1 ที่เลือกไปแล้ว ใส่ไว้ให้เห็นสัดส่วนรวม
+</p>
+
+<!-- template ของแต่ละ case ถูกใส่ด้วย JS ด้านล่าง เพื่อไม่ต้องเขียน markup ซ้ำ 8 รอบ -->
+<div id="stage"></div>
+
+<script>
+var CASES = [
+    ['เดิม', '', 'ที่ใช้อยู่ตอนนี้ — ป้าย .85em / ตัวเลข 1.5em (มือถือ) · 1.85em (เดสก์ท็อป)'],
+    ['แบบ A', 'vA', 'ขยายเฉพาะป้าย ซื้อคืน/ขายออก เป็น 1.02em (มือถือ) · 1.15em (เดสก์ท็อป) ตัวเลขคงเดิม — เปลี่ยนน้อยที่สุด'],
+    ['แบบ B', 'vB', 'ขยายทั้งป้ายและตัวเลข ตัวเลขเป็น 1.85em (มือถือ) · 2.3em (เดสก์ท็อป) — การ์ดราคาเด่นขึ้นทั้งใบ'],
+    ['แบบ C', 'vC', 'ป้ายใหญ่จัดกลาง 1.12em/1.3em + ตัวเลขใหญ่สุด 2.05em/2.7em วางกลางการ์ด — อ่านไกลสุด การ์ดสูงขึ้น']
+];
+
+function cards(cls) {
+    return '<div class="pair2 ' + cls + '">' +
+        '<div class="pc buy"><div class="pc-cap">ซื้อคืน <small>บาทละ</small></div>' +
+            '<div class="pc-body"><span class="pc-val">67,900</span><span class="pc-unit">บาท</span></div></div>' +
+        '<div class="pc sell"><div class="pc-cap">ขายออก <small>บาทละ</small></div>' +
+            '<div class="pc-body"><span class="pc-val">68,100</span><span class="pc-unit">บาท</span></div></div>' +
+    '</div>';
+}
+function head() {
+    return '<div class="head"><p class="kicker">ประกาศราคาทองคำ สำหรับลูกค้าออมทองออสสิริส</p>' +
+        '<h3 class="hero"><span class="dfull">วันพฤหัสบดี ที่ 17 กันยายน 2569</span>' +
+        '<span class="dshort">พฤหัสบดี ที่ 17 ก.ย. 2569</span>' +
+        '<span class="dot">·</span><span class="tm">17:00 น.</span></h3><div class="rule"></div></div>';
+}
+document.getElementById('stage').innerHTML = CASES.map(function (c) {
+    return '<div class="case"><h2><b>' + c[0] + '</b></h2><p>' + c[2] + '</p><div class="pair">' +
+        '<div class="screen desk"><div class="cap">เดสก์ท็อป</div><div class="gsd">' + head() + cards(c[1]) + '</div></div>' +
+        '<div class="screen phone"><div class="cap">มือถือ 375px</div><div class="gsd">' + head() + cards(c[1]) + '</div></div>' +
+    '</div></div>';
+}).join('');
+</script>
+</body>
+</html>
