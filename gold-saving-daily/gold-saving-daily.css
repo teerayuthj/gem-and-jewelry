@@ -20,7 +20,7 @@
     --gsd-muted: #6b7a90;
     --gsd-line: #e3e9f1;
     --gsd-card: #ffffff;
-    --gsd-bg: #f6f8fb;
+    --gsd-bg: #ffffff;
     --gsd-off: #9aa7b8;
 
     /* full-bleed: ทะลุ .container ของ host ออกเต็มจอ — scope เฉพาะ .gsd-container
