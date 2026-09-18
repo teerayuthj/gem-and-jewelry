@@ -45,10 +45,12 @@
 
     var state = {
         ctx: null,       // ผลจาก /gold-saving
-        days: null,      // eligible_purchase_days จาก /gold-saving/monthly
+        monthly: null,   // ผลคำนวณทั้งหมดจาก /gold-saving/monthly
         amount: 0,
         loaded: false
     };
+    var monthlyLoadTimer = null;
+    var monthlyRequestId = 0;
     state.amount = parseAmount(CFG.defaultAmount == null ? 3000 : CFG.defaultAmount) || 3000;
 
     /* ================= helpers ================= */
@@ -85,23 +87,14 @@
         return n == null ? '—' : Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
     function gold(n) { return n == null ? '—' : Number(n).toFixed(6); }
-    function round(v, p) { var m = Math.pow(10, p); return Math.round(v * m) / m; }
+    function truncateGoldFromCents(amountCents, selling) {
+        var scale = 1000000;
+        return Math.trunc(amountCents * scale / (selling * 100)) / scale;
+    }
     function parseAmount(value) {
         var digits = String(value == null ? '' : value).replace(/[^0-9]/g, '');
         var n = parseInt(digits, 10);
         return isNaN(n) ? 0 : Math.min(n, MAX_AMOUNT);
-    }
-    // ใช้ตอน /monthly ล่ม — จันทร์–ศุกร์ทั้งเดือน ตรงกับ eligible_purchase_days ฝั่ง Rust
-    function weekdaysIn(month) {
-        var p = (month || '').split('-'), y = +p[0], m = +p[1], n = 0;
-        if (!y || !m) return 0;
-        var d = new Date(Date.UTC(y, m - 1, 1));
-        while (d.getUTCMonth() === m - 1) {
-            var w = d.getUTCDay();
-            if (w !== 0 && w !== 6) n++;
-            d.setUTCDate(d.getUTCDate() + 1);
-        }
-        return n;
     }
 
     /* =====================================================================
@@ -125,15 +118,48 @@
         };
     }
 
-    // สูตรตรงกับฝั่ง Rust (daily_allocations / calculate_plan)
-    function plan(amount, selling, days) {
-        if (!amount || !days) return null;
-        var daily = Math.floor(amount * 100 / days) / 100;
+    // รองรับ backend รุ่นเก่าระหว่าง rollout; รุ่นใหม่ใช้ requested_plan โดยไม่คำนวณซ้ำ
+    function legacyPlanForAmount(amount) {
+        var summary = state.monthly;
+        var selling = summary && summary.latest_price ? Number(summary.latest_price.selling_price) : 0;
+        if (!summary || !(selling > 0)) return null;
+
+        var source = null;
+        if (summary.monthly_amount === amount) {
+            source = { daily_amount: summary.initial_daily_amount };
+        } else {
+            var calculations = summary.calculations || [];
+            for (var i = 0; i < calculations.length; i++) {
+                if (calculations[i].monthly_amount === amount) {
+                    source = calculations[i];
+                    break;
+                }
+            }
+        }
+        if (!source || source.daily_amount == null) return null;
+
+        var dailyCents = Math.round(Number(source.daily_amount) * 100);
         return {
-            daily: daily,
-            goldPerDay: selling ? round(daily / selling, 6) : null,
-            goldMonth: selling ? round(amount / selling, 6) : null
+            monthly_amount: amount,
+            daily_amount: Number(source.daily_amount),
+            gold_baht_per_day: truncateGoldFromCents(dailyCents, selling),
+            estimated_monthly_gold_baht: truncateGoldFromCents(amount * 100, selling)
         };
+    }
+
+    // Component แสดงค่าจาก backend; fallback ด้านบนทำงานเฉพาะ API รุ่นเก่าที่ยังไม่มี field ใหม่
+    function planForAmount(amount) {
+        if (!state.monthly) return null;
+        if (!Object.prototype.hasOwnProperty.call(state.monthly, 'requested_plan')) {
+            return legacyPlanForAmount(amount);
+        }
+        var requested = state.monthly.requested_plan;
+        if (requested && requested.monthly_amount === amount) return requested;
+        var calculations = state.monthly.calculations || [];
+        for (var i = 0; i < calculations.length; i++) {
+            if (calculations[i].monthly_amount === amount) return calculations[i];
+        }
+        return null;
     }
 
     /* ================= markup (JS inject เอง — host แค่วาง div) ================= */
@@ -182,7 +208,8 @@
             '<div class="gsd-table"><table>' +
                 '<thead><tr>' +
                     '<th>ออมเดือนละ</th><th>ซื้อทอง<br>วันละ (บาท)</th>' +
-                    '<th>ทองที่ได้<br>ต่อวัน</th><th>ทองที่ได้<br>ทั้งเดือน</th>' +
+                    '<th>ทองที่ได้<br>ต่อวัน<br>(บาททอง)</th>' +
+                    '<th>ทองที่ได้<br>ทั้งเดือน<br>(บาททอง)</th>' +
                 '</tr></thead>' +
                 '<tbody id="gsdBody">' +
                     PRESETS.map(presetRow).join('') +
@@ -251,12 +278,10 @@
         tm.classList.toggle('gsd-tm-note', !time);
     }
 
-    function fillRow(row, amount, selling, days) {
-        var p = plan(amount, selling, days);
-        var base = plan(amount, null, days);
-        cell(row, 'daily').textContent = num2(base ? base.daily : null);
-        setGold(cell(row, 'gday'), p ? p.goldPerDay : null);
-        setGold(cell(row, 'gmonth'), p ? p.goldMonth : null);
+    function fillRow(row, plan) {
+        cell(row, 'daily').textContent = num2(plan ? plan.daily_amount : null);
+        setGold(cell(row, 'gday'), plan ? plan.gold_baht_per_day : null);
+        setGold(cell(row, 'gmonth'), plan ? plan.estimated_monthly_gold_baht : null);
     }
     function setGold(el, v) {
         el.textContent = v == null ? '—' : gold(v);
@@ -269,9 +294,8 @@
     function renderUserRow() {
         var row = document.querySelector('.gsd-user-row');
         if (!row) return;
-        var view = state.ctx ? resolve(state.ctx) : null;
         cell(row, 'amount').textContent = money(state.amount);
-        fillRow(row, state.amount, view ? view.selling : null, days());
+        fillRow(row, planForAmount(state.amount));
         var chips = document.querySelectorAll('#gsdChips button');
         Array.prototype.forEach.call(chips, function (b) {
             b.classList.toggle('gsd-on', parseInt(b.getAttribute('data-amt'), 10) === state.amount);
@@ -279,9 +303,7 @@
     }
 
     function days() {
-        if (state.days) return state.days;
-        var month = state.ctx ? (state.ctx.requested_date || '').slice(0, 7) : '';
-        return weekdaysIn(month);
+        return state.monthly ? state.monthly.eligible_purchase_days : null;
     }
 
     function render() {
@@ -296,8 +318,7 @@
             $('gsdBuyback').textContent = '—';
             $('gsdSelling').textContent = '—';
             Array.prototype.forEach.call(document.querySelectorAll('#gsdBody tr'), function (row) {
-                var amt = row.hasAttribute('data-user') ? state.amount : parseInt(row.getAttribute('data-amt'), 10);
-                fillRow(row, amt, null, days());
+                fillRow(row, null);
             });
             return;
         }
@@ -316,12 +337,13 @@
         Array.prototype.forEach.call(document.querySelectorAll('#gsdBody tr'), function (row) {
             var amt = row.hasAttribute('data-user') ? state.amount : parseInt(row.getAttribute('data-amt'), 10);
             if (row.hasAttribute('data-user')) cell(row, 'amount').textContent = money(state.amount);
-            fillRow(row, amt, view.selling, d);
+            fillRow(row, planForAmount(amt));
         });
 
         $('gsdFoot').innerHTML = 'หมายเหตุ : เดือน' + thMonthYear((ctx.requested_date || '').slice(0, 7)) +
-            ' เฉลี่ยซื้อทอง ' + d + ' วันทำการ<br>' + TEXT.footNote;
-        $('gsdHelp').textContent = 'ผลคำนวณแสดงในแถว “ยอดของคุณ” ในตารางด้านบน · ' + d + ' วันทำการ';
+            ' เฉลี่ยซื้อทอง ' + (d == null ? '—' : d) + ' วันทำการ<br>' + TEXT.footNote;
+        $('gsdHelp').textContent = 'ผลคำนวณแสดงในแถว “ยอดของคุณ” ในตารางด้านบน · ' +
+            (d == null ? '—' : d) + ' วันทำการ';
 
         state.loaded = true;
         container.classList.remove('gsd-loading');
@@ -334,11 +356,13 @@
             state.amount = parseAmount(input.value);
             input.value = state.amount ? money(state.amount) : '';
             renderUserRow();
+            queueMonthlyLoad();
         });
         input.addEventListener('blur', function () {
             if (state.amount < 1) state.amount = 1;
             input.value = money(state.amount);
             renderUserRow();
+            queueMonthlyLoad();
         });
         $('gsdChips').addEventListener('click', function (e) {
             var btn = e.target.closest('button[data-amt]');
@@ -346,6 +370,7 @@
             state.amount = parseInt(btn.getAttribute('data-amt'), 10);
             input.value = money(state.amount);
             renderUserRow();
+            queueMonthlyLoad();
         });
     }
 
@@ -357,17 +382,42 @@
         });
     }
 
+    function monthlyURL(amount) {
+        return MONTHLY_URL + '?amount=' + encodeURIComponent(amount);
+    }
+
+    function queueMonthlyLoad() {
+        if (monthlyLoadTimer) clearTimeout(monthlyLoadTimer);
+        if (state.amount < 1) return;
+        monthlyLoadTimer = setTimeout(loadMonthly, 300);
+    }
+
+    function loadMonthly() {
+        var requestedAmount = state.amount;
+        var requestId = ++monthlyRequestId;
+        return getJSON(monthlyURL(requestedAmount)).then(function (summary) {
+            if (requestId !== monthlyRequestId || requestedAmount !== state.amount) return;
+            state.monthly = summary;
+            render();
+        }).catch(function (e) {
+            console.warn('[gold-saving-daily] โหลดผลคำนวณไม่สำเร็จ:', e.message);
+        });
+    }
+
     function load() {
+        var requestedAmount = state.amount;
+        var requestId = ++monthlyRequestId;
         return Promise.all([
             getJSON(CTX_URL).catch(function (e) {
                 console.warn('[gold-saving-daily] โหลด context ไม่สำเร็จ:', e.message);
                 return null;
             }),
-            // ต้องการแค่ eligible_purchase_days — ไม่ขึ้นกับยอดออม จึงไม่ต้องยิงซ้ำตอนพิมพ์
-            getJSON(MONTHLY_URL).catch(function () { return null; })
+            getJSON(monthlyURL(requestedAmount)).catch(function () { return null; })
         ]).then(function (res) {
             if (res[0]) state.ctx = res[0];
-            if (res[1] && res[1].eligible_purchase_days) state.days = res[1].eligible_purchase_days;
+            if (requestId === monthlyRequestId && requestedAmount === state.amount && res[1]) {
+                state.monthly = res[1];
+            }
             render();
         });
     }
